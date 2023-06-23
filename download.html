@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<title>SF工具箱 - 可能是最好的高效工具</title>
+		<link rel="stylesheet" type="text/css" href="./css/preload.css">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<style>header{background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-size: cover;}</style>
+	</head>
+	<body>
+		<!-- 预加载 -->
+		<div id="preloader" class="preloader">
+			<div class="spinner-border" role="status">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+		</div>
+		<!-- 头部 -->
+		<nav class="navbar fixed-top bg-body">
+            <div class="container">
+                <a class="navbar-brand" href="//sf.suxber.live/"><img src="https://s1.ax1x.com/2023/01/08/pSVXIaT.png" style="height:3rem" /></a>
+            </div>
+        </nav>
+		<!-- 主体部分 -->
+		<main>
+		    <header style="margin-top:4.5rem;background-image: url(https://s1.ax1x.com/2023/01/08/pSZkPKO.jpg);transform: scale(1);">
+		        <div class="container-md text-white px-sm-5 py-5 text-center">
+		            <h1>获取下载</h1>
+		            <p>立即启用高效学习生活状态</p>
+		        </div>
+    		</header>
+			<div class="container mt-4 text-center py-5">
+			    <h4>选择你的版本</h4>
+			    <p class="text-muted" style="font-size:.8rem">鸿蒙用户请选择Android下载</p>
+			    <div class="row justify-content-around pt-4 px-4 px-sm-5">
+			        <div class="col-12 mb-4 col-sm-3 card border border-0 border-top border-5 border-primary shadow-sm rounded" onclick="android()">
+			            <div class="card-body">
+			                <img class="mt-2" src="./img/android.png" style="height:60px">
+			                <h5 class="mt-1">Android下载</h5>
+			                <a href="javascript:android();" style="font-size:.8rem">最新版本下载</a>
+			            </div>
+			        </div>
+			        <div class="col-12 mb-4 col-sm-3 card border border-0 border-top border-5 border-primary shadow-sm rounded" onclick="ios()">
+			            <div class="card-body">
+			                <img class="mt-2" src="./img/ios.png" style="height:60px">
+			                <h5 class="mt-1">ios下载</h5>
+			                <a href="javascript:ios();" style="font-size:.8rem">安装描述文件</a>
+			            </div>
+			        </div>
+			        
+			    </div>
+			</div>
+		</main>
+		<!-- 尾部 -->
+		<div class="footer mt-auto py-3 bg-light">
+		    <div class="container" style="font-size:.8rem;line-height:1.2">
+		        <div class="d-flex"><img src="https://s1.ax1x.com/2023/01/08/pSVjmo8.png" style="height:2rem"/><p class="fs-6 ms-2 mt-2">SF工具箱</p></div>
+		        <p class="mb-2 text-muted">SF工具箱是由Suxber开发的校园便利工具，用于校园内的设备交互和资讯传递。</p>
+			    <p class="mb-2 text-muted">&copy;2022-2023 SF工具箱. All Rights Reserved.</p>
+			    <p class="mb-2"><a class="text-muted" href="./terms.html" target="_blank">用户协议</a>&nbsp;|&nbsp;<a class="text-muted" href="./privacy.html" target="_blank">隐私政策</a></p>
+			    <p class="mb-2">网上有害信息举报专区:&nbsp;<a class="text-muted" href="//wfblxx.changsha.cn" target="_blank">长沙互联网举报中心</a>&nbsp;|&nbsp;<a class="text-muted" href="//www.12377.cn" target="_blank">中国互联网违法和不良信息举报中心</a></p>
+		    </div>
+		</div>
+		<script>
+		// 原生js操作预加载
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+		function android() {
+		    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div> </div>',buttons:[],closeIcon:false});
+		        $.ajax({
+        			type:"GET",
+        			url:"//sf-api.suxber.live/System/Update",
+        			success:function (data) {
+        			    loading.close();
+        				if(data.code==200){
+        					var ifr = document.createElement('iframe');
+                		    ifr.src=data.data.pack.url;
+                		    ifr.style.display = 'none';
+                		    document.body.appendChild(ifr);
+							$.alert({title:'',content:'下载即将开始，若10秒后仍没有反应，请<a href="'+data.data.pack.url+'">点击此处</a>'}); 
+        				}else{
+        					$.alert(data.msg);
+        				}
+        			},
+        			error:function (msg) {
+        			    loading.close();
+        				$.alert('网络异常，请稍后再试');
+        			}
+        		});
+        }
+        function ios() {
+		    $.alert({title:'',type:'red',content:'抱歉，目前IOS的下载资格已经抢完，建议您加入官方交流群，以便第一时间获取IOS下载资源'}); 
+        }
+	    </script>
+	</body>
+</html>
