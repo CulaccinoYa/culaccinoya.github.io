@@ -87,7 +87,7 @@
                 			$('#index').hide();
                             $('#finish').show();
                 		}else if(data.code==300){
-                			window.location.href=data.data;
+                			window.location.href=decodeURIComponent(data.data);
                 		}else{
                 			$.alert({title:'错误',type:'red',content:data.msg}); 
                 		}
