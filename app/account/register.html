@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>注册账户</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4" id="step1">
+		    <h3 class="mt-4"><b>手机号注册</b></h3>
+			<p style="font-size: .8rem;">请输入中国大陆的11位有效手机号码</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>账户名:</span>
+				<input class="border-0 col-12" id="user" type="text" placeholder="5-16位英文/数字"/>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>手机号:</span>
+				<input class="border-0 col-12" id="mobile" type="number" placeholder="手机号"/>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">确定</button>
+		</div>
+
+		<div class="p-4" id="step2" style="display: none;">
+		    <h3 class="mt-4"><b>软件使用政策</b></h3>
+			<p style="font-size: .8rem;">为了更好的为您提供服务，请您仔细阅读以下信息</p>
+			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body">
+			        <h5>亲爱的小伙伴，你好</h5>
+			        <p>&emsp;&emsp;感谢您选择SF工具箱，为了更好的为您提供服务，以及避免日后不必要的纠纷，我们制定了《<a href="https://sf.suxber.live/terms.html">用户协议</a>》和《<a href="https://sf.suxber.live/privacy.html">隐私政策</a>》等一系列相关协议。</p>
+					<p>&emsp;&emsp;在您正式开始之前，您需要仔细阅读本页面所展示的<span class="text-primary">带有蓝色下划线</span>的协议或政策，尤其是使用<b>加粗</b>或<span class="text-primary">显著颜色</span>标注的内容，当您继续进行注册操作时，则认为您已经仔细阅读了相关协议与政策并同意这些内容。</p>
+				</div>
+			</div>
+		    <button class="col-12 mt-4 btn btn-outline-primary rounded-pill">返回</button>
+		    <button class="col-12 mt-2 btn btn-primary rounded-pill">我已阅读并同意以上内容</button>
+		</div>
+
+		<div class="p-4" id="step3" style="display: none;">
+		    <h3 class="mt-4"><b>请输入验证码</b></h3>
+			<p style="font-size: .8rem;">接下来，请输入我们向您发送的验证码</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>验证码</span>
+				<input class="border-0 col-12" type="number" id="code" placeholder="4位数字验证码"/>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>登录密码</span>
+				<input class="border-0 col-12" id="pass" placeholder="6-16位英文/数字"/>
+			</div>
+			<button class="col-12 mt-4 btn btn-outline-primary rounded-pill">返回</button>
+		    <button class="col-12 mt-2 btn btn-primary rounded-pill">完成</button>
+			<p class="mt-4 text-center">没收到验证码？返回确认一下手机号吧</p>
+		</div>
+
+        <div class="p-4" id="finish" style="display: none;">
+            <div class="text-center" style="margin-top:20vh">
+                <h2><b>注册成功</b></h2>
+		        <p class="text-secondary">您可以退出本页面，返回登录界面进行登录</p>
+            </div>
+		</div>
+
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+			document.onreadystatechange = function(){
+				if(document.readyState == 'complete'){
+					document.getElementById("preloader").style.display="none";
+				}
+			}
+            $('#step1 button').click(_=>{
+    	        let mobile=$('#mobile').val();
+				if(mobile.length!==11){
+					$.alert({title:'错误',type:'red',content:'手机号格式有误'}); 
+					return;
+				}
+				$('#step1').hide();
+				$('#step2').show();
+            });
+			$('#step2 .btn-primary').click(_=>{
+				let user=$('#user').val();
+				let mobile=$('#mobile').val();
+				if(user.length<5||user.length>16){
+					$.alert({title:'错误',type:'red',content:'账号格式有误'});
+					 return;
+				}
+				if(mobile.length!==11){
+					$.alert({title:'错误',type:'red',content:'手机号格式有误'}); 
+					return;
+				}
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:10000,
+					url:"https://sf-api.suxber.live/Account/Register",
+					data:JSON.stringify({"data":{"type":'sendcode',"username":user,"mobile":mobile}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+					    if(data.code==200){
+							$('#step2').hide();
+							$('#step3').show();
+						}else if(data.code==300){
+							window.location.href=data.data;
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg}); 
+						}
+						loading.close();
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}
+				});
+			});
+			$('#step3 .btn-outline-primary').click(_=>{
+				$('#step3').hide();
+				$('#step1').show();
+			});
+			$('#step2 .btn-outline-primary').click(_=>{
+				$('#step2').hide();
+				$('#step1').show();
+			});
+			$('#step3 .btn-primary').click(_=>{
+				let user=$('#user').val();
+			    let mobile=$('#mobile').val();
+				let code=$('#code').val();
+				let pass=$('#pass').val();
+				if(user.length<5||user.length>16){
+					$.alert({title:'错误',type:'red',content:'账号格式有误'});
+					 return;
+				}
+				if(mobile.length!==11){
+					$.alert({title:'错误',type:'red',content:'手机号格式有误'}); 
+					return;
+				}
+				if(code.length<1){
+					$.alert({title:'错误',type:'red',content:'验证码不能留空'}); 
+					return;
+				}
+				if(pass.length<6||pass.length>16){
+					$.alert({title:'错误',type:'red',content:'密码格式有误'});
+					 return;
+				}
+			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:10000,
+					url:"https://sf-api.suxber.live/Account/Register",
+					data:JSON.stringify({"data":{"type":'register',"username":user,"mobile":mobile,"code":code,"password":pass}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+					    if(data.code==200){
+							$('#step3').hide();
+							$('#finish').show();
+						}else if(data.code==300){
+							window.location.href=data.data;
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg}); 
+						}
+						loading.close();
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}
+				});
+			});
+	    </script>
+	</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+		<title>新设备登录验证</title>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4" id='index'>
+		    <h3 class="mt-4"><b>新设备登录验证</b></h3>
+		    <p style="font-size: .8rem;">您正在一台新设备上登录您的账号</p>
+		    <div class="card border border-0 border-top border-5 border-danger shadow rounded">
+		        <div class="card-body">
+		            <h5><svg width="24" height="24" viewBox="0 0 48 48"><path d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24 37C25.3807 37 26.5 35.8807 26.5 34.5C26.5 33.1193 25.3807 32 24 32C22.6193 32 21.5 33.1193 21.5 34.5C21.5 35.8807 22.6193 37 24 37Z" fill="#333"/><path d="M24 12V28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp;温馨提示</h5>
+					<p>您正在进行<span class="text-primary">更换登录设备</span>操作，该操作将会</p>
+					<p class="text-danger text-center"><b>将您从此设备上踢出，并移出安全设备列表</b></p>
+					<p>请您注意，官方客服人员<span class="text-primary">不会让您这样操作</span>，请注意甄别对方信息，谨防受骗！</p>
+					<p>当然，当您收到此二维码时，这就意味着您的密码<span class="text-primary">可能遭到了泄露</span>，若非您本人操作，请<span class="text-danger">关闭此页面，并修改您的密码</span></p>
+				</div>
+		    </div>
+			<button class="mt-4 col-12 btn btn-primary rounded-pill">确定操作</button>
+		</div>
+
+        <div class="p-4" id="finish" style="display: none;">
+            <div class="text-center" style="margin-top:20vh">
+                <h2><b>授权成功</b></h2>
+		        <p class="text-secondary">请您在新设备上退出验证页面，并使用密码重新登录</p>
+		        <button class="col-12 mt-4 btn btn-primary rounded-pill">退出</button>
+            </div>
+        </div>
+
+		<script type="text/javascript" src="/uni.webview.js"></script>
+        <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+        <script>
+			document.onreadystatechange = function(){
+				if(document.readyState == 'complete'){
+					document.getElementById("preloader").style.display="none";
+				}
+			}
+			let user;
+			let token;
+			window.sftools.init(()=>{
+                window.sftools.run({type:'getUserToken'},e=>{user=e.userid;token=e.token;},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+	        });
+			$('#index button').click(_=>{
+			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:10000,
+					url:"https://sf-api.suxber.live/Account/UnBindDevice",
+					data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							$('#index').hide();
+			                $('#finish').show();
+						}else if(data.code==300){
+							window.location.href=data.data;
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}
+				});
+			});
+            $('#finish button').click(function(){
+                uni.navigateBack();
+            });
+        </script>
+	</body>
+</html>

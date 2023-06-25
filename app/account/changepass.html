@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>修改密码</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4" id="home">
+		    <h3 class="mt-4"><b>修改登录密码</b></h3>
+			<p style="font-size: .8rem;">登录APP时使用，请避免设置为与其他账号相同的密码</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>原密码</span>
+				<input class="border-0 col-12" id="oldpass" placeholder="请输入登录密码"/>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>新密码</span>
+				<input class="border-0 col-12" id="newpass" placeholder="请输入新的登录密码"/>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>再输入一次</span>
+				<input class="border-0 col-12" id="newpass2" placeholder="请再输入一次新的登录密码"/>
+			</div>
+			<div class="mt-2" style="font-size: .8rem;">
+				<a href="./forget.html">忘记密码</a>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">完成</button>
+		</div>
+
+        <div class="p-4" id="finish" style="display: none;">
+            <div class="text-center" style="margin-top:20vh">
+                <h2><b>修改成功</b></h2>
+		        <p class="text-secondary">请使用您的新密码登录账户</p>
+		        <button class="col-12 mt-4 btn btn-primary rounded-pill">重新登录</button>
+            </div>
+		</div>
+
+		<script type="text/javascript" src="/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+	    let user;
+		let token;
+		    window.sftools.init(()=>{
+                window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+	        });
+	        $(function(){
+    	        $('#finish').hide();
+	        });
+            $('#home button').click(_=>{
+    	        let oldpass=$('#oldpass').val();
+    	        if(oldpass.length<6){
+    	            $.alert({title:'错误',type:'red',content:'旧密码格式有误'}); 
+    	            return;
+    	        }
+    	        let pass=$('#newpass').val();
+    	        if(pass.length<6){
+    	            $.alert({title:'错误',type:'red',content:'密码必须大于6位，并且只能包含数字/字母/特殊符号'}); 
+    	            return;
+    	        }
+    	        if(pass!==$('#newpass2').val()){
+    	            $.alert({title:'错误',type:'red',content:'两次输入的密码不一致'}); 
+    	            return;
+    	        }
+    	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+        		$.ajax({
+        			type:"POST",
+					timeout:10000,
+        			url:"https://sf-api.suxber.live/Account/ChangePass",
+        			data:JSON.stringify({"data":{"pass":oldpass,"newpass":pass},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+        			success:function (data) {
+        				loading.close();
+        			    if(data.code==200){
+        					$('#home').hide();
+                            $('#finish').show();
+        				}else if(data.code==300){
+        					window.location.href=data.data;
+        				}else{
+        					$.alert({title:'错误',type:'red',content:data.msg}); 
+        				}
+        			},
+        			error:function (msg) {
+        			    loading.close();
+        				$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+        			}
+        		});
+            });
+            $('#finish button').click(_=>{
+                uni.reLaunch({url:'/pages/login'});
+            });
+	    </script>
+	</body>
+</html>
