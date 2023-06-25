@@ -109,7 +109,7 @@
 							$('#step2').hide();
 							$('#step3').show();
 						}else if(data.code==300){
-							window.location.href=data.data;
+							window.location.href=decodeURIComponent(data.data);
 						}else{
 							$.alert({title:'错误',type:'red',content:data.msg}); 
 						}
@@ -162,7 +162,7 @@
 							$('#step3').hide();
 							$('#finish').show();
 						}else if(data.code==300){
-							window.location.href=data.data;
+							window.location.href=decodeURIComponent(data.data);
 						}else{
 							$.alert({title:'错误',type:'red',content:data.msg}); 
 						}
