@@ -82,7 +82,7 @@
 		    $.ajax({
 		    	type:"POST",
 		    	timeout:10000,
-		    	url:"https://sf-api.suxber.live/Wallet/Charge/GetPackId",
+		    	url:"https://sf-api.suxber.live/Wallet/Charge/CreateOrder",
 		    	data:JSON.stringify({"data":{"type":1,"packid":id},"account":{"user":user,"token":token}}),
 		    	contentType:"application/json;charset=UTF-8",
 		    	success:function (data) {
