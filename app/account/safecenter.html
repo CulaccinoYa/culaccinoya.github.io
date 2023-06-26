@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<title>安全中心</title>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+
+		<div class="container py-2">
+		    <div class="list-group border border-0 shadow rounded">
+				<a href="./changepass.html" class="list-group-item list-group-item-action">修改密码</a>
+				<a href="./changemobile.html" class="list-group-item list-group-item-action">修改手机号</a>
+				<a href="./realname.html" class="list-group-item list-group-item-action">实名认证</a>
+			</div>
+		</div>
+
+	    <script>
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+	    </script>
+	</body>
+</html>
