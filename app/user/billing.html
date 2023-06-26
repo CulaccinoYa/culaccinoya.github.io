@@ -103,7 +103,7 @@
 	    					let money=data.data[n].amount;
 	    					let time=timetostring(parseInt(data.data[n].time));
 	    					let way='';
-	    					if(data.data[n].status=='2'){
+	    					if(data.data[n].status=='1'){
 	    					    way='<span>已支付</span>'
 	    					}else if(data.data[n].status=='2'){
 	    					    way='<span class="text-warning">待支付</span>'
@@ -175,7 +175,7 @@
 	        			}
 	        			$('#detail #name').html(basic.name);
 	        			if(basic.discount!==''&&basic.discount!=='[]'){
-	        			    let discount=JSON.parse(basic.discount);
+	        			    let discount=basic.discount;
 	        			    for(var n=0;n<discount.length;n++){
 	        			        if(discount[n].name=='原价'){
 	        			            $('#detail #discount').append('<span>'+discount[n].name+'&emsp;'+discount[n].amount+'</span><br>');
