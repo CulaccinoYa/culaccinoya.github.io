@@ -17,7 +17,7 @@
 				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
 			</div>
 		</div>
-		<div class="p-4" id='index'>
+		<div class="p-4">
 		    <h3 class="mt-4"><b>登录遇到问题</b></h3>
 		    <p style="font-size: .8rem;">看看下面方法能不能解决到你</p>
 		    <a href="./forget.html" class="card border border-0 border-top border-5 border-primary shadow rounded text-decoration-none" id="mobile">
@@ -29,15 +29,6 @@
 		    <div class="mt-4 text-center">以上方式都无法使用？请联系<a href="//sf.suxber.live/app/system/group.html">人工客服</a></div>
 		</div>
 
-        <div class="p-4" id="finish" style="display: none;">
-            <div class="text-center" style="margin-top:20vh">
-                <h2><b>授权成功</b></h2>
-		        <p class="text-secondary">请您在新设备上退出验证页面，并使用密码重新登录</p>
-		        <button class="col-12 mt-4 btn btn-primary rounded-pill">退出</button>
-            </div>
-        </div>
-
-		<script type="text/javascript" src="/uni.webview.js"></script>
         <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
         <script>
@@ -46,39 +37,6 @@
 					document.getElementById("preloader").style.display="none";
 				}
 			}
-			let user;
-			let token;
-			window.sftools.init(()=>{
-                window.sftools.run({type:'getUserToken'},e=>{user=e.userid;token=e.token;},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
-	        });
-			$('#index button').click(_=>{
-			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:10000,
-					url:"https://sf-api.suxber.live/Account/UnBindDevice",
-					data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-						loading.close();
-					    if(data.code==200){
-							$('#index').hide();
-			                $('#finish').show();
-						}else if(data.code==300){
-							window.location.href=data.data;
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg}); 
-						}
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-					}
-				});
-			});
-            $('#finish button').click(function(){
-                uni.navigateBack();
-            });
         </script>
 	</body>
 </html>
