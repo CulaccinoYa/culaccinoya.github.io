@@ -154,7 +154,7 @@
 	        			}
 	        			if(basic.status=='1'){
 	        				$('#detail #status').html('交易成功');
-							let order_time=timetostring(basic.create_time)
+							let order_time=timetostring(basic.order_time)
 	        				$('#detail #order_time').html(order_time[0]+'年'+order_time[2]);
 	        			}else if(basic.status=='2'){
 	        				$('#detail #status').html('<span class="text-warning">待支付</span>');
