@@ -152,6 +152,7 @@
 	        			}else{
 	        				$('#detail #amount').html('<b>-'+basic.amount+'</b>');
 	        			}
+						$('#detail #order_time').html('');
 	        			if(basic.status=='1'){
 	        				$('#detail #status').html('交易成功');
 							let order_time=timetostring(basic.order_time)
@@ -171,7 +172,7 @@
 	        				$('#detail #status').html('<span class="text-danger">交易异常</span>');
 	        			}
 	        			$('#detail #name').html(basic.name);
-	        			if(basic.discount!==''&&basic.discount!=='[]'){
+	        			if(basic.discount!==null&&basic.discount.length>0){
 	        			    let discount=basic.discount;
 	        			    for(var n=0;n<discount.length;n++){
 	        			        if(discount[n].name=='原价'){
