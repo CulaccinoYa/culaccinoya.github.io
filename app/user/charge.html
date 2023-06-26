@@ -53,12 +53,12 @@
 				success:function (data) {
 					loading.close();
 					if(data.code==200){
-						$('#user').text(data.user.user);
-						$('#ye').text(data.user.balance);
+						$('#user').text(data.data.user.user);
+						$('#ye').text(data.data.user.balance);
 						let html='';
-						for(var n=0;n<data.pack.data.length;n++){
-							let id=data.pack.data[n].id;
-							let title=data.pack.data[n].title;
+						for(var n=0;n<data.data.pack.data.length;n++){
+							let id=data.data.pack.data[n].id;
+							let title=data.data.pack.data[n].title;
 							html = html+'<div class="card col-3 m-1"><p class="p-2" onclick="charge('+id.toString()+')">'+title.toString()+'<br><span style="font-size:.8rem">'+subtitle.toString()+'</span></p></div>';
 						}
 						$('#cz-body').html(html);
