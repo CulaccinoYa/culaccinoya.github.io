@@ -82,7 +82,7 @@
 	    	$.ajax({
 	    		type:"POST",
 	    		timeout:10000,
-	    		url:"https://sf-api.suxber.live/Wallet/Charge/GetBillingList",
+	    		url:"https://sf-api.suxber.live/Wallet/GetBillingList",
 	    		data:JSON.stringify({"data":{"page":page},"account":{"user":user,"token":token}}),
 	    		contentType:"application/json;charset=UTF-8",
 	    		success:function (data) {
@@ -144,7 +144,7 @@
 	        $.ajax({
 	        	type:"POST",
 	        	timeout:10000,
-	        	url:"https://sf-api.suxber.live/Wallet/Charge/GetBillingList",
+	        	url:"https://sf-api.suxber.live/Wallet/GetBillingDetail",
 	        	data:JSON.stringify({"data":{"orderid":id},"account":{"user":user,"token":token}}),
 	        	contentType:"application/json;charset=UTF-8",
 	        	success:function (data) {
