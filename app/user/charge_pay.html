@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>账户充值</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}p{margin: 0;}</style>
+	</head>
+	<body>
+	    <div class="container p-3">
+		    <div class="card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		            <h5><b>充值信息</b></h5>
+					<div class="text-center">
+						<h1 class="card-text">￥</h1>
+						<img id="qrcode" style="width:12rem;height:12rem;">
+						<p>请截图二维码，在<span class="text-success"><b>微信</b></span>中打开</p>
+						<p>请确保输入的金额与上方一致，否则无法到账</p>
+						<p id="timeout"></p>
+					</div>
+		        </div>
+		    </div>
+		    <div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		            <h5><b>充值须知</b></h5>
+		            <p>&emsp;&emsp;微信扫码后请输入本页面显示的金额，输入错误可能会无法到账。<br>&emsp;&emsp;充值后的金额将自动到账「自由余额」，而充值所附赠的赠金将充值到「专用余额」中。<br>&emsp;&emsp;由于网络原因，充值到账可能存在延迟，大约会在支付成功后的5-15分钟内到账，若超出半小时未到账，请联系客服人员处理。<br>&emsp;&emsp;<b>请注意，每笔支付订单只有5分钟的支付时间，超出支付时间可能会无法到账，请您将支付页面截图(需包括订单号)发送给客服人员进行充值....</b></p>
+		        </div>
+		    </div>
+		</div>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+            $.post("//sfpay.suxber.live/getOrder","orderId="+getvalue("orderId"),function (data) {
+                if (data.code==1){
+                    check();
+                    $('h1').text('￥'+data.data.reallyPrice);
+                    $("img").attr("src","https://api.pwmqr.com/qrcode/create/?url="+data.data.payUrl)
+                    let time=data.data.date+data.data.timeOut*60;
+                    $('#timeout').html('二维码将在<b>'+timetostring(time)+'</b>后失效');
+                }else{
+                    $.alert({title:'',type:'red',content:'无法获取订单详情，请返回后再试',buttons:[],closeIcon:false});
+                }
+            });
+            function check() {
+                $.post("//sfpay.suxber.live/checkOrder","orderId="+getvalue("orderId"),function (data) {
+                    console.log(data);
+                    if (data.code == 1){
+                        $.alert({title:'',type:'green',content:'支付成功，请退出本页面',buttons:[],closeIcon:false});
+                    }else{
+                        if (data.msg=="订单已过期") {
+                            $.alert({title:'',type:'red',content:'订单已过期，请勿支付！<br>若您已完成支付，请联系将账单截图联系客服人员',buttons:[],closeIcon:false});
+                        }else if(data.msg=="订单未支付"){
+                            setTimeout("check()",1500);
+                        }else{
+                            $.alert({title:'',type:'red',content:'请勿支付该订单！'+data.msg,buttons:[],closeIcon:false});
+                        }
+                    }
+                })
+            }
+            function timetostring(times){
+				var time = new Date(times*1000);
+				var m = time.getMonth()+1;
+				var d = time.getDate();
+				var h = time.getHours();
+				if(h<10){
+					h='0'+h;
+				}
+				var mm = time.getMinutes();
+				if(mm<10){
+					mm='0'+mm;
+				}
+				return m+'月'+d+'日 '+h+":"+mm;
+			}
+            function getvalue(variable) {
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+			    for (var i = 0; i < vars.length; i++) {
+			        var pair = vars[i].split("=");
+			        if (pair[0] == variable) {
+			            return pair[1]
+			        }
+			    }
+			    return (false)
+			}
+	    </script>
+	</body>
+</html>

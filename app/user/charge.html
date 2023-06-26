@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>账户充值</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}p{margin: 0;}</style>
+	</head>
+	<body>
+	    <div class="container p-3">
+		    <div class="card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		            <h5><b>充值信息</b></h5>
+		            <div class="d-flex justify-content-between">
+		                <p>账户：<span id="user"></span></p>
+		                <p>余额：<span id="ye"></span></p>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		            <h5><b>充值金额</b></h5>
+		            <div class="d-flex justify-content-between text-center flex-wrap" id="cz-body">
+		            </div>
+		        </div>
+		    </div>
+		    <div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		            <h5><b>充值须知</b></h5>
+		            <p>&emsp;&emsp;充值前请仔细确认上方的充值信息，一旦充值到账则无法退款。<br>&emsp;&emsp;充值后的金额将自动到账「自由余额」，而充值所附赠的赠金将充值到「专用余额」中。<br>&emsp;&emsp;由于网络原因，充值到账可能存在延迟，大约会在支付成功后的5-15分钟内到账，若超出半小时未到账，请联系客服人员处理。<br>&emsp;&emsp;<b>请注意，每笔支付订单只有5分钟的支付时间，超出支付时间可能会无法到账，请您将支付页面截图(需包括订单号)发送给客服人员进行充值....</b></p>
+		        </div>
+		    </div>
+		</div>
+	    <script type="text/javascript" src="/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+	    let user;
+	    let token;
+	    window.sftools.init(()=>{
+	        window.sftools.run({type:'getUserToken'},e=>{user=e.userid;token=e.token;},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+	    });
+        function first(){
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:10000,
+				url:"https://sf-api.suxber.live/Wallet/Charge/GetPackId",
+				data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+					if(data.code==200){
+						$('#user').text(data.user.user);
+						$('#ye').text(data.user.balance);
+						let html='';
+						for(var n=0;n<data.pack.data.length;n++){
+							let id=data.pack.data[n].id;
+							let title=data.pack.data[n].title;
+							html = html+'<div class="card col-3 m-1"><p class="p-2" onclick="charge('+id.toString()+')">'+title.toString()+'<br><span style="font-size:.8rem">'+subtitle.toString()+'</span></p></div>';
+						}
+						$('#cz-body').html(html);
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						plus.nativeUI.alert(data.msg,_=>{uni.navigateBack()});
+					}
+				},
+				error:function (msg) {
+				    plus.nativeUI.alert("网络异常，请稍后再试",_=>{uni.navigateBack()});
+				}
+			});
+        }
+		function charge(id){
+		    if(id<0||!id){
+		        plus.nativeUI.alert("套餐ID获取失败，请稍后再试");
+		        return;
+		    }
+		    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+		    $.ajax({
+		    	type:"POST",
+		    	timeout:10000,
+		    	url:"https://sf-api.suxber.live/Wallet/Charge/GetPackId",
+		    	data:JSON.stringify({"data":{"type":1,"packid":id},"account":{"user":user,"token":token}}),
+		    	contentType:"application/json;charset=UTF-8",
+		    	success:function (data) {
+					loading.close();
+					if(data.code==200){
+						window.location.href=decodeURIComponent(data.data);
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						plus.nativeUI.alert(data.msg);
+					}
+				},
+				error:function (msg) {
+				    loading.close();
+				    plus.nativeUI.alert("网络异常，请稍后再试");
+				}
+			});
+		};
+		</script>
+	</body>
+</html>
