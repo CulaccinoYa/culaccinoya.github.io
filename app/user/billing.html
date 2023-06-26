@@ -116,7 +116,7 @@
 	    						money='-'+money
 	    					}
 	    					if(month!==time[1]||year!==time[0]){
-	    					    $('#home .container').append('<div class="d-flex px-3 pt-4 mb-2 nav bg-body shadow-sm" style="margin:0 -1rem;align-items:center"><h1><b>'+time[1]+'</b></h1>&nbsp;月 / '+time[0]+'</div><div class="card border border-0 border-top border-5 border-primary shadow rounded"><ul class="list-group list-group-flush" id="'+time[1]+'-'+time[0]+'"></ul></div>');
+	    					    $('#home .container').append('<div class="d-flex px-3 pt-4 mb-2 nav bg-body shadow-sm" style="margin:0 -1rem;align-items:center"><h1><b>'+time[1]+'</b></h1>&nbsp;月 / '+time[0]+'</div><div class="mb-2 card border border-0 border-top border-5 border-primary shadow rounded"><ul class="list-group list-group-flush" id="'+time[1]+'-'+time[0]+'"></ul></div>');
 	    					    month=time[1];
 	    					    year=time[0];
 	    					}
@@ -172,6 +172,7 @@
 	        				$('#detail #status').html('<span class="text-danger">交易异常</span>');
 	        			}
 	        			$('#detail #name').html(basic.name);
+						$('#detail #discount').html('')
 	        			if(basic.discount!==null&&basic.discount.length>0){
 	        			    let discount=basic.discount;
 	        			    for(var n=0;n<discount.length;n++){
