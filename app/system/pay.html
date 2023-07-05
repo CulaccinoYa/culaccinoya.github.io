@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<title>正在支付</title>
+	</head>
+	<body>
+        <div class="p-4">
+            <div class="text-center" style="margin-top:20vh">
+                <h2><b>请稍后，正在唤起支付</b></h2>
+		        <p class="text-secondary">如果长时间没有反应，请返回重试</p>
+            </div>
+		</div>
+
+		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+	    <script>
+			window.sftools.init(()=>{
+			    pay(getvalue('order'));
+			});
+			function pay(id){
+				window.sftools.run({type:'payment',data:{'orderid':id}},e=>{loading.close();window.history.go(-1)},e=>{loading.close();$.alert({title:'支付失败',type:'red',content:e,buttons:[],closeIcon:false});});
+			}
+			function getvalue(variable) {
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+			    for (var i = 0; i < vars.length; i++) {
+			        var pair = vars[i].split("=");
+			        if (pair[0] == variable) {
+			            return pair[1]
+			        }
+			    }
+			    return (false)
+			}
+	    </script>
+	</body>
+</html>
