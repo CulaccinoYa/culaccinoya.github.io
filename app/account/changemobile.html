@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>修改密保手机</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4" id="home">
+		    <h3 class="mt-4"><b>修改密保手机</b></h3>
+			<p style="font-size: .8rem;">修改后，该账户的密保手机将会变更</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>新的密保手机</span>
+				<div class="d-flex col-12">
+					<input class="border-0 col-8" type="number" id="mobile_input" placeholder="仅限中国大陆手机号码"/>
+					<a id="getcode">获取验证码</a>
+				</div>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>验证码</span>
+				<input class="border-0 col-12" type="number" id="code" placeholder="请输入收到的验证码"/>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">完成</button>
+		</div>
+
+        <div class="p-4" id="finish" style="display: none;">
+            <div class="text-center" style="margin-top:20vh">
+                <h2><b>修改成功</b></h2>
+		        <p class="text-secondary">你可以关闭此页面，然后继续操作</p>
+            </div>
+		</div>
+
+		<script type="text/javascript" src="/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+	    let user;
+		let token;
+		    window.sftools.init(()=>{
+                window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+	        });
+	        $(function(){
+    	        $('#finish').hide();
+	        });
+			function getcode(){
+				let mobile=$('#mobile').val();
+				if(mobile.length!==11){
+				    $.alert({title:'错误',type:'red',content:'手机号格式有误'}); 
+				    return;
+				}
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:10000,
+					url:"https://sf-api.suxber.live/Account/ChangeMobile",
+					data:JSON.stringify({"data":{"type":"sendcode","mobile":mobile},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							$.alert({content:'验证码已发送'}); 
+						}else if(data.code==300){
+							window.location.href=decodeURIComponent(data.data);
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}
+				});
+			}
+            $('#home button').click(_=>{
+    	        let mobile=$('#mobile').val();
+    	        if(mobile.length!==11){
+    	            $.alert({title:'错误',type:'red',content:'手机号格式有误'}); 
+    	            return;
+    	        }
+    	        let code=$('#code').val();
+    	        if(!code.length){
+    	            $.alert({title:'错误',type:'red',content:'验证码格式有误'}); 
+    	            return;
+    	        }
+    	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+        		$.ajax({
+        			type:"POST",
+					timeout:10000,
+        			url:"https://sf-api.suxber.live/Account/ChangeMobile",
+        			data:JSON.stringify({"data":{"type":"usecode","mobile":mobile,"code":code},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+        			success:function (data) {
+        				loading.close();
+        			    if(data.code==200){
+        					$('#home').hide();
+                            $('#finish').show();
+        				}else if(data.code==300){
+        					window.location.href=decodeURIComponent(data.data);
+        				}else{
+        					$.alert({title:'错误',type:'red',content:data.msg}); 
+        				}
+        			},
+        			error:function (msg) {
+        			    loading.close();
+        				$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+        			}
+        		});
+            });
+            $('#finish button').click(_=>{
+                uni.reLaunch({url:'/pages/login'});
+            });
+	    </script>
+	</body>
+</html>
