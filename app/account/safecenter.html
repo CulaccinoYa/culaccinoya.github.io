@@ -6,30 +6,36 @@
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
 		<title>安全中心</title>
 	</head>
-	<body>
-		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
-			<div style="display:block;text-align:center;margin-top:40vh;">
-				<div class="spinner-border ml-auto" aria-hidden="true"></div>
-			</div>
-			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
-				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
-			</div>
-		</div>
-
+	<body class="bg-light">
 		<div class="container py-2">
-		    <div class="list-group border border-0 shadow rounded">
-				<a href="./changepass.html" class="list-group-item list-group-item-action">修改密码</a>
-				<a href="./changemobile.html" class="list-group-item list-group-item-action">修改手机号</a>
-				<a href="./realname.html" class="list-group-item list-group-item-action">实名认证</a>
+			<div class="card mt-2 border border-0 rounded list-group">
+				<a href="./changepass.html" class="list-group-item list-group-item-action d-flex py-3">
+					<img style="width: 1.5rem;height:1.5rem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjciIHk9IjIyLjA0NzYiIHdpZHRoPSIzNCIgaGVpZ2h0PSIyMiIgcng9IjIiIGZpbGw9IiNmZWQzMzAiIHN0cm9rZT0iI2ZlZDMzMCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTE0IDIyVjE0LjAwNDdDMTMuOTk0OCA4Ljg3MDIyIDE3LjkyMjcgNC41NjcxOCAyMy4wODU5IDQuMDUxMTdDMjguMjQ5IDMuNTM1MTYgMzIuOTY3MyA2Ljk3NDA4IDM0IDEyLjAwNTkiIHN0cm9rZT0iI2ZlZDMzMCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjQgMzBWMzYiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=" />
+					<span class="ms-2">修改登录密码</span>
+				</a>
+				<a href="./changemobile.html" class="list-group-item list-group-item-action d-flex py-3">
+					<img style="width: 1.5rem;height:1.5rem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjExIiB5PSI0IiB3aWR0aD0iMjYiIGhlaWdodD0iNDAiIHJ4PSIzIiBmaWxsPSIjMWU5MGZmIiBzdHJva2U9IiMxZTkwZmYiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik0yMiAxMEwyNiAxMCIgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMCAzOEgyOCIgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==" />
+					<span class="ms-2">修改密保手机号</span>
+				</a>
+				<!-- <a href="./third.html" class="list-group-item list-group-item-action d-flex py-3">
+					<img style="width: 1.5rem;height:1.5rem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMzYuOTk3NCAyMS43MTEyQzM2Ljg0MzQgMTMuMDA3OSAyOS43NDAxIDYgMjEgNkMxMi4xNjM0IDYgNSAxMy4xNjM0IDUgMjJDNSAyNi4xNzAxIDYuNTk1MzEgMjkuOTY3NiA5LjIwODkyIDMyLjgxNTRMOC4wMTA0MyA0MC4wMjU3TDE1LjEyNSAzNi45Njk5QzE4LjI1OTcgMzguMDEyMiAyMS4yMTggMzguMjcyOCAyNCAzNy43NTE2IiBmaWxsPSIjMmVkNTczIi8+PHBhdGggZD0iTTM2Ljk5NzQgMjEuNzExMkMzNi44NDM0IDEzLjAwNzkgMjkuNzQwMSA2IDIxIDZDMTIuMTYzNCA2IDUgMTMuMTYzNCA1IDIyQzUgMjYuMTcwMSA2LjU5NTMxIDI5Ljk2NzYgOS4yMDg5MiAzMi44MTU0TDguMDEwNDMgNDAuMDI1N0wxNS4xMjUgMzYuOTY5OUMxOC4yNTk3IDM4LjAxMjIgMjEuMjE4IDM4LjI3MjggMjQgMzcuNzUxNiIgc3Ryb2tlPSIjMmVkNTczIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNS4xMjUgMjAuNDY2N0MxNi4zNjc2IDIwLjQ2NjcgMTcuMzc1IDE5LjQ1MTkgMTcuMzc1IDE4LjJDMTcuMzc1IDE2Ljk0ODIgMTYuMzY3NiAxNS45MzMzIDE1LjEyNSAxNS45MzMzQzEzLjg4MjQgMTUuOTMzMyAxMi44NzUgMTYuOTQ4MiAxMi44NzUgMTguMkMxMi44NzUgMTkuNDUxOSAxMy44ODI0IDIwLjQ2NjcgMTUuMTI1IDIwLjQ2NjdaIiBmaWxsPSIjRkZGIi8+PHBhdGggZD0iTTI0LjEyNSAyMC40NjY3QzI1LjM2NzYgMjAuNDY2NyAyNi4zNzUgMTkuNDUxOSAyNi4zNzUgMTguMkMyNi4zNzUgMTYuOTQ4MiAyNS4zNjc2IDE1LjkzMzMgMjQuMTI1IDE1LjkzMzNDMjIuODgyNCAxNS45MzMzIDIxLjg3NSAxNi45NDgyIDIxLjg3NSAxOC4yQzIxLjg3NSAxOS40NTE5IDIyLjg4MjQgMjAuNDY2NyAyNC4xMjUgMjAuNDY2N1oiIGZpbGw9IiNGRkYiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTM4Ljc2MTggMzkuOTI5M0MzNy4wMTM1IDQxLjIzMDIgMzQuODQ2NyA0MiAzMi41IDQyQzI2LjcwMSA0MiAyMiAzNy4yOTkgMjIgMzEuNUMyMiAyNS43MDEgMjYuNzAxIDIxIDMyLjUgMjFDMzguMjk5IDIxIDQzIDI1LjcwMSA0MyAzMS41QzQzIDMzLjA5OTcgNDIuNjQyMyAzNC42MTU5IDQyLjAwMjQgMzUuOTcyOCIgZmlsbD0iIzJlZDU3MyIvPjxwYXRoIGQ9Ik0zOC43NjE4IDM5LjkyOTNDMzcuMDEzNSA0MS4yMzAyIDM0Ljg0NjcgNDIgMzIuNSA0MkMyNi43MDEgNDIgMjIgMzcuMjk5IDIyIDMxLjVDMjIgMjUuNzAxIDI2LjcwMSAyMSAzMi41IDIxQzM4LjI5OSAyMSA0MyAyNS43MDEgNDMgMzEuNUM0MyAzMy4wOTk3IDQyLjY0MjMgMzQuNjE1OSA0Mi4wMDI0IDM1Ljk3MjgiIHN0cm9rZT0iIzJlZDU3MyIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTQyLjAwMjQgMzUuOTcyOEw0MyA0MkwzOC43NjE4IDM5LjkyOTMiIGZpbGw9IiMyZWQ1NzMiLz48cGF0aCBkPSJNNDIuMDAyNCAzNS45NzI4TDQzIDQyTDM4Ljc2MTggMzkuOTI5MyIgc3Ryb2tlPSIjMmVkNTczIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNS42ODc1IDMwLjc5OTlDMzQuNzU1NSAzMC43OTk5IDM0IDMwLjAzODggMzQgMjkuMDk5OUMzNCAyOC4xNjEgMzQuNzU1NSAyNy4zOTk5IDM1LjY4NzUgMjcuMzk5OUMzNi42MTk1IDI3LjM5OTkgMzcuMzc1IDI4LjE2MSAzNy4zNzUgMjkuMDk5OUMzNy4zNzUgMzAuMDM4OCAzNi42MTk1IDMwLjc5OTkgMzUuNjg3NSAzMC43OTk5WiIgZmlsbD0iI0ZGRiIvPjxwYXRoIGQ9Ik0yOC45Mzc1IDMwLjc5OTlDMjguMDA1NSAzMC43OTk5IDI3LjI1IDMwLjAzODggMjcuMjUgMjkuMDk5OUMyNy4yNSAyOC4xNjEgMjguMDA1NSAyNy4zOTk5IDI4LjkzNzUgMjcuMzk5OUMyOS44Njk1IDI3LjM5OTkgMzAuNjI1IDI4LjE2MSAzMC42MjUgMjkuMDk5OUMzMC42MjUgMzAuMDM4OCAyOS44Njk1IDMwLjc5OTkgMjguOTM3NSAzMC43OTk5WiIgZmlsbD0iI0ZGRiIvPjwvc3ZnPg==" />
+					<span class="ms-2">第三方绑定查看</span>
+				</a> -->
+			</div>
+			<div class="card mt-3 border border-0 rounded list-group">
+				<a href="./realname.html" class="list-group-item list-group-item-action d-flex py-3">
+					<img style="width: 1.5rem;height:1.5rem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik00MiA4SDZDNC44OTU0MyA4IDQgOC44OTU0MyA0IDEwVjM4QzQgMzkuMTA0NiA0Ljg5NTQzIDQwIDYgNDBINDJDNDMuMTA0NiA0MCA0NCAzOS4xMDQ2IDQ0IDM4VjEwQzQ0IDguODk1NDMgNDMuMTA0NiA4IDQyIDhaIiBmaWxsPSIjZmY0NzU3IiBzdHJva2U9IiNmZjQ3NTciIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNiAxNkgyOFYyNEgzNlYxNloiIGZpbGw9IiNGRkYiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMySDM2IiBzdHJva2U9IiNGRkYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDE2SDE4IiBzdHJva2U9IiNGRkYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDI0SDE4IiBzdHJva2U9IiNGRkYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+" />
+					<span class="ms-2">实名认证与信息</span>
+				</a>
+				<a href="./info.html" class="list-group-item list-group-item-action d-flex py-3">
+					<img style="width: 1.5rem;height:1.5rem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0yNCA0NEMyOS41MjI4IDQ0IDM0LjUyMjggNDEuNzYxNCAzOC4xNDIxIDM4LjE0MjFDNDEuNzYxNCAzNC41MjI4IDQ0IDI5LjUyMjggNDQgMjRDNDQgMTguNDc3MiA0MS43NjE0IDEzLjQ3NzIgMzguMTQyMSA5Ljg1Nzg2QzM0LjUyMjggNi4yMzg1OCAyOS41MjI4IDQgMjQgNEMxOC40NzcyIDQgMTMuNDc3MiA2LjIzODU4IDkuODU3ODYgOS44NTc4NkM2LjIzODU4IDEzLjQ3NzIgNCAxOC40NzcyIDQgMjRDNCAyOS41MjI4IDYuMjM4NTggMzQuNTIyOCA5Ljg1Nzg2IDM4LjE0MjFDMTMuNDc3MiA0MS43NjE0IDE4LjQ3NzIgNDQgMjQgNDRaIiBmaWxsPSIjMWU5MGZmIiBzdHJva2U9IiMxZTkwZmYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjQgMTFDMjUuMzgwNyAxMSAyNi41IDEyLjExOTMgMjYuNSAxMy41QzI2LjUgMTQuODgwNyAyNS4zODA3IDE2IDI0IDE2QzIyLjYxOTMgMTYgMjEuNSAxNC44ODA3IDIxLjUgMTMuNUMyMS41IDEyLjExOTMgMjIuNjE5MyAxMSAyNCAxMVoiIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNMjQuNSAzNFYyMEgyMy41SDIyLjUiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjEgMzRIMjgiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=" />
+					<span class="ms-2">个人已收集信息查看</span>
+				</a>
+				<a href="./delete.html" class="list-group-item list-group-item-action d-flex py-3">
+					<img style="width: 1.5rem;height:1.5rem" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNSAxMkwxNi4yIDVIMzEuOEwzMyAxMiIgc3Ryb2tlPSIjZmY0NzU3IiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNiAxMkg0MiIgc3Ryb2tlPSIjZmY0NzU3IiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMzcgMTJMMzUgNDNIMTNMMTEgMTJIMzdaIiBmaWxsPSIjZmY0NzU3IiBzdHJva2U9IiNmZjQ3NTciIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTE5IDM1SDI5IiBzdHJva2U9IiNGRkYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+" />
+					<span class="ms-2">注销账号</span>
+				</a>
 			</div>
 		</div>
-
-	    <script>
-		document.onreadystatechange = function(){
-			if(document.readyState == 'complete'){
-				document.getElementById("preloader").style.display="none";
-			}
-		}
-	    </script>
 	</body>
 </html>
