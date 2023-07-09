@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>实名认证</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4" id="home" style="display: none;">
+		    <h3 class="mt-4"><b>实名认证</b></h3>
+			<p style="font-size: .8rem;">您的信息将会被加密保存，任何人都无法查看</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>姓名</span>
+				<input class="border-0 col-12" type="text" id="name" placeholder="证件上的姓名"/>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>身份证号码</span>
+				<input class="border-0 col-12" type="text" id="idno" placeholder="证件上的证件号码"/>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">下一步</button>
+			<div class="text-center mt-4">
+				<a href="./realname_other.html">使用其他证件认证</a>
+			</div>
+		</div>
+
+		<div class="p-4" id="home2" style="display: none;">
+		    <h3 class="mt-4"><b>实名认证</b></h3>
+			<p style="font-size: .8rem;">您已完成实名认证，下面是您的认证信息</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>姓名<br></span>
+				<span id="name"></span>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>证件类型<br></span>
+				<span id="type"></span>
+			</div>
+			<div class="text-center mt-4">
+				<span>如需修改实名信息，请联系人工客服</span>
+			</div>
+		</div>
+
+		<div class="p-4" id="step2" style="display: none;">
+		    <h3 class="mt-4"><b>个人信息保护说明</b></h3>
+			<p style="font-size: .8rem;">我们会尽全力保障您的身份信息安全</p>
+			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body" style="height:50vh;overflow:scroll">
+			        <p>&emsp;&emsp;亲爱的小伙伴，您正在为您的账户进行实名认证，根据《<span class="text-primary">网络安全法</span>》等相关法律法规规定，您必须完成实名制登记才能使用部分功能和服务，您的个人信息将会按照我们约定的《<a href="https://sf.suxber.live/privacy.html">隐私政策</a>》进行处理，其中您的部分信息仅会用到在《<a href="https://sf.suxber.live/terms.html">用户协议</a>》的约定中。</p>
+					<p>&emsp;&emsp;为验证您的身份是否合法，以及避免他人冒用您的身份，您提交的身份信息将会<span class="text-primary">与公安系统进行比对</span>，这其中我们会将您提交的身份信息移交至<span class="text-primary">具有核验资质的第三方机构</span>进行验证，我们保证，您的身份信息仅会经过您、我们、第三方核验机构和公安机关手中，任何人都不能查看您的身份信息。</p>
+					<p>&emsp;&emsp;请您知悉，尽管是我们的客服人员，都无权查看您完成实名后的登记的完整身份信息，我们可能会使用自动化程序在某些场合将实名信息作为验证您本人身份的手段之一，在此类情况下，您的身份信息仅会经过您和我们的自动化程序中，任何人都无权查看此类信息。</p>
+					<p>&emsp;&emsp;如果您对于第三方核验方产生疑惑，可在实名验证的第三方页面中查看相应的条款和政策。</p>
+				</div>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">知道了</button>
+			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
+		</div>
+
+		<div class="p-4" id="step3" style="display: none;">
+		    <h3 class="mt-4"><b>证件照片提交</b></h3>
+			<p style="font-size: .8rem;">请上传您的居民身份证正反面照片</p>
+			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body">
+					<div class="d-flex justify-content-between align-items-center">
+						<img id="frontimg" class="col-5" src="https://faceid-h5-1254418846.file.myqcloud.com/images/ocr-update/ocr-idcardPhoto-default.png"/>
+						<button id="frontbtn" class="btn btn-primary rounded-pill">上传人像面</button>
+					</div>
+					<input type="file" accept="image/*" id="frontip" style="display: none;"/>
+				</div>
+			</div>
+		    <button id="step3btn" class="col-12 btn-primary mt-4 btn rounded-pill">下一步</button>
+			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
+		</div>
+
+		<div class="p-4" id="step4" style="display: none;">
+		    <div class="text-center" style="margin-top:20vh">
+		        <h2 id="title"><b>实名成功</b></h2>
+		        <p id="subtitle" class="text-secondary">您的实名信息已登记完成</p>
+		    </div>
+		</div>
+
+		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+	    let user;
+		let token;
+		let front;
+		window.sftools.init(()=>{
+		    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+		});
+		function first(){
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>获取状态中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:60000,
+				url:"https://sf-api.suxber.live/Account/GetRealnameStatus",
+				data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+				    if(data.code==200){
+						if(!data.data.success){
+							$('#home').show();
+							return;
+						}
+						$('#home2').show();
+						$('#home2 #name').text(data.data.name);
+						$('#home2 #type').text(data.data.type);
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'错误',type:'red',content:data.msg}); 
+					}
+				},
+				error:function (msg) {
+				    loading.close();
+					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+				}
+			});
+		}
+		$('#home button').click(_=>{
+		    let name=$('#name').val();
+		    if(name.length<2){
+		        $.alert({title:'错误',type:'red',content:'姓名格式有误'}); 
+		        return;
+		    }
+		    let idno=$('#idno').val();
+		    if(idno.length!=18&&idno.length!=15){
+		        $.alert({title:'错误',type:'red',content:'证件号码格式有误'}); 
+		        return;
+		    }
+		    $('#home').hide();
+		    $('#step2').show();
+		});
+		$('#step2 .btn-outline-primary').click(_=>{
+		    $('#step2').hide();
+		    $('#home').show();
+		});
+		$('#step2 .btn-primary').click(_=>{
+		    $('#step2').hide();
+		    $('#step3').show();
+		});
+		$('#frontbtn').click(_=>{
+		    $('#frontip').click();
+		});
+		$('#frontip').change(function(){
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function(e) {
+				console.log(this.result)
+				$("#frontimg").attr("src", this.result);
+				front=this.result.split('base64,')[1];
+			}
+		})
+		$('#step3btn').click(_=>{
+			if(!front){
+				$.alert({title:'错误',type:'red',content:'请上传证件人像面'});
+				return;
+			}
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在上传，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:60000,
+				url:"https://sf-file.suxber.live/index.php",
+				data:JSON.stringify({"data":{"type":"realname","data":front},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+				    if(data.code==200){
+						let name=$('#name').val();
+						let idno=$('#idno').val();
+						let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+						$.ajax({
+							type:"POST",
+							timeout:30000,
+							url:"https://sf-api.suxber.live/Account/RealnameByIdcard",
+							data:JSON.stringify({"data":{"name":name,"idno":idno,"image":data.data},"account":{"user":user,"token":token}}),
+							contentType:"application/json;charset=UTF-8",
+							success:function (data) {
+								loading.close();
+							    if(data.code==200){
+									if(data.msg!=='请求已完成'){
+										$('#step4 #title').text('实名审核中');
+										$('#step4 #subtitle').text(data.msg);
+									}
+									$('#step3').hide();
+									$('#step4').show();
+								}else if(data.code==300){
+									window.location.href=decodeURIComponent(data.data);
+								}else{
+									$.alert({title:'错误',type:'red',content:data.msg}); 
+								}
+							},
+							error:function (msg) {
+							    loading.close();
+								$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+							}
+						});
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'错误',type:'red',content:data.msg}); 
+					}
+				},
+				error:function (msg) {
+				    loading.close();
+					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+				}
+			});
+		});
+		$('#step3 .btn-outline-primary').click(_=>{
+		    $('#step3').hide();
+		    $('#step2').show();
+		});
+	    </script>
+	</body>
+</html>
