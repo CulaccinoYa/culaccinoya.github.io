@@ -58,7 +58,7 @@
 			</div>
 			<button class="col-12 mt-4 btn btn-outline-primary rounded-pill">返回</button>
 		</div>
-		<script type="text/javascript" src="/uni.webview.js"></script>
+		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
 	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
 	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
 	    <script>
@@ -68,8 +68,19 @@
 		let user;
 		let token;
 		window.sftools.init(()=>{
-		    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;getorder()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+		    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{window.history.go(-1)})});
 		});
+		function first(){
+			if(!getvalue('orderid')){
+				$('#home').show();
+				$('#detail').hide();
+				getorder()
+			}else{
+				$('#home').hide();
+				$('#detail').show();
+				getdetail(getvalue('orderid'))
+			}
+		}
 	    function getorder(){
 	        if(page==0){
 	            return;
@@ -135,7 +146,10 @@
 	    		}
 	    	});
 	    };
-	    function check(id){
+		function check(id){
+			window.history.go(window.location.href+"?orderid="+id)
+		}
+	    function getdetail(id){
 	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 	        $.ajax({
 	        	type:"POST",
@@ -196,8 +210,6 @@
 	        			        $('#detail #goodslist').append('<a class="d-flex text-decoration-none" href="'+goods[n].url+'"><div class="me-2"><img style="width:3rem;height:3rem;" src="'+goods[n].icon+'" /></div><div class="pt-1"><p class="mb-2">'+goods[n].title+'</p><p class="mb-0 text-secondary" style="font-size:.8rem">'+goods[n].subtitle+'</p></div></a>');
 	        			    }
 	        			}
-						$('#home').hide();
-						$('#detail').show();
 	        		}else if(data.code==300){
 	        			window.location.href=decodeURIComponent(data.data);
 	        		}else{
@@ -235,6 +247,17 @@
 	    	return [y,m,m+'月'+d+'日 '+h+":"+mm];
 	    	
 	    }
+		function getvalue(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+		    for (var i = 0; i < vars.length; i++) {
+		        var pair = vars[i].split("=");
+		        if (pair[0] == variable) {
+		            return pair[1]
+		        }
+		    }
+		    return (false)
+		}
 	    </script>
 	</body>
 </html>
