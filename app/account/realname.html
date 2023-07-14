@@ -32,7 +32,7 @@
 			</div>
 		    <button class="col-12 mt-4 btn btn-primary rounded-pill">下一步</button>
 			<div class="text-center mt-4">
-				<a href="./realname_other.html">使用其他证件认证</a>
+				<a href="./realname_other.html">使用其他证件认证<br>Using other identification documents</a>
 			</div>
 		</div>
 
@@ -81,6 +81,9 @@
 			</div>
 		    <button id="step3btn" class="col-12 btn-primary mt-4 btn rounded-pill">下一步</button>
 			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
+			<div class="mt-4 text-center" style="font-size: 1.4ch;">
+				<a href="javascript:wechat();">无法上传照片？使用微信实名</a>
+			</div>
 		</div>
 
 		<div class="p-4" id="step4" style="display: none;">
@@ -102,9 +105,15 @@
 	    let user;
 		let token;
 		let front;
-		window.sftools.init(()=>{
-		    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
-		});
+		if(getvalue('token')){
+			user=getvalue('user');
+			token=getvalue('token');
+			first();
+		}else{
+			window.sftools.init(()=>{
+			    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+			});
+		}
 		function first(){
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>获取状态中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 			$.ajax({
@@ -126,12 +135,12 @@
 					}else if(data.code==300){
 						window.location.href=decodeURIComponent(data.data);
 					}else{
-						$.alert({title:'错误',type:'red',content:data.msg}); 
+						$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
 					}
 				},
 				error:function (msg) {
 				    loading.close();
-					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试',buttons:[],closeIcon:false}); 
 				}
 			});
 		}
@@ -230,6 +239,20 @@
 		    $('#step3').hide();
 		    $('#step2').show();
 		});
+		function wechat(){
+			$.alert({title:'请使用微信扫描二维码',type:"green",content:'<div class="text-center"><img style="width:50vw;" src="https://api.pwmqr.com/qrcode/create/?url=https://sf.suxber.live/app/account/realname.html?user='+user+'&token='+token+'" /><p>扫码完成后请重新进入本页面</p></div>',buttons:{"关闭":{},"我已完成验证":function(){location.reload()}}}); 
+		}
+		function getvalue(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+		    for (var i = 0; i < vars.length; i++) {
+		        var pair = vars[i].split("=");
+		        if (pair[0] == variable) {
+		            return pair[1]
+		        }
+		    }
+		    return (false)
+		}
 	    </script>
 	</body>
 </html>
