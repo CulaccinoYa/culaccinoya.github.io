@@ -21,18 +21,18 @@
 		</div>
 		<div class="p-4" id="home" style="display: none;">
 		    <h3 class="mt-4"><b>实名认证</b></h3>
-			<p style="font-size: .8rem;">您的信息将会被加密保存，任何人都无法查看</p>
+			<p style="font-size: .8rem;">目前仅支持使用中国大陆居民身份证完成验证</p>
 			<div class="mt-4 border-bottom pb-1 px-2">
 				<span>姓名</span>
 				<input class="border-0 col-12" type="text" id="name" placeholder="证件上的姓名"/>
 			</div>
 			<div class="mt-4 border-bottom pb-1 px-2">
 				<span>身份证号码</span>
-				<input class="border-0 col-12" type="text" id="idno" placeholder="证件上的证件号码"/>
+				<input class="border-0 col-12" type="text" id="idno" placeholder="请输入合法有效的身份证号码"/>
 			</div>
 		    <button class="col-12 mt-4 btn btn-primary rounded-pill">下一步</button>
 			<div class="text-center mt-4">
-				<a href="./realname_other.html">使用其他证件认证<br>Using other identification documents</a>
+				<span>如需使用其他证件实名，请联系人工客服</span>
 			</div>
 		</div>
 
@@ -73,10 +73,15 @@
 			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
 			    <div class="card-body">
 					<div class="d-flex justify-content-between align-items-center">
-						<img id="frontimg" class="col-5" src="https://faceid-h5-1254418846.file.myqcloud.com/images/ocr-update/ocr-idcardPhoto-default.png"/>
-						<button id="frontbtn" class="btn btn-primary rounded-pill">上传人像面</button>
+						<img id="frontimg" class="col-5" src="https://faceid-h5-1254418846.file.myqcloud.com/images/ocr-update/cardBack/ocr-idcardBack-default2.png"/>
+						<button id="frontbtn" class="btn btn-primary rounded-pill">上传国徽面</button>
+					</div>
+					<div class="mt-4 d-flex justify-content-between align-items-center">
+						<img id="backimg" class="col-5" src="https://faceid-h5-1254418846.file.myqcloud.com/images/ocr-update/ocr-idcardPhoto-default.png"/>
+						<button id="backbtn" class="btn btn-primary rounded-pill">上传人像面</button>
 					</div>
 					<input type="file" accept="image/*" id="frontip" style="display: none;"/>
+					<input type="file" accept="image/*" id="backip" style="display: none;"/>
 				</div>
 			</div>
 		    <button id="step3btn" class="col-12 btn-primary mt-4 btn rounded-pill">下一步</button>
@@ -105,6 +110,7 @@
 	    let user;
 		let token;
 		let front;
+		let back;
 		if(getvalue('token')){
 			user=getvalue('user');
 			token=getvalue('token');
@@ -169,60 +175,101 @@
 		$('#frontbtn').click(_=>{
 		    $('#frontip').click();
 		});
+		$('#backbtn').click(_=>{
+		    $('#backip').click();
+		});
 		$('#frontip').change(function(){
 			var file = this.files[0];
 			var reader = new FileReader();
 			reader.readAsDataURL(file);
 			reader.onload = function(e) {
-				console.log(this.result)
 				$("#frontimg").attr("src", this.result);
-				front=this.result.split('base64,')[1];
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在上传，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:40000,
+					url:"https://sf-file.suxber.live/index.php",
+					data:JSON.stringify({"data":{"type":"realname","data":this.result.split('base64,')[1]},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							front=data.data;
+						}else if(data.code==300){
+							window.location.href=decodeURIComponent(data.data);
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}
+				});
+			}
+		})
+		$('#backip').change(function(){
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function(e) {
+				$("#backimg").attr("src", this.result);
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在上传，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:40000,
+					url:"https://sf-file.suxber.live/index.php",
+					data:JSON.stringify({"data":{"type":"realname","data":this.result.split('base64,')[1]},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							back=data.data;
+						}else if(data.code==300){
+							window.location.href=decodeURIComponent(data.data);
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}
+				});
 			}
 		})
 		$('#step3btn').click(_=>{
 			if(!front){
+				$.alert({title:'错误',type:'red',content:'请上传证件国徽面'});
+				return;
+			}
+			if(!back){
 				$.alert({title:'错误',type:'red',content:'请上传证件人像面'});
 				return;
 			}
-			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在上传，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			if(front.split('0')[0]!=='2'||back.split('0')[0]!=='2'){
+				$.alert({title:'错误',type:'red',content:'图像上传信息有误，请重新上传'});
+				return;
+			}
+			let name=$('#name').val();
+			let idno=$('#idno').val();
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 			$.ajax({
 				type:"POST",
-				timeout:60000,
-				url:"https://sf-file.suxber.live/index.php",
-				data:JSON.stringify({"data":{"type":"realname","data":front},"account":{"user":user,"token":token}}),
+				timeout:30000,
+				url:"https://sf-api.suxber.live/Account/RealnameByIdcard",
+				data:JSON.stringify({"data":{"name":name,"idno":idno,"image":{"front":front,"back":back}},"account":{"user":user,"token":token}}),
 				contentType:"application/json;charset=UTF-8",
 				success:function (data) {
 					loading.close();
 				    if(data.code==200){
-						let name=$('#name').val();
-						let idno=$('#idno').val();
-						let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-						$.ajax({
-							type:"POST",
-							timeout:30000,
-							url:"https://sf-api.suxber.live/Account/RealnameByIdcard",
-							data:JSON.stringify({"data":{"name":name,"idno":idno,"image":data.data},"account":{"user":user,"token":token}}),
-							contentType:"application/json;charset=UTF-8",
-							success:function (data) {
-								loading.close();
-							    if(data.code==200){
-									if(data.msg!=='请求已完成'){
-										$('#step4 #title').text('实名审核中');
-										$('#step4 #subtitle').text(data.msg);
-									}
-									$('#step3').hide();
-									$('#step4').show();
-								}else if(data.code==300){
-									window.location.href=decodeURIComponent(data.data);
-								}else{
-									$.alert({title:'错误',type:'red',content:data.msg}); 
-								}
-							},
-							error:function (msg) {
-							    loading.close();
-								$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-							}
-						});
+						if(data.msg=='请求已完成'){
+							location.reload();
+						}
+						$('#step4 #title').text('实名审核中');
+						$('#step4 #subtitle').text(data.msg);
+						$('#step3').hide();
+						$('#step4').show();
 					}else if(data.code==300){
 						window.location.href=decodeURIComponent(data.data);
 					}else{
