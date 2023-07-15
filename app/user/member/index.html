@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>会员等级</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}p{margin: 0;}</style>
+	</head>
+	<body>
+		<div style="background-image:linear-gradient( 135deg, #323232 10%, #151515 100%);height:11rem;padding-top: 10rem;">
+			<div class="col-12 bg-white rounded-pill" style="height: 2rem;"></div>
+		</div>
+	    <div class="p-3" style="margin-top: -9rem">
+			<div class="d-flex mb-4">
+				<img class="rounded" id="avatar" src="https://q1.qlogo.cn/g?b=qq&nk=0&s=640" style="width:3rem;height:3rem;">
+				<div class="ms-2 text-white">
+					<p>小伙伴</p>
+					<span style="font-size: .8rem;" id="userid">正在加载</span>
+				</div>
+			</div>
+		    <div class="card border border-0 shadow rounded" id="levelcard" style="background-image:linear-gradient( 135deg, #ffc561 10%, #FA742B 100%);">
+		        <div class="card-body d-flex text-white align-items-center">
+		            <img style="height:3rem;width:3drem;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjg2MDU5MjMzMzY5IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEzMDQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM2NDAiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjU0LjY4NzUiIGhlaWdodD0iMjAwIj48cGF0aCBkPSJNMTExNy40OTkwMzQgNDM5LjAxMTk0OGMtNi44MTExODcgMC0xMy4zMTI3NzQtMC43NzM5OTgtMTkuNjU5NTYyLTIuMDEyMzk2bC0xMy45MzE5NzMgNjQuMjQxODc1Yy0yLjE2NzE5NiA2NS4wMTU4NzQtMzkuMzE5MTI0IDI4OC44NTYyNC0zOS4zMTkxMjQgMjg4Ljg1NjI0TDI1Ny4xMjIzMDIgNzkwLjA5NzY2N2MwIDAtMjMuMzc0NzU1LTIyNC4zMDQ3NjUtMjkuMTAyMzQ0LTI5Mi41NzE0MzNsLTEyLjIyOTE3Ni02NC4wODcwNzZjLTEwLjA2MTk4IDMuNDA1NTkzLTIwLjU4ODM2IDUuNTcyNzg5LTMxLjU3OTEzOSA1LjU3Mjc4OS01Ni4zNDcwOTEgMC0xMDIuMDEzMDAyLTQ1LjgyMDcxMS0xMDIuMDEzMDAyLTEwMi40Nzc0MDEgMC01Ni41MDE4OSA0NS42NjU5MTEtMTAyLjMyMjYwMiAxMDIuMDEzMDAyLTEwMi4zMjI2MDIgNTYuNTAxODkgMCAxMDIuMDEzMDAyIDQ1LjgyMDcxMSAxMDIuMDEzMDAyIDEwMi4zMjI2MDIgMCAxNy4xODI3NjctNC42NDM5OTEgMzMuMTI3MTM2LTEyLjA3NDM3NyA0Ny4zNjg3MDhsMTg2Ljk5ODAzOCA2OS42NTk4NjVMNjE4LjI3MDAwMiAxOTkuMDcyNDEzYy00MC4yNDc5MjItMTMuNjIyMzc0LTY5LjUwNTA2NS01MS41NDgzLTY5LjUwNTA2NS05Ni41OTUwMTMgMC01Ni41MDE4OSA0NS42NjU5MTEtMTAyLjQ3NzQwMSAxMDIuMDEzMDAyLTEwMi40Nzc0MDEgNTYuMzQ3MDkxIDAgMTAyLjE2NzgwMiA0NS44MjA3MTEgMTAyLjE2NzgwMiAxMDIuNDc3NDAxIDAgNDUuMDQ2NzEzLTI5LjI1NzE0MyA4Mi45NzI2MzktNjkuNjU5ODY1IDk2LjU5NTAxM2wxNTcuMTIxNjk1IDI1NC40OTA3MDdMMTAyNS41NDgwMTIgMzgwLjQ5NzY2MWMtNi4zNDY3ODgtMTMuNDY3NTc0LTEwLjIxNjc4LTI4LjE3MzU0NS0xMC4yMTY3OC00My45NjMxMTUgMC01Ni41MDE4OSA0NS44MjA3MTEtMTAyLjQ3NzQwMSAxMDIuMTY3ODAyLTEwMi40Nzc0MDEgNTYuMzQ3MDkxIDAgMTAyLjAxMzAwMiA0NS44MjA3MTEgMTAyLjAxMzAwMiAxMDIuNDc3NDAxQzEyMTkuNTEyMDM3IDM5My4xOTEyMzYgMTE3My44NDYxMjUgNDM5LjAxMTk0OCAxMTE3LjQ5OTAzNCA0MzkuMDExOTQ4TDExMTcuNDk5MDM0IDQzOS4wMTE5NDh6TTEwNDQuNTg4Mzc2IDkwNi45NzE0NDFjLTQwLjcxMjMyMSA4Ni45OTc0MzEtOTAuNTU3ODI0IDExNy4wMjg1NzMtMTc1LjA3ODQ2MSAxMTcuMDI4NTczTDQzMi4wNDU5NjMgMTAyNC4wMDAwMTRjLTY0LjM5NjY3NSAwLTEzOS4zMTk3My0zMC4wMzExNDItMTc0LjkyMzY2MS0xMTcuMDI4NTczbDAtMjkuMTAyMzQ0IDc4Ny42MjA4NzQgMEwxMDQ0Ljc0MzE3NSA5MDYuOTcxNDQxIDEwNDQuNTg4Mzc2IDkwNi45NzE0NDF6TTEwNDQuNTg4Mzc2IDkwNi45NzE0NDEiIGZpbGw9IiNmZmZmZmYiIHAtaWQ9IjM2NDEiPjwvcGF0aD48L3N2Zz4="/>
+					<div class="mx-2">
+						<h4 class="m-0">普通会员</h4>
+						<p class="m-0" style="font-size:.8rem;">当前拥有0积分</p>
+					</div>
+				</div>
+		    </div>
+			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body">
+			        <p><b>最近积分变动</b></p>
+			        <ul class="list-group list-group-flush">
+			        </ul>
+					<div class="text-center">
+						<a href="./list.html">查看积分记录</a>
+					</div>
+			    </div>
+			</div>
+			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body">
+			        <p><b>会员兑换</b></p>
+			        <div class="mt-2 d-flex justify-content-between flex-wrap">
+						<div class="my-2 card border border-0 shadow rounded" onclick="exchange(60000)" style="width: calc(50% - 1ch);background-image:linear-gradient( 135deg, #2FECEC 10%, #4A2FEC 100%);">
+							<div class="card-body text-white">
+								<span>兑换轻量会员</span>
+								<span style="font-size: 1ch;"><br>750积分</span>
+							</div>
+						</div>
+						<div class="my-2 card border border-0 shadow rounded" onclick="exchange(60001)" style="width: calc(50% - 1ch);background-image:linear-gradient( 135deg, #E5ACF3 10%, #6A86E9 100%);">
+							<div class="card-body text-white">
+								<span>兑换星钻会员</span>
+								<span style="font-size: 1ch;"><br>1500积分</span>
+							</div>
+						</div>
+					</div>
+			    </div>
+			</div>
+			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body">
+			        <p><b>积分兑换</b></p>
+					<div id="pointlist"></div>
+					<div class="text-center">
+						<a href="javascript:;" onclick="getpointlist()">查看更多</a>
+					</div>
+			    </div>
+			</div>
+		</div>
+	    <script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+		let page=1;
+	    let user;
+	    let token;
+	    window.sftools.init(()=>{
+	        window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+	    });
+        function first(){
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:10000,
+				url:"https://sf-api.suxber.live/User/GetUserInfo",
+				data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+					if(data.code==200){
+						data=data.data
+						$('p:contains("小伙伴")').text(data.nick);
+						$('#userid').text('ID:'+data.id);
+						$('#avatar').attr('src',data.avatar);
+						$('p:contains("当前拥有0积分")').text("当前拥有"+data.points+"积分");
+						$('h4:contains("普通会员")').text(data.role);
+						if(data.role=="轻量会员"){
+							$('#levelcard').attr("style","background-image:linear-gradient( 135deg, #2FECEC 10%, #4A2FEC 100%)")
+						}else if(data.role=="星钻会员"){
+							$('#levelcard').attr("style","background-image:linear-gradient( 135deg, #E5ACF3 10%, #6A86E9 100%)")
+						}else if(data.role=="管理员"||data.role=="超级管理员"){
+							$('#levelcard').attr("style","background-image:linear-gradient( 135deg, #FEB692 10%, #EA5455 100%)")
+						}else if(data.role!=="普通会员"){
+							$('#levelcard').attr("style","background-image:linear-gradient( 135deg, #323232 10%, #151515 100%)")
+						}
+						getpointschange()
+						getpointlist()
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+					}
+				},
+				error:function (msg) {
+				    $.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+				}
+			});
+        }
+		function getpointschange(){
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:10000,
+				url:"https://sf-api.suxber.live/User/GetPointChange",
+				data:JSON.stringify({"data":{"page":page,"num":3},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+					if(data.code==200){
+						data=data.data
+						for(let i=0;i<data.length;i++){
+							$('ul').append('<li class="list-group-item d-flex justify-content-between"><div><span>'+data[i].title+'</span><span class="text-muted" style="font-size: 1.4ch;"><br>'+data[i].time+'</span></div> <span class="fs-5"><b>'+data[i].num+'</b></span></li>')
+						}
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+					}
+				},
+				error:function (msg) {
+				    $.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+				}
+			});
+		}
+		function getpointlist(){
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:10000,
+				url:"https://sf-api.suxber.live/User/GetPointGoods",
+				data:JSON.stringify({"data":{"page":1,"num":5},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+					if(data.code==200){
+						data=data.data
+						page++;
+						if(data.length<5){
+							$('a:contains("查看更多")').text('');
+						}
+						for(let i=0;i<data.length;i++){
+							if(data[i].type==0){
+								$('#pointlist').append('<div class="my-2 card border border-0 shadow rounded"style="overflow: hidden;"><div class="d-flex justify-content-between align-items-center card-body"style="background-color: #ff3f34;"><div class="d-flex text-white"><div class="text-center my-1 ms-1 me-4 fs-2"style="color:#ffdd59;"><b>'+data[i].amount+'</b></div><div><span><b>'+data[i].title+'</b></span><span style="font-size: 1.4ch;"><br>'+data[i].num+'积分兑换</span></div></div><button class="btn px-2 py-0 bg-white"style="color: #ff3f34;font-size: 1.6ch;" onclick="exchange('+data[i].id+')">兑换</button></div></div>')
+							}else{
+								$('#pointlist').append('<div class="my-2 card border-danger shadow rounded"style="overflow: hidden;"><div class="d-flex justify-content-between align-items-center card-body"style="background-color: #ffe0e0;"><div style="color:#ff3f34;"><span><b>'+data[i].title+'</b></span><span style="font-size: 1.4ch;"><br>'+data[i].num+'积分兑换</span></div><button class="btn px-2 py-0 bg-white"style="color: #ff3f34;font-size: 1.6ch;" onclick="exchange('+data[i].id+')">兑换</button></div></div>')
+							}
+						}
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+					}
+				},
+				error:function (msg) {
+				    $.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+				}
+			});
+		}
+		function exchange(id){
+			window.location.href="./goods.html?id="+id
+		}
+		</script>
+	</body>
+</html>
