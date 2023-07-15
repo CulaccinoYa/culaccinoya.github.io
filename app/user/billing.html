@@ -4,13 +4,12 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
-		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
 		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
 		<title>账单</title>
 		<style>p{margin: 0;}.nav{position: sticky;top: 0;z-index:1;}</style>
 	</head>
 	<body>
-	    <div id="home">
+	    <div id="home" style="display: none;">
 			<div class="container p-3 pt-0" style="overflow:visible"></div>
 			<div class="text-center m-4"><p id="text" class="text-primary" onclick="getorder()">—— 点我加载下一页 ——</p></div>
 		</div>
@@ -56,7 +55,6 @@
 			        <div id="goodslist"></div>
 			    </div>
 			</div>
-			<button class="col-12 mt-4 btn btn-outline-primary rounded-pill">返回</button>
 		</div>
 		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
 	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
@@ -147,7 +145,7 @@
 	    	});
 	    };
 		function check(id){
-			window.history.go(window.location.href+"?orderid="+id)
+			window.location.href="./billing.html?orderid="+id
 		}
 	    function getdetail(id){
 	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
@@ -227,10 +225,6 @@
 			let loading=$.alert({title:'',content:'已唤起支付，支付完成后直接退出即可<br><br>若未弹出支付页面，请退出重试或更新到最新版本'});
 			window.sftools.run({type:'payment',data:{'orderid':id}},e=>{loading.close();location.reload();},e=>{loading.close();$.alert({title:'支付失败',type:'red',content:e});});
 		}
-		$('#detail .btn-outline-primary').click(function(){
-			$('#home').show();
-			$('#detail').hide();
-		})
 	    function timetostring(times){
 	    	var time = new Date(times*1000);
 	    	var y = time.getFullYear();

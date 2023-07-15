@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>券票</title>
+		<style>p{margin: 0;}.nav{position: sticky;top: 0;z-index:1;}</style>
+	</head>
+	<body>
+		<div id="home" style="display: none;">
+			<div class="container p-3 pt-0" style="overflow:visible"></div>
+			<div class="text-center m-4"><p id="text" class="text-primary" onclick="gettickets()">—— 点我加载下一页 ——</p></div>
+			<div class="text-center m-4"><p class="text-primary" onclick="timeout()">查看已使用/过期券票</p></div>
+		</div>
+		<div class="container p-3" id="detail" style="display: none;">
+			<div class="mt-2 d-flex justify-content-between">
+				<div class="d-flex col-9">
+				        <div class="me-2"><img style="width:3rem;height:3rem" id="icon"></div>
+				        <div class="d-block">
+				            <p class="fs-5 m-0" id="name">券票名称</p>
+				            <div class="mt-2" id="ys"></div>
+				        </div>
+				    </div>
+				    <div class="col-3 text-end">
+				        <p class="fs-4" id="amount"><b>0.00</b></p>
+				    </div>
+				</div> 
+				<div class="card mt-4 border border-0 border-top border-5 border-primary shadow rounded">
+				    <div class="card-body">
+				        <div class="card-title">券票信息</div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">状态</p>
+				            <p id="status"></p>
+				        </div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">剩余次数</p>
+				            <p id="times"></p>
+				        </div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">创建时间</p>
+				            <p id="create_time"></p>
+				        </div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">生效时间</p>
+				            <p id="given_time"></p>
+				        </div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">过期时间</p>
+				            <p id="timeout"></p>
+				        </div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">使用时间</p>
+				            <p id="used_time"></p>
+				        </div>
+				        <div class="d-flex justify-content-between">
+				            <p class="text-secondary">适用范围</p>
+				            <p id="locus"></p>
+				        </div>
+				    </div>
+				</div>
+				<div class="card mt-4 border border-0 border-top border-5 border-primary shadow rounded">
+				    <div class="card-body">
+				        <div class="card-title">使用说明</div>
+				        <p class="text-secondary" id="remarks" style="line-height:1.2"></p>
+				    </div>
+				</div>
+		</div>
+	    <script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+	    let page=1;
+	    let user;
+	    let token;
+	    window.sftools.init(()=>{
+	        window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{window.history.go(-1)})});
+	    });
+		function first(){
+			if(getvalue('type')){
+				$('p:contains("查看已使用/过期券票")').text('查看可使用的券票');
+			}
+			if(!getvalue('ticketid')){
+				$('#home').show();
+				$('#detail').hide();
+				gettickets()
+			}else{
+				$('#home').hide();
+				$('#detail').show();
+				getdetail(getvalue('ticketid'))
+			}
+		}
+		function timeout(){
+			if(getvalue('type')){
+				window.location.href='./ticket.html'
+			}else{
+				window.location.href=window.location.href+'?type=1'
+			}
+		}
+		function gettickets(){
+		    if(page==0){
+		        return;
+		    }
+			let type=false;
+			if(getvalue('type')){
+				type=true;
+			}
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:10000,
+				url:"https://sf-api.suxber.live/Wallet/GetTicketList",
+				data:JSON.stringify({"data":{"type":type,"page":page},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					if(data.code==200){
+						console.log(data.data.length)
+						if(!data.data.length&&page==1){
+						    page=0;
+						    $('#home .container').html('<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded"><div class="card-body"><div class="text-center my-5"> <h2><b>空空如也</b></h2> <p class="text-secondary">你还没有券票呢...</p></div></div></div>')
+						    loading.close();
+							$('#home #text').html('');
+							return;
+						}
+						page++;
+						if(data.data.length<20){
+						    page=0;
+						    $('#home #text').html('已经没有了');
+						}
+						for(var n=0;n<data.data.length;n++){
+						    let id=data.data[n].id;
+							let name=data.data[n].name;
+							let money=data.data[n].amount;
+							let icon=data.data[n].icon;
+							let subtitle=data.data[n].subtitle;
+							let status=data.data[n].status;
+							let html='<div class="card border border-0 border-top border-5 border-primary shadow mt-3" style="transform: scale(1);" onclick="Tickets('+"'"+id+"'"+');"> <div class="card-body d-flex justify-content-between"> <div class="d-flex col-9"> <div class="me-2"><img style="width:3rem;height:3rem" src="'+icon+'"></div> <div class="d-block"><p class="m-0">'+name+'</p><span style="font-size:1.4ch" class="text-secondary mt-2">'+subtitle+'</span></div> </div> <div class="col-3 text-end"> <p class="fs-3"><b>'+money+'</b></p> </div> </div>';
+							if(status=='3'){
+							    html+='<div class="position-fixed" style="right:0;"><img src="https://s1.ax1x.com/2023/01/05/pSkBTo9.png" style="height:6.4rem;opacity:.4" ></div>';
+							}else if(status=='5'){
+							    html+='<div class="position-fixed" style="right:0;"><img src="https://s1.ax1x.com/2023/01/05/pSkrkN9.png" style="height:6.4rem;opacity:.4" ></div>';
+							}else if(status=='1'){
+							    html+='<div class="position-fixed" style="right:0;"><img src="https://s1.ax1x.com/2023/01/05/pSkBLz6.png" style="height:6.4rem;opacity:.4" ></div>';
+							}
+							let type=data.data[n].type;
+							let ys='';
+							if(type=='0'){
+							    ys='<span class="badge rounded-pill text-bg-primary me-1">无门槛券</span>'
+							}else if(type=='1'){
+							    ys='<span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>'
+							}else if(type=='2'){
+							    ys='<span class="badge rounded-pill text-bg-primary me-1">满'+data.data[n].pay_amount+'可用</span>'
+							}else if(type=='3'){
+							    ys='<span class="badge rounded-pill text-bg-primary me-1">满'+data.data[n].pay_amount+'可用</span><span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>'
+							}
+							html+='<div class="px-3 pb-3 d-flex">'+ys+'</div>';
+							$('#home .container').append(html+'</div>');
+						}
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'',type:'red',content:data.msg});
+					}
+					loading.close();
+				},
+				error:function (msg) {
+				    loading.close();
+					$.alert({title:'',type:'red',content:'网络异常，请稍后再试'});
+				}
+			});
+		};
+		function Tickets(id){
+			window.location.href="./ticket.html?ticketid="+id
+		}
+		function getdetail(id){
+		    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+		    $.ajax({
+		    	type:"POST",
+		    	timeout:10000,
+		    	url:"https://sf-api.suxber.live/Wallet/GetTicketDetail",
+		    	data:JSON.stringify({"data":{"ticketid":id},"account":{"user":user,"token":token}}),
+		    	contentType:"application/json;charset=UTF-8",
+		    	success:function (data) {
+		    		if(data.code==200){
+		    		    data=data.data;
+		    		    $('#icon').attr('src',data.icon);
+		    		    $('#name').html(data.name);
+		    		    $('#locus').html(data.locus);
+		    		    $('#times').html(data.times);
+		    		    $('#remarks').html(decodeURIComponent(data.remarks));
+		    		    $('#amount').html("<b>"+data.amount+"</b>");
+		    		    $('#create_time').html(timetostring(data.create_time));
+						$('#given_time').html(timetostring(data.given_time));
+						$('#used_time').html('');
+						let used=[];
+						if(data.used_time!==''){
+							used=JSON.parse(data.used_time)
+							for(let i=0;i<used.length;i++){
+								$('#used_time').append(timetostring(used[i].time)+' (第'+(i+1)+'次)');
+								if(used.length>1){
+									$('#used_time').append('<br>');
+								}
+							}
+						}
+		    		    if(data.status=='0'){
+							if(used.length>0){
+								$('#status').html('已使用部分');
+							}else{
+								$('#status').html('未使用');
+							}
+		    		    }else if(data.status=='1'){
+		    		        $('#status').html('已使用');
+		    		    }else if(data.status=='2'){
+		    		        $('#status').html('过期');
+		    		    }else if(data.status=='3'){
+		    		        $('#status').html('冻结');
+		    		    }else{
+		    		        $('#status').html('异常');
+		    		    }
+		    		    if(data.type=='0'){
+		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">无门槛券</span>');
+		    		    }else if(data.type=='1'){
+		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>');
+		    		    }else if(data.type=='2'){
+		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">满'+data.pay_amount+'可用</span>');
+		    		    }else if(data.type=='3'){
+		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">满'+data.pay_amount+'可用</span><span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>');
+		    		    }
+		    		    $('#timeout').html(timetostring(data.timeout));
+		    		}else if(data.code==300){
+		    			window.location.href=decodeURIComponent(data.data);
+		    		}else{
+		    			$.alert({title:'',type:'red',content:data.msg,buttons:[],closeIcon:false});
+		    		}
+					loading.close();
+		    	},
+		    	error:function (msg) {
+		    	    loading.close();
+		    		$.alert({title:'',type:'red',content:'网络异常，请稍后再试'});
+		    	}
+		    });
+		}
+		function timetostring(times){
+			var time = new Date(times*1000);
+			var y = time.getFullYear();
+			var m = time.getMonth()+1;
+			if(m<10){
+				m='0'+m
+			}
+			var d = time.getDate();
+			if(d<10){
+				d='0'+d
+			}
+			var h = time.getHours()
+			if(h<10){
+				h='0'+h
+			}
+			var min = time.getMinutes();
+			if(min<10){
+				min='0'+min
+			}
+			return y+'-'+m+'-'+d+' '+h+':'+min;
+			
+		}
+		function getvalue(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+		    for (var i = 0; i < vars.length; i++) {
+		        var pair = vars[i].split("=");
+		        if (pair[0] == variable) {
+		            return pair[1]
+		        }
+		    }
+		    return (false)
+		}
+	    </script>
+	</body>
+</html>
