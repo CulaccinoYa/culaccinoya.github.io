@@ -76,6 +76,8 @@
 	    let user;
 	    let token;
 	    window.sftools.init(()=>{
+			window.sftools.run({type:'SetTitleColor',data:{text:'#ffffff',bg:'#151515'}});
+			window.sftools.run({type:'SetTitleBody',data:' '});
 	        window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
 	    });
         function first(){
