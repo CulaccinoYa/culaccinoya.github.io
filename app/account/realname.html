@@ -19,22 +19,6 @@
 				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
 			</div>
 		</div>
-		<div class="p-4" id="home" style="display: none;">
-		    <h3 class="mt-4"><b>实名认证</b></h3>
-			<p style="font-size: .8rem;">目前仅支持使用中国大陆居民身份证完成验证</p>
-			<div class="mt-4 border-bottom pb-1 px-2">
-				<span>姓名</span>
-				<input class="border-0 col-12" type="text" id="name" placeholder="证件上的姓名"/>
-			</div>
-			<div class="mt-4 border-bottom pb-1 px-2">
-				<span>身份证号码</span>
-				<input class="border-0 col-12" type="text" id="idno" placeholder="请输入合法有效的身份证号码"/>
-			</div>
-		    <button class="col-12 mt-4 btn btn-primary rounded-pill">下一步</button>
-			<div class="text-center mt-4">
-				<span>如需使用其他证件实名，请联系人工客服</span>
-			</div>
-		</div>
 
 		<div class="p-4" id="home2" style="display: none;">
 		    <h3 class="mt-4"><b>实名认证</b></h3>
@@ -52,23 +36,71 @@
 			</div>
 		</div>
 
-		<div class="p-4" id="step2" style="display: none;">
-		    <h3 class="mt-4"><b>个人信息保护说明</b></h3>
-			<p style="font-size: .8rem;">我们会尽全力保障您的身份信息安全</p>
-			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
-			    <div class="card-body" style="height:50vh;overflow:scroll">
-			        <p>&emsp;&emsp;亲爱的小伙伴，您正在为您的账户进行实名认证，根据《<span class="text-primary">网络安全法</span>》等相关法律法规规定，您必须完成实名制登记才能使用部分功能和服务，您的个人信息将会按照我们约定的《<a href="https://sf.suxber.live/privacy.html">隐私政策</a>》进行处理，其中您的部分信息仅会用到在《<a href="https://sf.suxber.live/terms.html">用户协议</a>》的约定中。</p>
-					<p>&emsp;&emsp;为验证您的身份是否合法，以及避免他人冒用您的身份，您提交的身份信息将会<span class="text-primary">与公安系统进行比对</span>，这其中我们会将您提交的身份信息移交至<span class="text-primary">具有核验资质的第三方机构</span>进行验证，我们保证，您的身份信息仅会经过您、我们、第三方核验机构和公安机关手中，任何人都不能查看您的身份信息。</p>
-					<p>&emsp;&emsp;请您知悉，尽管是我们的客服人员，都无权查看您完成实名后的登记的完整身份信息，我们可能会使用自动化程序在某些场合将实名信息作为验证您本人身份的手段之一，在此类情况下，您的身份信息仅会经过您和我们的自动化程序中，任何人都无权查看此类信息。</p>
-					<p>&emsp;&emsp;如果您对于第三方核验方产生疑惑，可在实名验证的第三方页面中查看相应的条款和政策。</p>
-				</div>
+		<div class="p-4" id="home" style="display: none;">
+		    <h3 class="mt-4"><b>实名认证</b></h3>
+			<p style="font-size: .8rem;">请选择您的验证方式</p>
+			<!-- <div class="card border border-0 border-top border-5 border-primary shadow rounded" id="hnga">
+			    <div class="card-body d-flex align-items-center">
+					<img style="width: 2.4rem;height: 2.4rem;" src="https://fwpt.hnga.gov.cn/static/img/favicon.ico" />
+					<div class="ms-2"><p class="m-0">湖南电子身份证验证 <span class="text-danger" style="font-size: 1ch;"><b>推荐</b></span></p><span class="text-secondary" style="font-size: .8rem;">需提前在微信注册并完成人脸验证</span></div>
+			    </div>
+			</div> -->
+			<!-- <div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded" id="mobile">
+			    <div class="card-body d-flex align-items-center">
+					<svg width="2.4rem" height="2.4rem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="4" width="26" height="40" rx="3" fill="none" stroke="#000" stroke-width="4"/><path d="M22 10L26 10" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 38H28" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					<div class="ms-2"><p class="m-0">手机卡身份验证</p><span class="text-secondary" style="font-size: .8rem;">提供与电话卡相同的身份信息</span></div>
+			    </div>
+			</div> -->
+			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded" id="photo">
+			    <div class="card-body d-flex align-items-center">
+					<svg width="2.4rem" height="2.4rem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M42 8H6C4.89543 8 4 8.89543 4 10V38C4 39.1046 4.89543 40 6 40H42C43.1046 40 44 39.1046 44 38V10C44 8.89543 43.1046 8 42 8Z" fill="none" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="M36 16H28V24H36V16Z" fill="none" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="M12 32H36" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16H18" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 24H18" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					<div class="ms-2"><p class="m-0">证件照片验证</p><span class="text-secondary" style="font-size: .8rem;">上传身份证件照片进行验证</span></div>
+			    </div>
 			</div>
-		    <button class="col-12 mt-4 btn btn-primary rounded-pill">知道了</button>
+			<div class="text-center mt-4">
+				<span>如需使用其他证件实名，请联系人工客服</span>
+			</div>
+		</div>
+
+		<div class="p-4" id="step1-1" style="display: none;">
+		    <h3 class="mt-4"><b>湖南电子身份证授权</b></h3>
+			<p style="font-size: .8rem;">请登录您的湖南公安服务平台</p>
+			<iframe src="" id="hngaiframe" style="width: 100%;height: 40vh;"></iframe>
 			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
 		</div>
 
-		<div class="p-4" id="step3" style="display: none;">
-		    <h3 class="mt-4"><b>证件照片提交</b></h3>
+		<div class="p-4" id="step1-2"  style="display: none;">
+		    <h3 class="mt-4"><b>湖南电子身份证授权</b></h3>
+			<p style="font-size: .8rem;">请核对您的以下信息</p>
+			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
+			    <div class="card-body">
+			        <p>以下信息由<b>湖南公安服务平台</b>提供</p>
+					<p>姓名：<span id="ganame"></span><br>
+					证件号码：<span id="ganum"></span></p>
+					<p style="font-size: 1ch;">点击"下一步"按钮，则视为您同意SF工具箱使用上方信息对您的SF工具箱账号进行实名验证</p>
+				</div>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">下一步</button>
+			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
+		</div>
+
+		<div class="p-4" id="step2-1" style="display: none;">
+		    <h3 class="mt-4"><b>上传证件照片验证</b></h3>
+			<p style="font-size: .8rem;">请输入您的居民身份证信息</p>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>姓名</span>
+				<input class="border-0 col-12" type="text" id="name" placeholder="证件上的姓名"/>
+			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>身份证号码</span>
+				<input class="border-0 col-12" type="text" id="idno" placeholder="请输入合法有效的身份证号码"/>
+			</div>
+		    <button class="col-12 mt-4 btn btn-primary rounded-pill">下一步</button>
+			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
+		</div>
+
+		<div class="p-4" id="step2-2" style="display: none;">
+		    <h3 class="mt-4"><b>上传证件照片验证</b></h3>
 			<p style="font-size: .8rem;">请上传您的居民身份证正反面照片</p>
 			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
 			    <div class="card-body">
@@ -80,18 +112,13 @@
 						<img id="backimg" class="col-5" src="https://faceid-h5-1254418846.file.myqcloud.com/images/ocr-update/ocr-idcardPhoto-default.png"/>
 						<button id="backbtn" class="btn btn-primary rounded-pill">上传人像面</button>
 					</div>
-					<input type="file" accept="image/*" id="frontip" style="display: none;"/>
-					<input type="file" accept="image/*" id="backip" style="display: none;"/>
 				</div>
 			</div>
-		    <button id="step3btn" class="col-12 btn-primary mt-4 btn rounded-pill">下一步</button>
+		    <button id="next" class="col-12 btn-primary mt-4 btn rounded-pill">下一步</button>
 			<button class="col-12 mt-2 btn btn-outline-primary rounded-pill">返回</button>
-			<div class="mt-4 text-center" style="font-size: 1.4ch;">
-				<a href="javascript:wechat();">无法上传照片？使用微信实名</a>
-			</div>
 		</div>
 
-		<div class="p-4" id="step4" style="display: none;">
+		<div class="p-4" id="finish" style="display: none;">
 		    <div class="text-center" style="margin-top:20vh">
 		        <h2 id="title"><b>实名成功</b></h2>
 		        <p id="subtitle" class="text-secondary">您的实名信息已登记完成</p>
@@ -109,17 +136,13 @@
 		}
 	    let user;
 		let token;
+		let gauuid;
 		let front;
 		let back;
-		if(getvalue('token')){
-			user=getvalue('user');
-			token=getvalue('token');
-			first();
-		}else{
-			window.sftools.init(()=>{
-			    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
-			});
-		}
+		let xhr;
+		window.sftools.init(()=>{
+		    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+		});
 		function first(){
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>获取状态中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 			$.ajax({
@@ -150,95 +173,149 @@
 				}
 			});
 		}
-		$('#home button').click(_=>{
-		    let name=$('#name').val();
+		$('#hnga').click(_=>{
+		    $('#home').hide();
+		    $('#step1-1').show();
+		});
+		$('#photo').click(_=>{
+		    $('#home').hide();
+		    $('#step2-1').show();
+		});
+		$('#mobile').click(_=>{
+		    $('#home').hide();
+		    $('#step3-1').show();
+		});
+		$('#step1-1 .btn-outline-primary').click(_=>{
+		    $('#step1-1').hide();
+		    $('#home').show();
+		});
+		$('#step1-1 #sendcode').click(_=>{
+			let mobile=$('#step1-1 #mobile_input').val()
+			if(mobile.length!==11){
+				$.alert({title:'错误',type:'red',content:'请输入正确的手机号'});
+				return;
+			}
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			xhr=new plus.net.XMLHttpRequest();
+			xhr.onreadystatechange=function(){
+				if(xhr.readyState==4){
+					loading.close();
+					if(xhr.status!==200){
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}else{
+						let data=JSON.parse(xhr.responseText)
+						$.alert({title:'',content:data.msg}); 
+					}
+				}
+			}
+			xhr.open("POST", "https://fwpt.hnga.gov.cn/apis/member/log/sendsms");
+			xhr.setRequestHeader('Content-Type','application/json');
+			xhr.send(JSON.stringify({"phone":mobile}));
+		});
+		$('#step1-1 .btn-primary').click(_=>{
+			let mobile=$('#step1-1 #mobile_input').val()
+			if(mobile.length!==11){
+				$.alert({title:'错误',type:'red',content:'请输入正确的手机号'});
+				return;
+			}
+			let code=$('#step1-1 #code_input').val()
+			if(!mobile.length){
+				$.alert({title:'错误',type:'red',content:'请输入收到的验证码'});
+				return;
+			}
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			xhr=new plus.net.XMLHttpRequest();
+			xhr.onreadystatechange=function(){
+				if(xhr.readyState==4){
+					loading.close();
+					if(xhr.status!==200){
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					}else{
+						let data=JSON.parse(xhr.responseText)
+						if(!data.succ){
+							$.alert({title:'错误',type:'red',content:data.msg});
+							return;
+						}
+						gauuid=data.data.guid;
+						if(data.data.authStatus!==2){
+							$.alert({title:'错误',type:'red',content:'您尚未完成实名验证，请前往微信公众号[湖南公安服务平台]，在个人中心最下方进行实人认证'});
+							return;
+						}
+						$('#step1-2 #ganame').text(data.data.realName);
+						$('#step1-2 #ganum').text(data.data.idNum);
+						$('#step1-1').hide();
+						$('#step1-2').show();
+					}
+				}
+			}
+			xhr.open("POST", "https://fwpt.hnga.gov.cn/apis/member/login/sms");
+			xhr.setRequestHeader('Content-Type','application/json');
+			xhr.setRequestHeader('oauth','6');
+			xhr.send(JSON.stringify({"accountId":mobile,"smsCode":code,"gps":""}));
+		});
+		$('#step1-2 .btn-outline-primary').click(_=>{
+		    $('#step1-2').hide();
+		    $('#home').show();
+		});
+		$('#step1-2 .btn-primary').click(_=>{
+			if(!gauuid){
+				$.alert({title:'错误',type:'red',content:'请授权公安服务平台'});
+				return;
+			}
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				type:"POST",
+				timeout:30000,
+				url:"https://sf-api.suxber.live/Account/RealnameByHNGA",
+				data:JSON.stringify({"data":{"uuid":gauuid},"account":{"user":user,"token":token}}),
+				contentType:"application/json;charset=UTF-8",
+				success:function (data) {
+					loading.close();
+				    if(data.code==200){
+						if(data.msg=='请求已完成'){
+							location.reload();
+						}
+						$('#finish #title').text('实名审核中');
+						$('#finish #subtitle').text(data.msg);
+						$('#step2-2').hide();
+						$('#finish').show();
+					}else if(data.code==300){
+						window.location.href=decodeURIComponent(data.data);
+					}else{
+						$.alert({title:'错误',type:'red',content:data.msg}); 
+					}
+				},
+				error:function (msg) {
+				    loading.close();
+					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+				}
+			});
+		});
+		$('#step2-1 .btn-primary').click(_=>{
+		    let name=$('#step2-1 #name').val();
 		    if(name.length<2){
 		        $.alert({title:'错误',type:'red',content:'姓名格式有误'}); 
 		        return;
 		    }
-		    let idno=$('#idno').val();
+		    let idno=$('#step2-1 #idno').val();
 		    if(idno.length!=18&&idno.length!=15){
 		        $.alert({title:'错误',type:'red',content:'证件号码格式有误'}); 
 		        return;
 		    }
-		    $('#home').hide();
-		    $('#step2').show();
+		    $('#step2-1').hide();
+		    $('#step2-2').show();
 		});
-		$('#step2 .btn-outline-primary').click(_=>{
-		    $('#step2').hide();
+		$('#step2-1 .btn-outline-primary').click(_=>{
+		    $('#step2-1').hide();
 		    $('#home').show();
 		});
-		$('#step2 .btn-primary').click(_=>{
-		    $('#step2').hide();
-		    $('#step3').show();
-		});
 		$('#frontbtn').click(_=>{
-		    $('#frontip').click();
-		});
+			window.sftools.run({type:'uploadImage',data:{type:0}},e=>{front=e;$('#frontimg').attr('src','https://sf-file.suxber.live/files/'+user+'/'+e)},e=>{});
+		})
 		$('#backbtn').click(_=>{
-		    $('#backip').click();
-		});
-		$('#frontip').change(function(){
-			var file = this.files[0];
-			var reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onload = function(e) {
-				$("#frontimg").attr("src", this.result);
-				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在上传，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:40000,
-					url:"https://sf-file.suxber.live/index.php",
-					data:JSON.stringify({"data":{"type":"realname","data":this.result.split('base64,')[1]},"account":{"user":user,"token":token}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-						loading.close();
-					    if(data.code==200){
-							front=data.data;
-						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg}); 
-						}
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-					}
-				});
-			}
+			window.sftools.run({type:'uploadImage',data:{type:0}},e=>{back=e;$('#backimg').attr('src','https://sf-file.suxber.live/files/'+user+'/'+e)},e=>{});
 		})
-		$('#backip').change(function(){
-			var file = this.files[0];
-			var reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onload = function(e) {
-				$("#backimg").attr("src", this.result);
-				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在上传，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:40000,
-					url:"https://sf-file.suxber.live/index.php",
-					data:JSON.stringify({"data":{"type":"realname","data":this.result.split('base64,')[1]},"account":{"user":user,"token":token}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-						loading.close();
-					    if(data.code==200){
-							back=data.data;
-						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg}); 
-						}
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-					}
-				});
-			}
-		})
-		$('#step3btn').click(_=>{
+		$('#step2-2 #next').click(_=>{
 			if(!front){
 				$.alert({title:'错误',type:'red',content:'请上传证件国徽面'});
 				return;
@@ -247,12 +324,8 @@
 				$.alert({title:'错误',type:'red',content:'请上传证件人像面'});
 				return;
 			}
-			if(front.split('0')[0]!=='2'||back.split('0')[0]!=='2'){
-				$.alert({title:'错误',type:'red',content:'图像上传信息有误，请重新上传'});
-				return;
-			}
-			let name=$('#name').val();
-			let idno=$('#idno').val();
+			let name=$('#step2-1 #name').val();
+			let idno=$('#step2-1 #idno').val();
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 			$.ajax({
 				type:"POST",
@@ -266,10 +339,10 @@
 						if(data.msg=='请求已完成'){
 							location.reload();
 						}
-						$('#step4 #title').text('实名审核中');
-						$('#step4 #subtitle').text(data.msg);
-						$('#step3').hide();
-						$('#step4').show();
+						$('#finish #title').text('实名审核中');
+						$('#finish #subtitle').text(data.msg);
+						$('#step2-2').hide();
+						$('#finish').show();
 					}else if(data.code==300){
 						window.location.href=decodeURIComponent(data.data);
 					}else{
@@ -282,24 +355,10 @@
 				}
 			});
 		});
-		$('#step3 .btn-outline-primary').click(_=>{
-		    $('#step3').hide();
-		    $('#step2').show();
+		$('#step2-2 .btn-outline-primary').click(_=>{
+		    $('#step2-2').hide();
+		    $('#step2-1').show();
 		});
-		function wechat(){
-			$.alert({title:'请使用微信扫描二维码',type:"green",content:'<div class="text-center"><img style="width:50vw;" src="https://api.pwmqr.com/qrcode/create/?url=https://sf.suxber.live/app/account/realname.html?user='+user+'&token='+token+'" /><p>扫码完成后请重新进入本页面</p></div>',buttons:{"关闭":{},"我已完成验证":function(){location.reload()}}}); 
-		}
-		function getvalue(variable) {
-			var query = window.location.search.substring(1);
-			var vars = query.split("&");
-		    for (var i = 0; i < vars.length; i++) {
-		        var pair = vars[i].split("=");
-		        if (pair[0] == variable) {
-		            return pair[1]
-		        }
-		    }
-		    return (false)
-		}
 	    </script>
 	</body>
 </html>
