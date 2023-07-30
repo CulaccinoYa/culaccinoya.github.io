@@ -36,10 +36,10 @@
 			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded" id="qrcode">
 			    <div class="card-body d-flex align-items-center">
 					<div><svg width="2.4rem" height="2.4rem" viewBox="0 0 48 48" fill="none"><path d="M20 6H6V20H20V6Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M20 28H6V42H20V28Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M42 6H28V20H42V6Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M29 28V42" stroke="#000" stroke-width="3" stroke-linecap="round"/><path d="M41 28V42" stroke="#000" stroke-width="3" stroke-linecap="round"/></svg></div>
-					<div class="ms-2"><p class="m-0">旧设备扫码验证</p><span class="text-secondary" style="font-size: .8rem;">使用原来的设备扫码完成验证</span></div>
+					<div class="ms-2"><p class="m-0">旧设备扫码验证</p><span class="text-secondary" style="font-size: .8rem;">人脸识别与绑定的身份信息验证</span></div>
 			    </div>
 			</div>
-			<div class="mt-4 text-center">以上方式都无法使用？请联系人工客服</div>
+			<div class="mt-4 text-center">以上方式都无法使用？请联系<a href="//sf.suxber.live/app/system/group.html">人工客服</a></div>
 		</div>
 
 		<div class="p-4" id="mobile_page" style="display: none;">
@@ -133,7 +133,7 @@
 					    if(data.code==200){
 							$.alert({content:'验证码已发送'}); 
 						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
+							window.location.href=data.data;
 						}else{
 							$.alert({title:'错误',type:'red',content:data.msg}); 
 						}
@@ -161,19 +161,20 @@
 					$.alert({title:'错误',type:'red',content:'验证码不能留空'}); 
 					return;
 				}
+				let env=decodeURIComponent(getvalue('env'))
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 				$.ajax({
 					type:"POST",
 					timeout:10000,
 					url:"https://sf-api.suxber.live/Account/AuthVerify",
-					data:JSON.stringify({"data":{"type":'usecode',"user":user,"mobile":mobile,"code":code}}),
+					data:JSON.stringify({"data":{"type":'usecode',"user":user,"mobile":mobile,"code":code,"env":env}}),
 					contentType:"application/json;charset=UTF-8",
 					success:function (data) {
 					    if(data.code==200){
 							$('#mobile_page').hide();
 							$('#finish').show();
 						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
+							window.location.href=data.data;
 						}else{
 							$.alert({title:'错误',type:'red',content:data.msg}); 
 						}
@@ -220,7 +221,7 @@
 							$('#step1').hide();
 							$('#qrcode_page').show();
 						}else if(data.code==300){
-			    			window.location.href=decodeURIComponent(data.data);
+			    			window.location.href=data.data;
 			    		}else{
 			    			$.alert({title:'错误',type:'red',content:data.msg}); 
 			    		}
