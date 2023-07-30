@@ -161,7 +161,7 @@
 					$.alert({title:'错误',type:'red',content:'验证码不能留空'}); 
 					return;
 				}
-				let env=decodeURIComponent(getvalue('env'))
+				let env=decodeURIComponent(getenv())
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 				$.ajax({
 					type:"POST",
@@ -243,6 +243,11 @@
 			        }
 			    }
 			    return (false)
+			}
+			function getenv(){
+				var query = window.location.search.substring(1);
+				var vars = query.split("env=");
+				return vars[1]
 			}
 	    </script>
 	</body>
