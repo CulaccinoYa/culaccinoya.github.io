@@ -133,7 +133,7 @@
 					    if(data.code==200){
 							$.alert({content:'验证码已发送'}); 
 						}else if(data.code==300){
-							window.location.href=data.data;
+							window.location.href=decodeURIComponent(data.data);
 						}else{
 							$.alert({title:'错误',type:'red',content:data.msg}); 
 						}
@@ -174,7 +174,7 @@
 							$('#mobile_page').hide();
 							$('#finish').show();
 						}else if(data.code==300){
-							window.location.href=data.data;
+							window.location.href=decodeURIComponent(data.data);
 						}else{
 							$.alert({title:'错误',type:'red',content:data.msg}); 
 						}
@@ -221,7 +221,7 @@
 							$('#step1').hide();
 							$('#qrcode_page').show();
 						}else if(data.code==300){
-			    			window.location.href=data.data;
+			    			window.location.href=decodeURIComponent(data.data);
 			    		}else{
 			    			$.alert({title:'错误',type:'red',content:data.msg}); 
 			    		}
