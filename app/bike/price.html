@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<style>p{margin: 0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+		<title>计费规则</title>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4">
+		    <h3 class="mt-4"><b>计费规则</b></h3>
+		    <p style="font-size: .8rem;">SF共享骑行业务计费规则</p>
+		    <div class="mt-2 card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		        <h5 class="mt-2 mb-4 text-center"><b>基础计费</b></h5>
+					<div class="d-flex justify-content-between">
+					    <p>免费时长</p>
+					    <p><b>1分钟</b></p>
+					</div>
+					<p class="text-muted" style="font-size:.8rem">最多3次/天，不免除车辆管理费</p>
+					<hr>
+		            <div class="d-flex justify-content-between">
+		                <p>起步价</p>
+		                <p><b>2元</b></p>
+		            </div>
+		            <div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+		                <p>包含骑行时长</p>
+		                <p>29分钟</p>
+		            </div>
+		            <p class="text-muted" style="font-size:.8rem">超出部分按时长费收取</p>
+		            <hr>
+		            <div class="d-flex justify-content-between">
+		                <p>时长费</p>
+		                <p><b>1元/10分钟</b></p>
+		            </div>
+		            <p class="text-muted" style="font-size:.8rem">不满10分钟按10分钟收取</p>
+		            <h5 class="mt-5 mb-4 text-center"><b>车辆管理费</b></h5>
+		            <div class="d-flex justify-content-between">
+		                <p>停车点外还车管理费</p>
+		                <p><b>5元</b></p>
+		            </div>
+		            <p class="text-muted" style="font-size:.8rem">运营方在当前城市限定了车辆的停放范围（即停车点），当停车位置不在停车点时，还车时将会弹窗提醒，您需要将车辆停放至地图上所标注的停车点方可正常关锁。在停车点外强制还车，将产生还车管理费</p>
+		            <hr>
+		            <div class="d-flex justify-content-between">
+		                <p>运营区外还车管理费</p>
+		                <p><b>20元</b></p>
+		            </div>
+		            <p class="text-muted" style="font-size:.8rem">运营方在当前城市限定了车辆的骑行范围（即运营区），当车辆骑出运营区范围时，车辆会自动断电并进行语言提示，您需要将车辆行驶至地图上所标注的运营区范围内方可继续使用。在运营区外强制还车，将产生还车管理费</p>
+		            <hr>
+		            <div class="d-flex justify-content-between">
+		                <p>违约用车管理费</p>
+		                <p><b>5元</b></p>
+		            </div>
+		            <p class="text-muted" style="font-size:.8rem">如未佩戴头盔、马路沿下停车、在停车场或汽车停放区停车等行为均属于违约停车。当您产生违约用车行为时，会向您收取违约用车管理费</p>
+					<h5 class="mt-5 mb-4 text-center"><b>会员特权</b></h5>
+					<p class="mb-1">每月优惠</p>
+					<div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+					    <p>普通会员</p>
+					    <p>无</p>
+					</div>
+					<div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+					    <p>轻量会员</p>
+					    <p>3次 免费骑行30分钟</p>
+					</div>
+					<div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+					    <p>星钻会员</p>
+					    <p class="text-end">3次 免费骑行30分钟<br>3张 1元骑行抵扣券<br>1张 2元骑行抵扣券</p>
+					</div>
+					<hr>
+					<p class="mb-1">管理费抵扣</p>
+					<div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+					    <p>普通会员</p>
+					    <p>无</p>
+					</div>
+					<div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+					    <p>轻量会员</p>
+					    <p class="text-end">3次 5元内还车管理费抵扣<br>(超出部分需额外支付)</p>
+					</div>
+					<div class="d-flex justify-content-between text-muted" style="font-size:.8rem">
+					    <p>星钻会员</p>
+					    <p class="text-end">5次 还车管理费全额抵扣<br>3次 违约用车管理费全额抵扣</p>
+					</div>
+				</div>
+		    </div>
+		</div>
+        <script>
+			document.onreadystatechange = function(){
+				if(document.readyState == 'complete'){
+					document.getElementById("preloader").style.display="none";
+				}
+			}
+        </script>
+	</body>
+</html>
