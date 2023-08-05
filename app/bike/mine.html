@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>个人中心</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4">
+		    <div class="card border-0 border-5 border-top border-primary shadow rounded" style="overflow:hidden;">
+		    	<div class="card-body">
+					<h5 id="account" style="font-weight: bold;"></h5>
+					<div>
+						<span class="badge rounded-pill" id="status_normal" style="background-color:#2ed573;display:none;">正常</span>
+						<span class="badge rounded-pill" id="realname_normal" style="background-color:#1e90ff;display:none;">已实名</span>
+						<span class="badge rounded-pill" id="despoit_normal" style="background-color:#1e90ff;display:none;">已缴纳押金</span>
+						<span class="badge rounded-pill text-bg-danger" id="despoit_error" style="display:none;">未缴纳押金</span>
+						<span class="badge rounded-pill text-bg-danger" id="balance_error" style="display:none;">未激活账户</span>
+						<span class="badge rounded-pill text-bg-danger" id="realname_error" style="display:none;">未授权实名</span>
+					</div>
+				</div>
+		    </div>
+			<div class="mt-3 card border-0 border-5 border-top border-primary shadow rounded" style="overflow:hidden;">
+				<div class="card-body d-flex justify-content-around align-items-center">
+					<div class="text-center">
+						<p>骑行次数</p>
+						<h5><span id="times"></span>次</h5>
+					</div>
+					<div class="text-center">
+						<p>已缴纳押金</p>
+						<h5><span id="despoit"></span>元</h5>
+					</div>
+				</div>
+			</div>
+			<div class="mt-3 card border-0 border-5 border-top border-primary shadow rounded" style="overflow:hidden;">
+				<ul class="list-group list-group-flush">
+					<a href="./price.html" class="list-group-item list-group-item-action">收费标准</a>
+					<a href="./record.html" class="list-group-item list-group-item-action">骑行记录</a>
+					<a href="./realname.html" class="list-group-item list-group-item-action">实名验证</a>
+					<a href="./despoit.html" class="list-group-item list-group-item-action">押金管理</a>
+				</ul>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+			let user;
+			let token;
+			document.onreadystatechange = function(){
+				if(document.readyState == 'complete'){
+					document.getElementById("preloader").style.display="none";
+				}
+			}
+			window.sftools.init(()=>{
+			    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+			});
+			function first(){
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>获取状态中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:60000,
+					url:"https://sf-api.suxber.live/Bike/GetAccountInfo",
+					data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							if(data.data.deposit){
+								$('#deposit_normal').show();
+							}else{
+								$('#deposit_error').show();
+							}
+							if(!data.data.balance){
+								$('#balance_error').show();
+							}
+							if(!data.data.status){
+								$('#status_normal').show();
+							}
+							if(data.data.realName==''){
+								$('#realname_error').show();
+							}else{
+								$('#realname_normal').show();
+							}
+							$('#times').text(data.data.times)
+							$('#deposit').text(data.data.requireDeposit)
+							$('#account').text(data.data.user.substr(1,10))
+						}else if(data.code==300){
+							window.location.href=decodeURIComponent(data.data);
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试',buttons:[],closeIcon:false}); 
+					}
+				});
+			}
+	    </script>
+	</body>
+</html>
