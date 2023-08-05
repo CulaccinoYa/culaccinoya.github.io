@@ -75,8 +75,32 @@
 							data:JSON.stringify({"data":{"code":e}}),
 							contentType:"application/json;charset=UTF-8",
 							success:function (data) {
+								loading.close();
 							    if(data.code==200){
-									uni.navigateBack();
+									let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>验证实名中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+									$.ajax({
+										type:"POST",
+										timeout:30000,
+										url:"https://sf-api.suxber.live/Bike/SetRealname",
+										data:JSON.stringify({"data":{"code":e}}),
+										contentType:"application/json;charset=UTF-8",
+										success:function (data) {
+										    if(data.code==200){
+												uni.navigateBack();
+											}else if(data.code==202){
+												window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
+											}else if(data.code==300){
+												window.location.href=decodeURIComponent(data.data);
+											}else{
+												$.alert({title:'错误',type:'red',content:data.msg}); 
+											}
+											loading.close();
+										},
+										error:function (msg) {
+										    loading.close();
+											$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+										}
+									});
 								}else if(data.code==202){
 									window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
 								}else if(data.code==300){
@@ -84,7 +108,6 @@
 								}else{
 									$.alert({title:'错误',type:'red',content:data.msg}); 
 								}
-								loading.close();
 							},
 							error:function (msg) {
 							    loading.close();
