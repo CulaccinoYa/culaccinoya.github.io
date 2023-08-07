@@ -12,7 +12,7 @@
 	    <div class="container p-3">
 		    <div class="text-center">
 				<p>我的余额</p>
-				<h1 class="mt-2 fw-bold">0.00</h1>
+				<h1 class="mt-2 fw-bold" id="ye">0.00</h1>
 			</div>
 			<div class="mt-4 card container border-0 border-top border-5 border-primary shadow rounded">
 				<div class="card-body row row-cols-3" id="list">
@@ -50,7 +50,6 @@
 				success:function (data) {
 					loading.close();
 					if(data.code==200){
-						$('#user').text(data.data.user.user);
 						$('#ye').text(data.data.user.balance);
 						let html='';
 						for(var n=0;n<data.data.pack.length;n++){
