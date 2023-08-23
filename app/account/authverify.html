@@ -134,7 +134,7 @@
 					    if(data.code==200){
 							$.alert({content:'验证码已发送'}); 
 						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:e.data},e=>{},e=>{});
+			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
 						}else if(data.code==300){
 							window.location.href=decodeURIComponent(data.data);
 						}else{
@@ -177,7 +177,7 @@
 							$('#mobile_page').hide();
 							$('#finish').show();
 						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:e.data},e=>{},e=>{});
+			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
 						}else if(data.code==300){
 							window.location.href=decodeURIComponent(data.data);
 						}else{
@@ -226,7 +226,7 @@
 							$('#step1').hide();
 							$('#qrcode_page').show();
 						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:e.data},e=>{},e=>{});
+			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
 						}else if(data.code==300){
 			    			window.location.href=decodeURIComponent(data.data);
 			    		}else{
