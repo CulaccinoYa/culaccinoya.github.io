@@ -48,11 +48,11 @@
 			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded" id="photo">
 			    <div class="card-body d-flex align-items-center">
 					<svg width="2.4rem" height="2.4rem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M42 8H6C4.89543 8 4 8.89543 4 10V38C4 39.1046 4.89543 40 6 40H42C43.1046 40 44 39.1046 44 38V10C44 8.89543 43.1046 8 42 8Z" fill="none" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="M36 16H28V24H36V16Z" fill="none" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="M12 32H36" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16H18" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 24H18" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-					<div class="ms-2"><p class="m-0">居民身份证照片验证</p><span class="text-secondary" style="font-size: .8rem;">上传居民身份证照片进行验证</span></div>
+					<div class="ms-2"><p class="m-0">身份证照片验证</p><span class="text-secondary" style="font-size: .8rem;">通过上传本人的身份证照片进行验证</span></div>
 			    </div>
 			</div>
 			<div class="text-center mt-4">
-				<span>如需使用其他证件实名，请联系人工客服</span>
+				<span>实名认证仅支持中国大陆居民<br>港澳台及其他地区，或使用其他证件实名的，请联系人工客服</span>
 			</div>
 		</div>
 
@@ -189,6 +189,7 @@
 								    if(data.code==200){
 										if(data.msg=='请求已完成'){
 											location.reload();
+											return;
 										}
 										$('#finish #title').text('实名出错');
 										$('#finish #subtitle').text(data.msg);
