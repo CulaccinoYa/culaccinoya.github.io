@@ -176,7 +176,7 @@
 				success:function (data) {
 					loading.close();
 				    if(data.code==200){
-						window.sftools.run({type:'faceauth',data:{id:data.data}},e=>{
+						window.sftools.run({type:'face_auth',data:{id:data.data}},e=>{
 							let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 							$.ajax({
 								type:"POST",
