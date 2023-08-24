@@ -25,7 +25,6 @@
 					<div>
 						<span class="badge rounded-pill" id="status_normal" style="background-color:#2ed573;display:none;">正常</span>
 						<span class="badge rounded-pill" id="realname_normal" style="background-color:#1e90ff;display:none;">已实名</span>
-						<span class="badge rounded-pill" id="despoit_normal" style="background-color:#1e90ff;display:none;">已缴纳押金</span>
 						<span class="badge rounded-pill text-bg-danger" id="despoit_error" style="display:none;">未缴纳押金</span>
 						<span class="badge rounded-pill text-bg-danger" id="balance_error" style="display:none;">未激活账户</span>
 						<span class="badge rounded-pill text-bg-danger" id="realname_error" style="display:none;">未授权实名</span>
@@ -79,10 +78,11 @@
 					success:function (data) {
 						loading.close();
 					    if(data.code==200){
-							if(data.data.deposit){
-								$('#deposit_normal').show();
-							}else{
+							if(!data.data.deposit){
 								$('#deposit_error').show();
+								$('#despoit').text('0')
+							}else{
+								$('#despoit').text(data.data.requireDeposit)
 							}
 							if(!data.data.balance){
 								$('#balance_error').show();
@@ -96,7 +96,7 @@
 								$('#realname_normal').show();
 							}
 							$('#times').text(data.data.times)
-							$('#despoit').text(data.data.requireDeposit)
+							
 							$('#account').text(data.data.user.substr(1,10))
 						}else if(data.code==300){
 							window.location.href=decodeURIComponent(data.data);
