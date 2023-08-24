@@ -22,7 +22,7 @@
 					type:"POST",
 					timeout:10000,
 					url:"https://sf-api.suxber.live/Admin/LoginAuth",
-					data:JSON.stringify({"data":{"ip":getvalue(ip)},"account":{"user":user,"token":token}}),
+					data:JSON.stringify({"data":{"ip":getvalue("ip")},"account":{"user":user,"token":token}}),
 					contentType:"application/json;charset=UTF-8",
 					success:function (data) {
 						loading.close();
