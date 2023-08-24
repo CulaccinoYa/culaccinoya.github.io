@@ -31,6 +31,10 @@
 				<span>证件类型<br></span>
 				<span id="type"></span>
 			</div>
+			<div class="mt-4 border-bottom pb-1 px-2">
+				<span>实名状态<br></span>
+				<span id="status"></span>
+			</div>
 			<div class="text-center mt-4">
 				<span>如需修改实名信息，请联系人工客服</span>
 			</div>
@@ -131,6 +135,7 @@
 						$('#home2').show();
 						$('#home2 #name').text(data.data.name);
 						$('#home2 #type').text(data.data.type);
+						$('#home2 #status').text(data.data.status);
 					}else if(data.code==300){
 						window.location.href=decodeURIComponent(data.data);
 					}else{
