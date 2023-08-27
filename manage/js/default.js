@@ -22,7 +22,7 @@ var sftools={
 		let token=$.cookie('sf_token');
 		$.ajax({
 			type:"POST",
-			url:"https://sf-api.suxber.live://sf-api.suxber.live/"+data.url,
+			url:"https://sf-api.suxber.live/"+data.url,
 			data:JSON.stringify({"data":data.data,"account":token}),
 			timeout:data.timeout,
 			contentType:"application/json;charset=UTF-8",
