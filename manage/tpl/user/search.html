@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>账户搜索 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="card-search mb-2-5">
+					            <div class="row">
+					            	<div class="col-md-4">
+					            		<div class="row">
+					            			<label class="col-sm-4 col-form-label">
+					            				<span class="text-danger">*</span>搜索内容
+											</label>
+					            			<div class="col-sm-8">
+					            				<input type="text" class="form-control pull-left" name="data" value=""
+					            				placeholder="用户ID/昵称/手机号/登录名">
+					            			</div>
+					            		</div>
+					            	</div>
+					            	<div class="col-md-4">
+					            		<button class="btn btn-primary me-1">搜索</button>
+					            	</div>
+					            </div>
+					        </div>
+					        <div class="table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>用户名</th>
+											<th>昵称</th>
+											<th>密保手机</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">账户信息</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					  <div class="modal-body">
+					  </div>
+					  <div class="modal-body">
+							<div class="d-flex flex-wrap">
+								<a class="btn btn-primary me-1 mb-1" href="./edit.html?"><i class="mdi mdi-pencil"></i> 资料维护</a>
+								<a class="btn btn-primary me-1 mb-1" href="./realname.html?"><i class="mdi mdi-card-account-details"></i> 实名认证</a>
+								<a class="btn btn-primary me-1 mb-1" href="./notice.html?"><i class="mdi mdi-bell-ring"></i> 消息弹窗</a>
+								<a class="btn btn-primary me-1 mb-1" href="../logs.html?"><i class="mdi mdi-book-clock"></i> 账户日志</a>
+								<a class="btn btn-primary me-1 mb-1" href="../wallet/order.html?"><i class="mdi mdi-order-bool-ascending"></i> 账单管理</a>
+								<a class="btn btn-primary me-1 mb-1" href="../wallet/ticket-list.html?"><i class="mdi mdi-ticket"></i> 券票管理</a>
+								<a class="btn btn-primary me-1 mb-1" href="../wallet/charge.html?"><i class="mdi mdi-progress-star"></i> 积分操作</a>
+								<a class="btn btn-primary me-1 mb-1" href="../wallet/charge.html?"><i class="mdi mdi-cash"></i> 余额操作</a>
+							</div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=0;
+			$('.card-search button').click(function(){
+				search()
+			})
+			function search(p=false){
+				if(!p){
+					page=0
+				}
+				sftools.api({
+					url:"Admin/GetUserDetail",
+					data:{"type":false,"data":$("input[name='data']").val()},
+				},function(e){
+					$('tbody').html('')
+					for(var n=0;n<e.length;n++){
+						let status='<span class="badge bg-success">正常</span>'
+						if(e[n].status==1||e[n].status==2){
+							status='<span class="badge bg-warning">限制</span>'
+						}else if(e[n].status==3||e[n].status==4){
+							status='<span class="badge bg-primary">冻结</span>'
+						}else if(e[n].status!==0){
+							status='<span class="badge bg-danger">封禁</span>'
+						}
+						$('tbody').append('<tr><td>'+e[n].id+'</td><td>'+e[n].username+'</td><td>'+e[n].nick+'</td><td>'+e[n].mobile+'</td><td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>');
+					}
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let userid=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"Admin/GetUserDetail",
+					data:{"type":true,"data":userid},
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body:first').html('')
+					$('#detail .modal-body:first').append('<div class="d-flex justify-content-between"><div><p>账户ID：'+e.id+'</p><p>账户登录名：'+e.username+'</p><p>账户昵称：'+e.nick+'</p><p>密保手机：'+e.mobile+'</p></div><img src="'+e.avatar+'" style="width:4rem;height:4rem;"/></div>')
+					$('#detail .modal-body:first').append('<p>绑定QQ：'+e.qq+'</p><p>用户等级：'+e.role+'</p><<p>账户余额：'+e.balance+'</p><p>账户积分：'+e.points+'</p><p>用户签订协议版本：'+e.agreement+'</p><p>注册时间：'+timetostring(e.create_time)+'</p><p>注册ip：'+e.create_ip+'</p><p>最近一次登录时间：'+timetostring(e.last_time)+'</p><p>最近一次登录ip：'+e.last_ip+'</p>')
+					let device=JSON.parse(e.device)
+					$('#detail .modal-body:first').append('<p>账户绑定设备：</p>')
+					for(var n=0;n<device.length;n++){
+						$('#detail .modal-body:first').append('<span class="badge bg-primary">'+device[n].id+'</span> <span class="badge bg-warning">'+timetostring(device[n].create_time)+'</span> <span class="badge bg-success">'+timetostring(device[n].last_time)+'</span><br>')
+					}
+					let rn='<span class="badge bg-warning">未实名</span>'
+					if(e.realname!==0){
+						rn='<span class="badge bg-success">已实名</span>'
+					}
+					$('#detail .modal-body:first').append('<p>实名状态：'+rn+'</p>')
+					let status='<span class="badge bg-success">正常</span>'
+					if(e.status==1){
+						status='<span class="badge bg-warning">限制 - 可自助解除</span>'
+					}else if(e.status==2){
+						status='<span class="badge bg-warning">限制 - 到时自动解除</span>'
+					}else if(e.status==3){
+						status='<span class="badge bg-primary">冻结 - 可自助解除</span>'
+					}else if(e.status==4){
+						status='<span class="badge bg-primary">冻结 - 需人工解除</span>'
+					}else if(e.status!==0){
+						status='<span class="badge bg-danger">封禁</span>'
+					}
+					$('#detail .modal-body:first').append('<p>账户状态：'+status+'</p>')
+					if(e.status!==0){
+						$('#detail .modal-body:first').append('<p>解封时间：'+timetostring(e.baned_time)+'</p><p>封禁原因：'+e.baned_reason+'</p>')
+					}
+				},
+				function(){});
+			});
+			$('.modal-body a').click(function (e) {
+				e.stopPropagation();
+				e.preventDefault();
+				let userid=$('.modal-body:first p:first').html().substr(5);
+				window.open($(this).attr('href')+'id='+userid, 'newwin', 'toolbar=no,scrollbars=no,menubar=no,location=no,height=420,width=860');
+				return false;
+			});
+		</script>
+	</body>
+</html>

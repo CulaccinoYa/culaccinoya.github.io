@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>消息弹窗 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="row">
+					        	<div class="col-md-4">
+					        		<div class="row">
+					        			<label class="col-sm-4 col-form-label">
+					        				<span class="text-danger">*</span>用户ID
+					        			</label>
+					        			<div class="col-sm-8">
+					        				<input type="text" class="form-control pull-left" name="user" value=""
+					        				placeholder="用户ID">
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="col-md-4">
+					        		<button class="btn btn-primary me-1">搜索</button>
+					        	</div>
+					        </div>
+					        <div class="mt-2 table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>用户</th>
+											<th>应用</th>
+											<th>类型</th>
+											<th>标题</th>
+											<th>内容</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">弹窗详情</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					  <div class="modal-body">
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var search_user='';
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='user']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			$('button:first').click(function(){
+				search($("input[name='user']").val(),1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(search_user,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(search_user,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(search_id,$("input[name='page']").val())
+				}
+			});
+			function search(user,p){
+				console.log(page)
+				sftools.api({
+					url:"Admin/GetUserNoticeList",
+					data:{"user":user,"page":p},
+				},function(e){
+					$('tbody').html('')
+					search_user=user;
+					page=e.page
+					$('li[name="page"]').html(e.count+'条记录 共 '+e.pages+' 页')
+					$('input[name="page"]').val(e.page)
+					if(e.page>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.page>=e.pages){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					let html=''
+					for(var n=0;n<e.data.length;n++){
+						html=html+'<tr><td>'+e.data[n].id+'</td>'
+						html=html+'<td>'+e.data[n].user+'</td>'
+						html=html+'<td>'+e.data[n].appid+'</td>'
+						let type='通知栏消息'
+						if(e.data[n].type==1)type='消息弹窗';
+						else if(e.data[n].type==2)type='消息弹窗 - 跳转网页';
+						else if(e.data[n].type==3)type='确认弹窗 - 跳转网页';
+						else if(e.data[n].type==4)type='跳转网页';
+						html=html+'<td>'+type+'</td>'
+						html=html+'<td>'+e.data[n].title+'</td>'
+						html=html+'<td>'+e.data[n].detail+'</td>'
+						let status='<span class="badge bg-primary">未读</span>'
+						if(e.data[n].status==1){
+							status='<span class="badge bg-success">已读</span>'
+						}
+						html=html+'<td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+					}
+					$('tbody').html(html)
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let id=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"Admin/GetUserNoticeDetail",
+					data:id
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body').html('')
+					html='<p>记录ID：'+e.id+'</p>'
+					html=html+'<p>用户ID：'+e.user+'</p>'
+					html=html+'<p>操作应用：'+e.appid+'</p>'
+					let type='通知栏消息'
+					if(e.type==1)type='消息弹窗';
+					else if(e.type==2)type='消息弹窗 - 跳转网页';
+					else if(e.type==3)type='确认弹窗 - 跳转网页';
+					else if(e.type==4)type='跳转网页';
+					html=html+'<p>弹窗类型：'+type+'</p>'
+					html=html+'<p>弹窗标题：'+e.title+'</p>'
+					html=html+'<p>弹窗内容：'+e.detail+'</p>'
+					html=html+'<p>弹窗数据：</p><p>'+e.data+'</p>'
+					html=html+'<p>创建时间：'+timetostring(e.create_time)+'</p>'
+					html=html+'<p>创建IP：'+e.create_ip+'</p>'
+					let status='<span class="badge bg-primary">未读</span>'
+					if(e.status==1){
+						html=html+'<p>接收时间：'+timetostring(e.last_time)+'</p>'
+						html=html+'<p>接收IP：'+e.last_ip+'</p>'
+						status='<span class="badge bg-success">已读</span>'
+					}
+					html=html+'<p>当前状态：'+status+'</p>'
+					$('#detail .modal-body').html(html)
+				},
+				function(){});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>资料维护 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="row">
+								<label class="col-sm-4 col-form-label">
+									<span class="text-danger">*</span>用户ID
+								</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control pull-left" name="user" value=""
+									placeholder="用户ID">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-primary me-1">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card" name="detail" style="display:none;">
+						<div class="card-header"><div class="card-title">资料维护</div></div>
+					    <div class="card-body">
+					    </div>
+						<footer class="card-footer">
+							<button class="btn btn-primary" name="detail-true">保存</button>
+						</footer>
+					</div>
+					<div class="card" name="freeze" style="display:none;">
+						<div class="card-header"><div class="card-title">冻结限制</div></div>
+					    <div class="card-body">
+							<div id="freeze-status"></div>
+							<label class="form-label">设置新状态：</label>
+							<select class="form-select" name="freeze-new">
+								<option value="0">正常</option>
+								<option value="1">限制 - 需自助</option>
+								<option value="2">限制 - 需到时</option>
+								<option value="3">冻结 - 需自助</option>
+								<option value="4">冻结 - 需人工</option>
+								<option value="5">永久封禁</option>
+							</select>
+							<div class="mb-3">
+								<label class="form-label">状态时间</label>
+								<input class="form-control" id="freeze_time" placeholder="YYYY-MM-DD HH:MM:SS" readonly>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">封禁原因</label>
+								<input class="form-control" id="freeze_reason">
+							</div>
+						</div>
+						<footer class="card-footer">
+							<button class="btn btn-primary me-1" name="freeze-true">保存</button>
+						</footer>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card" name="safetools" style="display:none;">
+						<div class="card-header"><div class="card-title">密保变更</div></div>
+					    <div class="card-body">
+							<div id="safetools"></div>
+							<p>登录密码：</p>
+							<input class="form-control" name="pwd"/><p>
+					    </div>
+						<footer class="card-footer">
+							<button class="btn btn-primary me-1" name="safetools-true">保存</button>
+						</footer>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/laydate.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=0;
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='user']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			laydate.render({
+				elem: '#freeze_time',
+				type: 'datetime'
+			});
+			$('button:first').click(function(){
+				sftools.api({
+					url:"Admin/GetUserDetail",
+					data:{"type":true,"data":$("input[name='user']").val()},
+				},function(e){
+					$('.card[name="detail"] .card-body').html('')
+					$('.card[name="detail"] .card-body').append('<div class="d-flex justify-content-between"><div><p>账户ID：'+e.id+'</p><p>账户登录名：</p><input class="form-control" name="username" value="'+e.username+'"/><p>账户昵称：</p><input class="form-control" name="nick" value="'+e.nick+'"/><p>账户等级：</p><select class="form-select" name="role"><option>普通会员</option><option>轻量会员</option><option>星钻会员</option><option>管理员</option><option>超级管理员</option><option>调试账户</option></select></div><div class="text-center"><img name="avatar" src="'+e.avatar+'" class="d-block" style="width:4rem;height:4rem;"/><a href="javascript:avatar();">修改头像</a></div></div>')
+					$('select[name="role"]').val(e.role)
+					let status='<span class="badge bg-success">正常</span>'
+					if(e.status==1){
+						status='<span class="badge bg-warning">限制 - 可自助解除</span>'
+					}else if(e.status==2){
+						status='<span class="badge bg-warning">限制 - 到时自动解除</span>'
+					}else if(e.status==3){
+						status='<span class="badge bg-primary">冻结 - 可自助解除</span>'
+					}else if(e.status==4){
+						status='<span class="badge bg-primary">冻结 - 需人工解除</span>'
+					}else if(e.status!==0){
+						status='<span class="badge bg-danger">封禁</span>'
+					}
+					$('#freeze-status').html('')
+					$('select[name="freeze-new"]').val(e.status)
+					$('#freeze-status').append('<p>账户状态：'+status+'</p>')
+					timetostring(e.baned_time)
+					if(e.status!==0){
+						$('#freeze_time').val(timetostring(e.baned_time))
+						$('#freeze-status').append('<p>解封时间：'+timetostring(e.baned_time)+'</p><p>封禁原因：'+e.baned_reason+'</p>')
+					}
+					$('#safetools').append('<p>密保手机号码：</p><input class="form-control" name="mobile" value="'+e.mobile+'"/><p>绑定QQ：</p><input class="form-control" name="qq" value="'+e.qq+'"/>')
+					$('.card[name="detail"]').show();
+					$('.card[name="freeze"]').show();
+					$('.card[name="safetools"]').show();
+				},
+				function(){});
+			});
+			$('button[name="safetools-true"]').click(function(){
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '修改密保工具后，将无法还原，确定继续操作吗',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"Admin/ChangeUserSafeTools",
+									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
+										"mobile":$('input[name="mobile"]').val(),
+										"qq":$('input[name="qq"]').val(),
+										"pwd":$('input[name="pwd"]').val()
+									}},
+								},function(e){
+									$('button:first').click();
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'修改成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+			$('button[name="detail-true"]').click(function(){
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '修改用户资料后，将无法还原，确定继续操作吗',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"Admin/ChangeUserProfile",
+									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
+										"username":$('input[name="username"]').val(),
+										"nick":$('input[name="nick"]').val(),
+										"avatar":$('img[name="avatar"]').attr("src"),
+										"role":$('select[name="role"]').val()
+									}},
+								},function(e){
+									$('button:first').click();
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'修改成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+			$('button[name="freeze-true"]').click(function(){
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '修改用户状态后，将无法还原，确定继续操作吗',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"Admin/ChangeUserStatus",
+									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
+										"type":$('select[name="freeze-new"]').val(),
+										"reason":$('#freeze_reason').val(),
+										"time":(new Date($('#freeze_time').val()).getTime()/1000).toString()
+									}},
+								},function(e){
+									$('button:first').click();
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'修改成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+			function avatar(){
+			    $.confirm({
+			        title: '修改头像地址',
+			        content: '<div class="form-group p-1 mb-0">'+
+			                 '  <input type="text" placeholder="请输入新的头像地址" class="form-control">'+
+			                 '</div>',
+			        buttons: {
+			            "确认": {
+			                btnClass: 'btn-warning',
+			                action: function() {
+			                    var input = this.$content.find('input');
+			                    if (!input) {
+			                        $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'字段不能为空'});
+			                        return false;
+			                    } else {
+									$('img[name="avatar"]').attr("src",input);
+			                    }
+			                }
+			            },
+						'取消': {btnClass: 'btn-danger'},
+						'恢复默认': {
+							action: function() {
+							    $('img[name="avatar"]').attr("src","https://sf-api.suxber.live://s1.ax1x.com/2023/01/08/pSVjmo8.png");
+							}
+						}
+			            
+			        }
+			    });
+			}
+		</script>
+	</body>
+</html>

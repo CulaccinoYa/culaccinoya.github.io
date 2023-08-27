@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>设备管理 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="row">
+					        	<div class="col-md-4">
+					        		<div class="row">
+					        			<label class="col-sm-4 col-form-label">
+					        				<span class="text-danger">*</span>搜索凭证
+					        			</label>
+					        			<div class="col-sm-8">
+					        				<input type="text" class="form-control pull-left" name="deviceid" value=""
+					        				placeholder="设备品牌/设备型号/设备ID">
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="col-md-4">
+					        		<button class="btn btn-primary me-1">搜索</button>
+					        	</div>
+					        </div>
+					        <div class="mt-2 table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>品牌</th>
+											<th>型号</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">设备详情</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					  <div class="modal-body">
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var search_id='';
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='deviceid']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			$('button:first').click(function(){
+				search($("input[name='deviceid']").val(),1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(search_id,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(search_id,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(search_id,$("input[name='page']").val())
+				}
+			});
+			function search(id,p){
+				console.log(page)
+				sftools.api({
+					url:"Admin/GetDeviceList",
+					data:{"data":id,"page":p},
+				},function(e){
+					$('tbody').html('')
+					search_id=id;
+					page=e.page
+					$('li[name="page"]').html(e.count+'条记录 共 '+e.pages+' 页')
+					$('input[name="page"]').val(e.page)
+					if(e.page>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.page>=e.pages){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					let html=''
+					for(var n=0;n<e.data.length;n++){
+						html=html+'<tr><td>'+e.data[n].id+'</td>'
+						html=html+'<td>'+e.data[n].brand+'</td>'
+						html=html+'<td>'+e.data[n].model+'</td>'
+						let status='<span class="badge bg-success">正常</span>'
+						if(e.data[n].status!==0)status='<span class="badge bg-danger">异常</span>';
+						html=html+'<td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+					}
+					$('tbody').html(html)
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let id=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"Admin/GetDeviceDetail",
+					data:id
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body').html('')
+					html='<p>记录ID：'+e.id+'</p>'
+					html=html+'<p>设备品牌：'+e.brand+'</p>'
+					html=html+'<p>设备型号：'+e.model+'</p>'
+					html=html+'<p>设备ID：'+e.device_id+'</p>'
+					html=html+'<p>创建时间：'+timetostring(e.create_time)+'</p>'
+					html=html+'<p>创建IP：'+e.create_ip+'</p>'
+					html=html+'<p>最后使用时间：'+timetostring(e.last_time)+'</p>'
+					html=html+'<p>最后使用IP：'+e.last_ip+'</p>'
+					let status='<span class="badge bg-success">正常</span>'
+					if(e.status!==0){
+						status='<span class="badge bg-danger">异常</span>'
+					}
+					html=html+'<p>状态：'+status+'</p>'
+					$('#detail .modal-body').html(html)
+				},
+				function(){});
+			});
+		</script>
+	</body>
+</html>

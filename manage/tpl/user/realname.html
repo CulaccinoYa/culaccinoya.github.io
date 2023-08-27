@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>实名认证 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="row">
+								<label class="col-sm-4 col-form-label">
+									<span class="text-danger">*</span>用户ID
+								</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control pull-left" name="user" value=""
+									placeholder="用户ID">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-primary me-1">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row align-items-start">
+				<div class="col-md-6">
+					<div class="card" name="info" style="display:none;">
+						<div class="card-header"><div class="card-title">实名信息</div></div>
+					    <div class="card-body">
+					    </div>
+						<footer class="card-footer" style="display:none;">
+							<button class="btn btn-primary" name="del-true">注销</button>
+						</footer>
+					</div>
+					<div class="card" name="photo" style="display:none;">
+						<div class="card-header"><div class="card-title">实名留存照片</div></div>
+					    <div class="card-body">
+					    </div>
+						<footer class="card-footer">
+							<button class="btn btn-primary" name="photo-true">新增</button>
+						</footer>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card" name="detail" style="display:none;">
+						<div class="card-header"><div class="card-title">变更资料</div></div>
+					    <div class="card-body">
+							<div class="mb-3">
+								<label class="form-label">姓名</label>
+								<input class="form-control" id="name"/>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">证件号码</label>
+								<input class="form-control" id="idno"/>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">证件类型</label>
+								<select class="form-select" id="idtype">
+									<option>居民身份证</option>
+									<option>港澳通行证</option>
+									<option>港澳身份证</option>
+									<option>台湾通行证</option>
+									<option>外国护照</option>
+									<option>其他</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">性别</label>
+								<select class="form-select" id="sex">
+									<option>男</option>
+									<option>女</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">生日</label>
+								<input class="form-control" id="birth"/>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">证件地址</label>
+								<textarea rows="3" class="form-control" id="address"></textarea>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">验证状态</label>
+								<select class="form-select" id="status">
+									<option>正常</option>
+									<option>人工审核</option>
+									<option>人证比对不通过</option>
+									<option>人证信息有误</option>
+									<option>冒用他人信息</option>
+									<option>身份信息已注销</option>
+									<option>公检法要求停用</option>
+									<option>注销</option>
+									<option>停用</option>
+								</select>
+							</div>
+							<a href="javascript:addkey();">添加字段</a>
+							<div id="other"></div>
+					    </div>
+						<footer class="card-footer">
+							<button class="btn btn-primary" name="detail-true">保存</button>
+						</footer>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/laydate.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var other={};
+			var photo={};
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='user']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			laydate.render({
+				elem: '#freeze_time',
+				type: 'datetime'
+			});
+			$('button:first').click(function(){
+				$('.card[name="detail"] input').val('');
+				$('.card[name="detail"] textarea').val('');
+				$('.card[name="detail"] #other').html('');
+				$('.card[name="photo"] .card-body').html('');
+				other={}
+				photo={}
+				sftools.api({
+					url:"Admin/GetUserRealname",
+					data:$("input[name='user']").val(),
+				},function(e){
+					$('.card[name="info"] .card-body').html('')
+					$('.card[name="info"] .card-body').append('<div class="d-flex justify-content-between"><div><p>账户ID：'+e.data.user.id+'</p><p>账户登录名：'+e.data.user.username+'</p><p>账户昵称：'+e.data.user.nick+'</p></div><img src="'+e.data.user.avatar+'" style="width:4rem;height:4rem;"/></div>')
+					$('.card[name="info"]').show();
+					$('.card[name="detail"]').show();
+					$('.card[name="photo"]').show();
+					if(e.status){
+						$('.card[name="info"] .card-body').append('<p>实名登记状态：<p><span class="badge bg-success">已实名</span>')
+					}else{
+						$('.card[name="add"]').show();
+						$('.card[name="info"] .card-body').append('<p>实名登记状态：<p><span class="badge bg-warning">未实名</span>')
+						return;
+					}
+					$('.card[name="info"] .card-footer').show()
+					$('.card[name="info"] .card-body').append('<p>登记时间：'+timetostring(e.data.data.create_time)+'</p><p>登记IP地址：'+e.data.data.create_ip+'</p><p>核验时间：'+timetostring(e.data.data.verify_time)+'</p>')
+					$('.card[name="detail"] #name').val(e.data.data.name);
+					$('.card[name="detail"] #idno').val(e.data.data.idno);
+					$('.card[name="detail"] #idtype').val(e.data.data.idtype);
+					$('.card[name="detail"] #sex').val(e.data.data.sex);
+					$('.card[name="detail"] #birth').val(e.data.data.birth);
+					$('.card[name="detail"] #address').val(e.data.data.address);
+					$('.card[name="detail"] #status').val(e.data.data.type);
+					$('.card[name="detail"] #other').html('');
+					other=JSON.parse(e.data.data.other);
+					for(const [key, value] of Object.entries(other)){
+						$('.card[name="detail"] #other').append('<div class="mb-3"><label class="form-label">'+key+'</label><div class="d-flex flex-row"><div class="col-10"><input class="form-control" id="'+key+'" value="'+value+'"/></div><button class="btn btn-danger"><i class="mdi mdi-close"></i></button></div></div>');
+					}
+					$('.card[name="photo"] .card-body').html('');
+					photo=JSON.parse(e.data.data.image);
+					for(const [key, value] of Object.entries(photo)){
+						$('.card[name="photo"] .card-body').append('<div class="mb-3"><label class="form-label">'+key+'</label><br><img style="height:8rem;" src="'+value+'"/></div>');
+					}
+					change()
+				},
+				function(){});
+			});
+			$('button[name="del-true"]').click(function(){
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '注销实名信息后，将无法还原，确定继续操作吗',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								for(const [key, value] of Object.entries(other)){
+									other[key]=$('#other #'+key).val()
+								}
+								sftools.api({
+									url:"Admin/DelUserRealname",
+									data:$('.d-flex:first p:first').html().substr(5),
+								},function(e){
+									$('button:first').click();
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'注销成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+			$('button[name="detail-true"]').click(function(){
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '修改实名信息后，将无法还原，确定继续操作吗',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								for(const [key, value] of Object.entries(other)){
+									other[key]=$('#other #'+key).val()
+								}
+								sftools.api({
+									url:"Admin/ChangeUserRealname",
+									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
+										"name":$('.card[name="detail"] #name').val(),
+										"idno":$('.card[name="detail"] #idno').val(),
+										"idtype":$('.card[name="detail"] #idtype').val(),
+										"sex":$('.card[name="detail"] #sex').val(),
+										"birth":$('.card[name="detail"] #birth').val(),
+										"address":$('.card[name="detail"] #address').val(),
+										"status":$('.card[name="detail"] #status').val(),
+										"other":JSON.stringify(other),
+										"image":JSON.stringify(photo)
+									}},
+								},function(e){
+									$('button:first').click();
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'修改成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+			$('button[name="photo-true"]').click(function(){
+				$.confirm({
+				    title: '新增字段',
+				    content: '<div class="form-group p-1 mb-0">'+
+				             '  <input type="text" placeholder="新的字段名称" class="form-control">'+
+							 '  <input type="text" placeholder="字段数据" name="data" class="form-control">'+
+				             '</div>',
+				    buttons: {
+				        "确认": {
+				            btnClass: 'btn-warning',
+				            action: function() {
+				                var input = this.$content.find('input:first');
+								var image = this.$content.find('input[name="data"]');
+								console.log(input)
+								console.log(image)
+				                if (!input) {
+				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'字段不能为空'});
+				                    return false;
+				                } else {
+									photo[input.val()]=image.val();
+									$('.card[name="photo"] .card-body').append('<div class="mb-3"><label class="form-label">'+input.val()+'</label><br><img style="height:8rem;" src="'+image.val()+'"/></div>');
+									change()
+								}
+				            }
+				        },
+						'取消': {btnClass: 'btn-danger'}
+				    }
+				});
+			});
+			function addkey(){
+				$.confirm({
+				    title: '新增字段',
+				    content: '<div class="form-group p-1 mb-0">'+
+				             '  <input type="text" placeholder="新的字段名称" class="form-control">'+
+				             '</div>',
+				    buttons: {
+				        "确认": {
+				            btnClass: 'btn-warning',
+				            action: function() {
+				                var input = this.$content.find('input');
+				                if (!input) {
+				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'字段不能为空'});
+				                    return false;
+				                } else {
+									other[input.val()]='';
+									$('.card[name="detail"] #other').append('<div class="mb-3"><label class="form-label">'+input.val()+'</label><div class="d-flex flex-row"><div class="col-10"><input class="form-control" id="'+input.val()+'" value=""/></div><button class="btn btn-danger"><i class="mdi mdi-close"></i></button></div></div>');
+									change()
+								}
+				            }
+				        },
+						'取消': {btnClass: 'btn-danger'}
+				    }
+				});
+			}
+			function change(){
+				$('#other button').click(function(){
+					var key=$(this).parent().parent().find('label').html()
+					var html=$(this).parent().parent();
+					$.confirm({
+					    title: '二次确认',
+						icon:'mdi mdi-alert',
+					    content: '确定要删除字段"'+key+'"吗',
+						autoClose: '取消|10000',
+						buttons: {
+						    "确认": {
+						        btnClass: 'btn-warning',
+						        action: function() {
+									delete other[key];
+									html.remove();
+						        }
+						    },
+						    "取消":function(){}
+						}
+					});
+				});
+				$('.card[name="photo"] img').click(function(){
+					var key=$(this).parent().find('label').html()
+					var html=$(this).parent();
+					$.confirm({
+					    title: '二次确认',
+						icon:'mdi mdi-alert',
+					    content: '确定要删除照片"'+key+'"吗',
+						autoClose: '取消|10000',
+						buttons: {
+						    "确认": {
+						        btnClass: 'btn-warning',
+						        action: function() {
+									delete photo[key];
+									html.remove();
+						        }
+						    },
+						    "取消":function(){}
+						}
+					});
+				});
+			}
+		</script>
+	</body>
+</html>
