@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>SF工具箱后台管理系统</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="./js/bootstrap-multitabs/multitabs.min.css">
+		<link rel="stylesheet" type="text/css" href="./css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="./css/style.min.css">
+	</head>
+	<body class="lyear-index">
+		<div class="lyear-layout-web">
+			<div class="lyear-layout-container">
+				<!--左侧导航-->
+				<aside class="lyear-layout-sidebar">
+					<!-- logo -->
+					<div id="logo" class="sidebar-header">
+						<a href="index.html">
+							<img style="height: 3.2rem;" src="https://s1.ax1x.com/2023/01/08/pSVjmo8.png"/>
+						</a>
+					</div>
+					<div class="lyear-layout-sidebar-info lyear-scroll">
+						<nav class="sidebar-main">
+							<ul class="nav-drawer">
+								<li class="nav-item active">
+									<a class="multitabs" href="tpl/main.html" id="default-page">
+										<i class="mdi mdi-home"></i>
+										<span>首页</span>
+									</a>
+								</li>
+								<li class="nav-item nav-item-has-subnav">
+									<a href="javascript:void(0)">
+										<i class="mdi mdi-account"></i>
+										<span>账户管理</span>
+									</a>
+									<ul class="nav nav-subnav">
+										<li><a class="multitabs" href="tpl/user/search.html">账户搜索</a></li>
+										<li><a class="multitabs" href="tpl/user/edit.html">资料维护</a></li>
+										<li><a class="multitabs" href="tpl/user/realname.html">实名验证</a></li>
+										<li><a class="multitabs" href="tpl/user/notice.html">消息弹窗</a></li>
+										<li><a class="multitabs" href="tpl/user/device.html">设备管理</a></li>
+									</ul>
+								</li>
+								<li class="nav-item nav-item-has-subnav">
+									<a href="javascript:void(0)">
+										<i class="mdi mdi-wallet"></i>
+										<span>钱包管理</span>
+									</a>
+									<ul class="nav nav-subnav">
+										<li><a class="multitabs" href="tpl/wallet/order.html">账单管理</a></li>
+										<li class="nav-item nav-item-has-subnav">
+										    <a href="javascript:;">券票管理</a>
+										    <ul class="nav nav-subnav">
+										        <li><a class="multitabs" href="tpl/wallet/ticket-list.html">券票列表</a></li>
+												<li><a class="multitabs" href="tpl/wallet/ticket-model.html">券票模板</a></li>
+										    </ul>
+										</li>
+										<li class="nav-item nav-item-has-subnav">
+										    <a href="javascript:;">积分管理</a>
+										    <ul class="nav nav-subnav">
+										        <li><a class="multitabs" href="tpl/wallet/point-charge.html">积分操作</a></li>
+												<li><a class="multitabs" href="tpl/wallet/point-goods.html">积分商品设置</a></li>
+										    </ul>
+										</li>
+										<li><a class="multitabs" href="tpl/wallet/charge.html">余额操作</a></li>
+									</ul>
+								</li>
+								<li class="nav-item">
+									<a class="multitabs" href="tpl/logs.html">
+										<i class="mdi mdi-file-document-multiple"></i>
+										<span>日志管理</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+						<div class="sidebar-footer">
+							<p class="copyright">
+								<span>Copyright &copy; 2023.</span>
+								<a target="_blank" href="//sf.suxber.live">SF工具箱</a>
+								<span>All rights reserved.</span>
+							</p>
+						</div>
+					</div>
+				</aside>
+				<!--End 左侧导航-->
+				<!--头部信息-->
+				<header class="lyear-layout-header">
+					<nav class="navbar">
+						<div class="navbar-left">
+							<div class="lyear-aside-toggler">
+								<span class="lyear-toggler-bar"></span>
+								<span class="lyear-toggler-bar"></span>
+								<span class="lyear-toggler-bar"></span>
+							</div>
+						</div>
+						<a href="javascript:;" onclick="logout()">
+							<i class="mdi mdi-logout-variant"></i>
+							<span>退出登录</span>
+						</a>
+					</nav>
+				</header>
+				<main class="lyear-layout-content">
+					<div id="iframe-content">
+					</div>
+				</main>
+				<!--End 页面主要内容-->
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script type="text/javascript" src="./js/bootstrap-multitabs/multitabs.min.js"></script>
+		<script type="text/javascript" src="./js/index.min.js"></script>
+	</body>
+
+</html>
