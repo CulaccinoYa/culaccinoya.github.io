@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>概览 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.min.css">
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+			    <div class="col-md-6 col-xl-3">
+					<div class="card bg-primary text-white">
+						<div class="card-body">
+						    <div class="d-flex justify-content-between">
+								<span class="avatar-md rounded-circle bg-white bg-opacity-25 avatar-box">
+						            <i class="mdi mdi-account fs-4"></i>
+						        </span>
+						        <span class="fs-4">{{user_num}}</span>
+						    </div>
+						    <div class="text-end">总用户数量</div>
+						</div>
+					</div>
+			    </div>
+			    
+			    <div class="col-md-6 col-xl-3">
+					<div class="card bg-danger text-white">
+						<div class="card-body">
+							<div class="d-flex justify-content-between">
+								<span class="avatar-md rounded-circle bg-white bg-opacity-25 avatar-box"><i class="mdi mdi-tshirt-crew fs-22"></i></span>
+								<span class="fs-4">{{wash_num}}</span>
+							</div>
+							<div class="text-end">总洗衣总数</div>
+						</div>
+					</div>
+			    </div>
+			    
+			    <div class="col-md-6 col-xl-3">
+					<div class="card bg-warning text-white">
+						<div class="card-body clearfix">
+							<div class="d-flex justify-content-between">
+								<span class="avatar-md rounded-circle bg-white bg-opacity-25 avatar-box"><i class="mdi mdi-bike fs-22"></i></span>
+								<span class="fs-4">{{bike_num}}</span>
+							</div>
+							<div class="text-end">总骑行总数</div>
+						</div>
+					</div>
+			    </div>
+			    
+			    <div class="col-md-6 col-xl-3">
+					<div class="card bg-success text-white">
+						<div class="card-body clearfix">
+							<div class="d-flex justify-content-between">
+								<span class="avatar-md rounded-circle bg-white bg-opacity-25 avatar-box"><i class="mdi mdi-bullhorn fs-22"></i></span>
+								<span class="fs-4">{{start_num}}</span>
+							</div>
+							<div class="text-end">近7天使用次数</div>
+						</div>
+					</div>
+			    </div>
+
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+				  	<div class="card">
+				  	    <div class="card-header">
+							<div class="card-title">近7天使用频率</div>
+				  	    </div>
+				  	    <div class="card-body">
+							<canvas class="js-chartjs-bars" width="506" height="252" style="display: block; box-sizing: border-box; height: 201.6px; width: 404.8px;"></canvas>
+				  	    </div>
+				  	</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">登入日志</div></div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead>
+										<tr><th>时间</th>
+										<th>IP地址</th></tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="http://lyear.itshubao.com/iframe/v5/js/chart.min.js"></script>
+		<script src="../js/default.js"></script>
+		<script>
+			$(function(){
+				sftools.api({
+					url:"Admin/Overview",
+					data:JSON.stringify({}),
+				},function(e){
+					$('span:contains("{{user_num}}")').text(e.times.user);
+					$('span:contains("{{bike_num}}")').text(e.times.bike);
+					$('span:contains("{{wash_num}}")').text(e.times.wash);
+					$('span:contains("{{start_num}}")').text(e.times.start);
+					$('tbody').html('')
+					for(var n=0;n<e.log.length;n++){
+						$('tbody').append('<tr><td>'+e.log[n][0]+'</td><td>'+e.log[n][1]+'</td></tr>');
+					}
+					var label=[]
+					var timed=[]
+					for(var n=0;n<e.use.length;n++){
+						label.push(e.use[n].time)
+						timed.push(e.use[n].times)
+					}
+					new Chart(jQuery('.js-chartjs-bars')[0].getContext('2d'), {
+						type: 'bar',
+						data: {
+							labels: label,
+							datasets: [{
+								label: '使用次数',
+								borderWidth: 1,
+								borderColor: 'rgba(0, 0, 0, 0)',
+								backgroundColor: 'rgba(0, 123, 255,0.5)',
+								hoverBackgroundColor: "rgba(0, 123, 255, 0.7)",
+								hoverBorderColor: "rgba(0, 0, 0, 0)",
+								data: timed
+							}]
+						}
+					})
+				},
+				function(){});
+			})
+		</script>
+	</body>
+</html>
