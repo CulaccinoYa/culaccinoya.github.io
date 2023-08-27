@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>账单管理 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="row">
+					        	<div class="col-md-4">
+					        		<div class="row">
+					        			<label class="col-sm-4 col-form-label">
+					        				<span class="text-danger">*</span>用户ID
+					        			</label>
+					        			<div class="col-sm-8">
+					        				<input type="text" class="form-control pull-left" name="user" value=""
+					        				placeholder="用户ID">
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="col-md-4">
+					        		<button class="btn btn-primary me-1">搜索</button>
+					        	</div>
+					        </div>
+					        <div class="mt-2 table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>用户</th>
+											<th>支付方</th>
+											<th>名称</th>
+											<th>订单号</th>
+											<th>金额</th>
+											<th>创建时间</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">0条记录 共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">账单详情</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					<div class="modal-body">
+					</div>
+					<div class="modal-footer">
+					    <button type="button" class="btn btn-danger" style="display:none;">取消订单</button>
+					    <button type="button" class="btn btn-primary" style="display:none;">退款</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://sf-api.suxber.live://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var search_id='';
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='user']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			$('button:first').click(function(){
+				search($("input[name='user']").val(),1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(search_id,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(search_id,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(search_id,$("input[name='page']").val())
+				}
+			});
+			function search(id,p){
+				console.log(page)
+				sftools.api({
+					url:"Admin/GetWalletBillList",
+					data:{"data":id,"page":p},
+				},function(e){
+					$('tbody').html('')
+					search_id=id;
+					page=e.page
+					$('li[name="page"]').html(e.count+'条记录 共 '+e.pages+' 页')
+					$('input[name="page"]').val(e.page)
+					if(e.page>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.page>=e.pages){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					let html=''
+					for(var n=0;n<e.data.length;n++){
+						html=html+'<tr><td>'+e.data[n].id+'</td>'
+						html=html+'<td>'+e.data[n].user+'</td>'
+						html=html+'<td>'+e.data[n].counterparty+'</td>'
+						html=html+'<td>'+e.data[n].name+'</td>'
+						html=html+'<td>'+e.data[n].order+'</td>'
+						let amount=''
+						if(e.data[n].type==1){amount='<span class="text-success">+'+e.data[n].pay_amount+"</span>";}
+						else{amount='-'+e.data[n].pay_amount;}
+						html=html+'<td>'+amount+'</td>'
+						html=html+'<td>'+timetostring(e.data[n].create_time)+'</td>'
+						let status='';
+						if(e.data[n].status==1)status='<span class="badge bg-success">已支付</span>';
+						else if(e.data[n].status==2)status='<span class="badge bg-warning">待支付</span>';
+						else if(e.data[n].status==3)status='<span class="badge bg-primary">已取消</span>';
+						else if(e.data[n].status==4)status='<span class="badge bg-purple">有退款</span>';
+						else if(e.data[n].status==5)status='<span class="badge bg-danger">支付中止</span>';
+						html=html+'<td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+					}
+					$('tbody').html(html)
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let id=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"Admin/GetWalletBillDetail",
+					data:id
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body').html('')
+					html='<p>账单ID：'+e.id+'</p>'
+					html=html+'<p>账单用户：'+e.user+'</p>'
+					html=html+'<p>支付方：'+e.counterparty+'</p>'
+					html=html+'<p>订单编号：'+e.order+'</p>'
+					html=html+'<p>附属订单：</p>'
+					let ancillary_orders=JSON.parse(e.ancillary_orders)
+					for(var n=0;n<ancillary_orders.length;n++){
+						html=html+'<span class="badge bg-primary me-1">'+ancillary_orders[n]+'</span>'
+					}
+					if(e.status==2||e.status==3)html=html+'<p>订单额外获得积分：'+e.points+'</p>';
+					else{html=html+'<p>订单获得积分：'+e.points+'</p>';}
+					if(e.type==1){html=html+'<p>订单金额：<span class="text-success">+'+e.amount+'</span></p><p>实付金额：<span class="text-success">+'+e.pay_amount+"</span></p>";}
+					else{html=html+'<p>订单金额：-'+e.amount+'</p><p>实付金额：-'+e.pay_amount+"</p>"}
+					if(e.canuseyh==0){html=html+'<p>优惠限制：<span class="badge bg-danger">限制</span></p>'}
+					else{$('#detail button:contains("退款")').show();html=html+'<p>优惠限制：<span class="badge bg-success">无限制</span></p>'}
+					html=html+'<p>券票优惠：</p>'
+					let discount=JSON.parse(e.discount)
+					for(var n=0;n<discount.length;n++){
+						html=html+'<span class="badge bg-primary me-1">'+discount[n].name+' '+discount[n].amount+'元</span>'
+					}
+					html=html+'<p>商家优惠：</p>'
+					let pay_discount=JSON.parse(e.pay_discount)
+					for(var n=0;n<pay_discount.length;n++){
+						html=html+'<span class="badge bg-primary me-1">'+pay_discount[n].name+' '+pay_discount[n].amount+'元</span>'
+					}
+					html=html+'<p>订单名称：'+e.name+'</p>'
+					html=html+'<p>订单附带信息：</p><p>'+e.describe+'</p>'
+					html=html+'<p>创建时间：'+timetostring(e.create_time)+'</p>'
+					html=html+'<p>支付时间：'+timetostring(e.order_time)+'</p>'
+					html=html+'<p>创建IP：'+e.create_ip+'</p>'
+					let status='';
+					if(e.status==1)status='<span class="badge bg-success">已支付</span>';
+					else if(e.status==2){$('#detail button:contains("退款")').hide();if(e.data[n].type!=1){$('#detail button:contains("取消支付")').show();}status='<span class="badge bg-warning">待支付</span>';}
+					else if(e.status==3){$('#detail button:contains("退款")').hide();status='<span class="badge bg-primary">已取消</span>';}
+					else if(e.status==4){$('#detail button:contains("退款")').hide();status='<span class="badge bg-purple">有退款</span>';}
+					else if(e.status==5){$('#detail button:contains("退款")').hide();html=html+'<p>中止原因：'+e.baned_reason+'</p>';status='<span class="badge bg-danger">支付中止</span>';}
+					html=html+'<p>状态：'+status+'</p>'
+					$('#detail .modal-body').html(html)
+				},
+				function(){});
+			});
+			$('#detail button:contains("退款")').click(function(){
+				$('#detail').modal('hide');
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$.confirm({
+				    title: '退款',
+				    content: '<div class="form-group p-1 mb-0">'+
+				             '  <input type="text" placeholder="退款金额" class="form-control" />'+
+				             '  <input type="text" placeholder="退款原因" name="reason" class="form-control" />'+
+				             '</div>',
+				    buttons: {
+				        "确认": {
+				            btnClass: 'btn-warning',
+				            action: function() {
+				                var amount = this.$content.find('input:first');
+				                var reason = this.$content.find('input[name="reason"]');
+				                if (!amount||!reason) {
+				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'不能为空'});
+									$('#detail').modal('show');
+				                    return false;
+				                } else {
+									sftools.api({
+										url:"Admin/refundBill",
+										data:{"id":id,"amount":amount.val(),"reason":reason.val()}
+									},function(e){
+										$('button:first').click();
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'退款成功',content:''});
+									});
+				                }
+				            }
+				        },
+						'取消': {btnClass: 'btn-danger',action: function() {$('#detail').modal('show');}}
+				        
+				    }
+				});
+			});
+			$('#detail button:contains("取消订单")').click(function(){
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '取消订单后，用户将无法进行支付，依靠该订单的应用可能会无法正常使用，确定继续操作吗',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"Admin/CancelBill",
+									data:id,
+								},function(e){
+									$('button:first').click();
+									$('#detail').modal('hide');
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'取消成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
