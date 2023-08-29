@@ -179,7 +179,7 @@
 					    "确认": {
 					        btnClass: 'btn-warning',
 					        action: function() {
-								let data={"user":$('#detail span[name="user"]').html(),"amount":$('#amount').val(),"reason":$('textarea[name="reason"]').text(),"type":$('#type').val()}
+								let data={"user":$('#detail span[name="user"]').html(),"amount":$('#amount').val(),"reason":$('#reason').val(),"type":$('#type').val()}
 								if($('#type').val()=="充值"){
 									data.name=$('#charge-type select').val();
 								}else{
