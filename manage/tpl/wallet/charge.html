@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>余额操作 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="row">
+								<label class="col-sm-4 col-form-label">
+									<span class="text-danger">*</span>用户ID
+								</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control pull-left" name="user" value=""
+									placeholder="用户ID">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-primary me-1">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="alert alert-danger">
+				<p><i class="mdi mdi-alert"></i> 在余额操作前务必做到以下几点：</p>
+				<p>&emsp;&emsp;1.操作类型必须按照事实选择，以免后期清账出错</p>
+				<p>&emsp;&emsp;2.进行充值操作时，备注填写充值订单号；进行赠送操作时，备注填写赠送原因。</p>
+				<p>&emsp;&emsp;3."消费"指的是生成一个未支付的订单，由用户自行支付，"划扣"指的是生成一个已支付的订单，系统自动扣款</p>
+				<p>&emsp;&emsp;4.进行"消费"和"划扣"操作前，务必仔细确认操作账户，并在备注处填写原因</p>
+				<p><b>信息填写完成后务必再次确认，一旦提交将无法撤回操作！！！</b></p>
+			</div>
+			<div class="row" id="detail" style="display:none;">
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">用户信息</div></div>
+					    <div class="card-body">
+							<div class="d-flex justify-content-between">
+								<div>
+									<p>账户ID：<span name="user"></span></p>
+									<p>账户登录名：<span name="username"></span></p>
+									<p>账户昵称：<span name="nick"></span></p>
+									<p>账户余额：<span name="balance"></span></p>
+								</div>
+								<img style="width:4rem;height:4rem;">
+							</div>
+					    </div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">余额操作</div></div>
+					    <div class="card-body">
+							<div class="mb-3">
+								<label class="form-label">操作类型</label>
+								<select class="form-select" id="type">
+									<option>充值</option>
+									<option>赠送</option>
+									<option>消费</option>
+									<option>划扣</option>
+								</select>
+							</div>
+							<div class="mb-3" id="charge-type">
+								<label class="form-label">充值渠道</label>
+								<select class="form-select">
+									<option>微信支付</option>
+									<option>微信支付·信用卡</option>
+									<option>Wechat Pay</option>
+									<option>支付宝</option>
+									<option>支付宝·花呗/信用卡</option>
+									<option>Alipay</option>
+									<option>Alipay·HK</option>
+									<option>QQ钱包</option>
+									<option>云闪付</option>
+									<option>银联UnionPay</option>
+									<option>银联汇款/转账</option>
+									<option>Visa</option>
+									<option>Mastercard</option>
+									<option>Paypal</option>
+									<option>数字人民币(试点地区)</option>
+									<option>数字人民币(非试点地区)</option>
+									<option>中国移动和包</option>
+									<option>中国电信翼支付</option>
+									<option>西联汇款</option>
+									<option>现金·外币</option>
+									<option>现金·人民币</option>
+								</select>
+							</div>
+							<div class="mb-3" id="name" style="display:none;">
+								<label class="form-label">操作名称</label>
+								<input class="form-control"/>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">操作金额</label>
+								<input type="number" class="form-control" id="amount"/>
+							</div>
+							<div class="mb-3" id="ticket" style="display:none;">
+							    <div class="form-check">
+							        <input type="checkbox" class="form-check-input"/>
+							        <label class="form-check-label not-user-select">允许使用券票</label>
+							    </div>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">备注</label>
+								<textarea class="form-control" id="reason" rows="3"></textarea>
+							</div>
+					    </div>
+						<footer class="card-footer">
+							<button class="btn btn-primary" name="charge-true">操作</button>
+						</footer>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/laydate.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var other={};
+			var photo={};
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='user']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			$('button:first').click(function(){
+				sftools.api({
+					url:"Admin/GetUserDetail",
+					data:{"type":true,"data":$("input[name='user']").val()},
+				},function(e){
+					$('#detail').show()
+					$('#detail span[name="user"]').html(e.id)
+					$('#detail span[name="username"]').html(e.username)
+					$('#detail span[name="nick"]').html(e.nick)
+					$('#detail span[name="balance"]').html(e.balance)
+					$('#detail img').attr("src",e.avatar)
+				});
+			});
+			$('#type').change(function(){
+				if($('#type').val()=="充值"){
+					$('#charge-type').show()
+					$('#name').hide()
+				}else{
+					if($('#type').val()=="消费"){
+						$('#ticket').show()
+					}else{
+						$('#ticket').hide()
+					}
+					$('#charge-type').hide()
+					$('#name').show()
+				}
+			})
+			$('button[name="charge-true"]').click(function(){
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '进行余额操作后将无法撤回，请谨慎操作',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								let data={"user":$('#detail span[name="user"]').html(),"amount":$('#amount').val(),"reason":$('textarea[name="reason"]').text(),"type":$('#type').val()}
+								if($('#type').val()=="充值"){
+									data.name=$('#charge-type select').val();
+								}else{
+									if($('#type').val()=="消费"){
+										data.ticket=$('#ticket input').prop("checked");
+									}
+									data.name=$('#name input').val();
+								}
+								sftools.api({
+									url:"Admin/AddBill",
+									data:data,
+								},function(e){
+									$('button:first').click();
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'操作成功',content:''});
+								});
+					        }
+					    },
+					    "取消":function(){}
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

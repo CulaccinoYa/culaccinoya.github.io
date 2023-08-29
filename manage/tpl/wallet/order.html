@@ -77,8 +77,8 @@
 					<div class="modal-body">
 					</div>
 					<div class="modal-footer">
-					    <button type="button" class="btn btn-danger" style="display:none;">取消订单</button>
-					    <button type="button" class="btn btn-primary" style="display:none;">退款</button>
+					    <button type="button" class="btn btn-danger">取消订单</button>
+					    <button type="button" class="btn btn-primary">退款</button>
 					</div>
 				</div>
 			</div>
@@ -141,6 +141,7 @@
 						html=html+'<td>'+e.data[n].order+'</td>'
 						let amount=''
 						if(e.data[n].type==1){amount='<span class="text-success">+'+e.data[n].pay_amount+"</span>";}
+						else if(e.data[n].status==2){amount='-'+e.data[n].amount;}
 						else{amount='-'+e.data[n].pay_amount;}
 						html=html+'<td>'+amount+'</td>'
 						html=html+'<td>'+timetostring(e.data[n].create_time)+'</td>'
@@ -164,6 +165,8 @@
 				},function(e){
 					$('#detail').modal('show');
 					$('#detail .modal-body').html('')
+					$('#detail button:contains("取消订单")').hide();
+					$('#detail button:contains("退款")').hide();
 					html='<p>账单ID：'+e.id+'</p>'
 					html=html+'<p>账单用户：'+e.user+'</p>'
 					html=html+'<p>支付方：'+e.counterparty+'</p>'
@@ -175,10 +178,10 @@
 					}
 					if(e.status==2||e.status==3)html=html+'<p>订单额外获得积分：'+e.points+'</p>';
 					else{html=html+'<p>订单获得积分：'+e.points+'</p>';}
-					if(e.type==1){html=html+'<p>订单金额：<span class="text-success">+'+e.amount+'</span></p><p>实付金额：<span class="text-success">+'+e.pay_amount+"</span></p>";}
-					else{html=html+'<p>订单金额：-'+e.amount+'</p><p>实付金额：-'+e.pay_amount+"</p>"}
+					if(e.type==1){html=html+'<p>订单金额：<span class="text-success">+'+e.amount+'</span></p>';if(e.status!==2&&e.status!==3){html=html+'<p>实付金额：<span class="text-success">+'+e.pay_amount+'</span></p>'}}
+					else{html=html+'<p>订单金额：-'+e.amount+'</p>';if(e.status!==2&&e.status!==3){html=html+'<p>实付金额：-'+e.pay_amount+'</p>'}}
 					if(e.canuseyh==0){html=html+'<p>优惠限制：<span class="badge bg-danger">限制</span></p>'}
-					else{$('#detail button:contains("退款")').show();html=html+'<p>优惠限制：<span class="badge bg-success">无限制</span></p>'}
+					else{html=html+'<p>优惠限制：<span class="badge bg-success">无限制</span></p>'}
 					html=html+'<p>券票优惠：</p>'
 					let discount=JSON.parse(e.discount)
 					for(var n=0;n<discount.length;n++){
@@ -192,14 +195,13 @@
 					html=html+'<p>订单名称：'+e.name+'</p>'
 					html=html+'<p>订单附带信息：</p><p>'+e.describe+'</p>'
 					html=html+'<p>创建时间：'+timetostring(e.create_time)+'</p>'
-					html=html+'<p>支付时间：'+timetostring(e.order_time)+'</p>'
 					html=html+'<p>创建IP：'+e.create_ip+'</p>'
 					let status='';
-					if(e.status==1)status='<span class="badge bg-success">已支付</span>';
-					else if(e.status==2){$('#detail button:contains("退款")').hide();if(e.data[n].type!=1){$('#detail button:contains("取消支付")').show();}status='<span class="badge bg-warning">待支付</span>';}
-					else if(e.status==3){$('#detail button:contains("退款")').hide();status='<span class="badge bg-primary">已取消</span>';}
-					else if(e.status==4){$('#detail button:contains("退款")').hide();status='<span class="badge bg-purple">有退款</span>';}
-					else if(e.status==5){$('#detail button:contains("退款")').hide();html=html+'<p>中止原因：'+e.baned_reason+'</p>';status='<span class="badge bg-danger">支付中止</span>';}
+					if(e.status==1){html=html+'<p>交易时间：'+timetostring(e.order_time)+'</p>';if(e.type==2){$('#detail button:contains("退款")').show()};status='<span class="badge bg-success">已支付</span>'}
+					else if(e.status==2){if(e.type==2){$('#detail button:contains("取消订单")').show();};status='<span class="badge bg-warning">待支付</span>';}
+					else if(e.status==3){html=html+'<p>取消时间：'+timetostring(e.order_time)+'</p>';status='<span class="badge bg-primary">已取消</span>';}
+					else if(e.status==4){html=html+'<p>交易时间：'+timetostring(e.order_time)+'</p>';status='<span class="badge bg-purple">有退款</span>';}
+					else if(e.status==5){html=html+'<p>中止时间：'+timetostring(e.order_time)+'</p>';html=html+'<p>中止原因：'+e.baned_reason+'</p>';status='<span class="badge bg-danger">支付中止</span>';}
 					html=html+'<p>状态：'+status+'</p>'
 					$('#detail .modal-body').html(html)
 				},
