@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+        <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<style>body{background:#f5f6f7}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}@keyframes fadeInRight{0%{opacity:0;transform:translateX(20px)}100%{opacity:1;transform:translateX(0)}}.img{width: 100%;height: 100vh;}.container{animation-name:fadeInRight;animation-duration:.8s;animation-fill-mode:both}@media(prefers-color-scheme: dark){body{background:#2C3033;color:white}.card,.card-body{color:white;background:#202125;}.jconfirm{color:black;}}</style>
+		<title>SF工具箱应用</title>
+	</head>
+	<body>
+	    <div class="container p-3">
+		    <h2><b>青年大学习</b></h2>
+		    <p class="text-secondary">Youth learning</p>
+		</div>
+		<div class="container p-3" style="margin-top:-2rem">
+		    <div class="card border border-0 border-top border-5 border-primary shadow-sm rounded">
+		        <div class="card-body">
+		            <h5><b>使用说明</b></h5>
+		            <p>&emsp;&emsp;等待二维码刷新出来，然后截图本页面，打开微信的[扫一扫]，在相册中选择截图进入。<br>&emsp;&emsp;微信显示非官方网页为正常现象，直接点击继续访问即可</p>
+		        </div>
+		    </div>
+		    <div class="card mt-4 border border-0 shadow-sm rounded">
+		        <div class="card-body text-center">
+		            <h5 class="text-start"><b>二维码</b></h5>
+		            <img src="data:image;base64,R0lGODlhBAAEAIAAAMzMzAAAACH5BAAAAAAALAAAAAAEAAQAAAIEhI8JBQA7" style="margin:0 auto;text-align:center;height:12rem;width:12rem" id="qrcode" />
+		        </div>
+		    </div>
+		    <div class="card mt-4 border border-0 border-top border-5 border-warning shadow-sm rounded">
+		        <div class="card-body">
+		            <h5><b>注意</b></h5>
+		            <p>&emsp;&emsp;本功能依赖于<span class="text-primary">SF工具箱</span>，请勿将二维码发布、分享、转发给他人使用！<br>&emsp;&emsp;二维码为一人一码，且有效期为生成二维码的2分钟内，若同一账户生成的二维码被多人使用，将会被<span class="text-danger">禁止使用该功能</span>。</p>
+		        </div>
+		    </div>
+		</div>
+		<script>
+		    window.sftools.init(()=>{
+			    window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first()},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+			});
+			function first(){
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:10000,
+					url:"https://sf-api.suxber.live/MiniApp/YoungStudy",
+					data:JSON.stringify({"data":{"wechat":"false"},"account":{"user":user,"token":token}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							document.getElementById("qrcode").src='https://api.pwmqr.com/qrcode/create/?url='+encodeURIComponent(data.data);
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试',buttons:[],closeIcon:false}); 
+					}
+				});
+			}
+		</script>
+	</body>
+</html>
