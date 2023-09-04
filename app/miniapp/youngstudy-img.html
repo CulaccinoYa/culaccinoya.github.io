@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+        <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<style>body{margin:0}.img{width: 100%;height: 100vh;}</style>
+		<title>SF工具箱应用</title>
+	</head>
+	<body>
+	    <img class='img' src='' />
+		<script>
+			$(function(){first()});
+			function first(){
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				$.ajax({
+					type:"POST",
+					timeout:10000,
+					url:"https://sf-api.suxber.live/MiniApp/YoungStudy",
+					data:JSON.stringify({"data":{"wechat":true,"param":getvalue("param"),"sign":getvalue("sign")},"account":{}}),
+					contentType:"application/json;charset=UTF-8",
+					success:function (data) {
+						loading.close();
+					    if(data.code==200){
+							$('img').attr('src',data.data.img)
+							document.title=data.data.title
+						}else{
+							$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+						}
+					},
+					error:function (msg) {
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试',buttons:[],closeIcon:false}); 
+					}
+				});
+			}
+			function getvalue(variable) {
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+				for (var i = 0; i < vars.length; i++) {
+				    var pair = vars[i].split("=");
+				    if (pair[0] == variable) {
+				        return pair[1]
+				    }
+				}
+				return (false)
+			}
+		</script>
+	</body>
+</html>
