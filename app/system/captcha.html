@@ -4,117 +4,83 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
-		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
 		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
-		<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-		<title>安全验证</title>
-		<style>.jconfirm{color:black;}</style>
+		<style>p{margin: 0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+		<title>行为验证</title>
 	</head>
 	<body>
 		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
 			<div style="display:block;text-align:center;margin-top:40vh;">
-				<div class="spinner-grow" role="status">
-					<span class="visually-hidden"></span>
-				</div>
-				<div class="spinner-grow" role="status">
-					<span class="visually-hidden"></span>
-				</div>
-				<div class="spinner-grow" role="status">
-					<span class="visually-hidden"></span>
-				</div>
-				<p Style="display:block">加载中...</p>
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
 			</div>
 			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
-				<a class="text-secondary text-decoration-none" href="location.href='./hcaptcha.html?'+location.search.substring(1);">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?点我试试</a>
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
 			</div>
 		</div>
-	    <div class="container p-3" id="index">
-		    <h2><b>身份验证</b></h2>
-		    <p class="text-secondary">Are you human?</p>
-		    <div class="card border border-0 border-top border-5 border-primary shadow rounded">
-		        <div class="card-body text-center">
-		            <p><b>请完成下方的验证码</b></p>
-		            <div class="cf-turnstile" data-sitekey="0x4AAAAAAABnpKdXbnHGn-LQ" data-callback="captchareturn"></div>
-		        </div>
-		    </div>
-		    <div class="mt-4 text-center">
-		        <a class="text-decoration-none" style="font-size:.8rem;" href="javascript:location.href='./hcaptcha.html?'+location.search.substring(1);">看不见验证码？换一个</a>
+		<div class="p-4">
+		    <h3><b>请完成下方验证</b></h3>
+		    <p style="font-size: .8rem;">Are you Robot?</p>
+		    <div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body" id="body">
+					
+				</div>
 		    </div>
 		</div>
-		
-        <div class="container p-3" id="fail">
-		    <h2><b>身份验证</b></h2>
-		    <p class="text-secondary">Are you human?</p>
-		    <div class="card border border-0 border-top border-5 border-primary shadow rounded">
-		        <div class="card-body text-center">
-		            <img src="https://s1.ax1x.com/2022/12/27/zzwQqf.png" style="height:8rem;" />
-		            <h5 class="mt-5"><b>抱歉，验证失败了</b></h5>
-		            <p>有时候，更换网络环境或许能解决...</p>
-		        </div>
-		    </div>
-		    <button class="col-12 mt-4 btn btn-primary rounded-pill">返回</button>
-		</div>
-
-		<script type="text/javascript" src="/uni.webview.js"></script>
-	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
-	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
-	    <script>
+		<script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://static.geetest.com/v4/gt4.js"></script>
+        <script>
 			document.onreadystatechange = function(){
 				if(document.readyState == 'complete'){
 					document.getElementById("preloader").style.display="none";
 				}
 			}
-	        $(function(){
-	            $('#fail').hide();
-	        });
-            $('#fail button').click(_=>{
-                if(getvalue('api')=='1'){
-        			uni.navigateBack(); 
-        		}else{
-        			window.history.go(-1);
-        		}
-            });
-            function captchareturn(res){
-				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div> </div>',buttons:[],closeIcon:false});
-        		$.ajax({
-        			type:"POST",
-        			url:"https://sf-api.suxber.live/System/Captcha",
-        			data:JSON.stringify({"data":{"type":"cloudflare","token":getvalue('token'),"sign":getvalue('sign'),"code":res}}),
-					contentType:"application/json;charset=UTF-8",
-        			success:function (data) {
-						loading.close();
-        				if(data.code==200){
-        				    $('.progress-bar').css('width','100%');
-        				    if(getvalue('api')=='1'){
-        				        uni.navigateBack(); 
-        				    }else{
-        				        window.history.go(-1);
-        				    }
-        				}else{
-        				    $.alert({title:'错误',type:'red',content:data.msg});
-        				    $('#index').hide();
-        				    $('#fail').show();
-        				}
-        			},
-        			error:function (msg) {
-						loading.close();
-        			    $.alert({title:'错误',type:'red',content:'你的网络有些问题，请检查网络后再试'});
-        			    $('#index').hide();
-        				$('#fail').show();
-        			}
-        		});
-			}
+			initGeetest4({
+			    captchaId:'105969cff8897b7211c64420a6f9029e',
+				product: 'popup'
+			},function (captcha) {
+			    captcha.appendTo("#body");
+				captcha.onSuccess(function(){
+					var code = captcha.getValidate();
+					code.token=getvalue('token');
+					let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div> </div>',buttons:[],closeIcon:false});
+					$.ajax({
+						type:"POST",
+						url:"https://sf-api.suxber.live/System/Captcha",
+						data:JSON.stringify({"data":code}),
+						contentType:"application/json;charset=UTF-8",
+						success:function (data) {
+							loading.close();
+							captcha.reset();
+							if(data.code==200){
+								if(getvalue('api')=='1'){
+									uni.navigateBack(); 
+								}else{
+									window.history.go(-1);
+								}
+							}else{
+								$.alert({title:'错误',type:'red',content:data.msg});
+							}
+						},
+						error:function (msg) {
+							loading.close();
+							captcha.reset();
+							$.alert({title:'错误',type:'red',content:'你的网络有些问题，请检查网络后再试'});
+						}
+					});
+				})
+			});
 			function getvalue(variable) {
 				var query = window.location.search.substring(1);
 				var vars = query.split("&");
-			    for (var i = 0; i < vars.length; i++) {
-			        var pair = vars[i].split("=");
-			        if (pair[0] == variable) {
-			            return pair[1]
-			        }
-			    }
-			    return (false)
+				for (var i = 0; i < vars.length; i++) {
+					var pair = vars[i].split("=");
+					if (pair[0] == variable) {
+						return pair[1]
+					}
+				}
+				return ''
 			}
-	    </script>
+        </script>
 	</body>
 </html>
