@@ -58,6 +58,7 @@
 								}else{
 									window.history.go(-1);
 								}
+								$.alert({title:'',type:'green',content:'验证已完成，请退出本页面继续操作',buttons:[],closeIcon:false});
 							}else{
 								$.alert({title:'错误',type:'red',content:data.msg});
 							}
