@@ -119,32 +119,22 @@
 		});
 		function first(){
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>获取状态中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-			$.ajax({
-				type:"POST",
-				timeout:60000,
-				url:"https://sf-api.suxber.live/Account/GetRealnameStatus",
-				data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
-				contentType:"application/json;charset=UTF-8",
-				success:function (data) {
-					loading.close();
-				    if(data.code==200){
-						if(!data.data.success){
-							$('#home').show();
-							return;
-						}
-						$('#home2').show();
-						$('#home2 #name').text(data.data.name);
-						$('#home2 #type').text(data.data.type);
-						$('#home2 #status').text(data.data.status);
-					}else if(data.code==300){
-						window.location.href=decodeURIComponent(data.data);
-					}else{
-						$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+			window.sftools.request({
+				url:"Account/GetRealnameStatus",
+				data:{"type":'sendcode',"user":user,"mobile":mobile},
+				success:function(data){
+					if(!data.data.success){
+						$('#home').show();
+						return;
 					}
-				},
-				error:function (msg) {
-				    loading.close();
-					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试',buttons:[],closeIcon:false}); 
+					$('#home2').show();
+					$('#home2 #name').text(data.data.name);
+					$('#home2 #type').text(data.data.type);
+					$('#home2 #status').text(data.data.status);
+					loading.close();
+				},fail:i=>{
+					loading.close();
+					$.alert({title:'错误',type:'red',content:i,buttons:[],closeIcon:false}); 
 				}
 			});
 		}
@@ -172,65 +162,45 @@
 				return;
 			}
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-			$.ajax({
-				type:"POST",
-				timeout:30000,
-				url:"https://sf-api.suxber.live/Account/RealnameByNumber",
-				data:JSON.stringify({"data":{"type":"reg","name":name,"idno":idno},"account":{"user":user,"token":token}}),
-				contentType:"application/json;charset=UTF-8",
-				success:function (data) {
+			window.sftools.request({
+				url:"Account/RealnameByNumber",
+				data:{"type":"reg","name":name,"idno":idno},
+				success:function(data){
 					loading.close();
-				    if(data.code==200){
-						window.sftools.run({type:'face_auth',data:{id:data.data}},e=>{
-							let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-							$.ajax({
-								type:"POST",
-								timeout:30000,
-								url:"https://sf-api.suxber.live/Account/RealnameByNumber",
-								data:JSON.stringify({"data":{"type":"face","name":name,"idno":idno,"faceid":e},"account":{"user":user,"token":token}}),
-								contentType:"application/json;charset=UTF-8",
-								success:function (data) {
-									loading.close();
-								    if(data.code==200){
-										if(data.msg=='请求已完成'){
-											location.reload();
-											return;
-										}
-										$('#finish #title').text('实名出错');
-										$('#finish #subtitle').text(data.msg);
-										$('#step1-1').hide();
-										$('#finish').show();
-									}else if(data.code==300){
-										window.location.href=decodeURIComponent(data.data);
-									}else{
-										$.alert({title:'错误',type:'red',content:data.msg}); 
-									}
-								},
-								error:function (msg) {
-								    loading.close();
-									$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					window.sftools.run({type:'face_auth',data:{id:data.data}},e=>{
+						let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+						window.sftools.request({
+							url:"Account/RealnameByNumber",
+							data:{"type":"face","name":name,"idno":idno,"faceid":e},
+							success:function (data) {
+								loading.close();
+								if(data.msg=='请求已完成'){
+									location.reload();
+									return;
 								}
-							});
-						},e=>{
-							$.alert({title:'错误',type:'red',content:e}); 
+								$('#finish #title').text('实名出错');
+								$('#finish #subtitle').text(data.msg);
+								$('#step1-1').hide();
+								$('#finish').show();
+							},fail:i=>{
+								loading.close();
+								$.alert({title:'错误',type:'red',content:i}); 
+							}
 						});
-					}else if(data.code==300){
-						window.location.href=decodeURIComponent(data.data);
-					}else{
-						$.alert({title:'错误',type:'red',content:data.msg}); 
-					}
-				},
-				error:function (msg) {
-				    loading.close();
-					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					},e=>{
+						$.alert({title:'错误',type:'red',content:e}); 
+					});
+				},fail:i=>{
+					loading.close();
+					$.alert({title:'错误',type:'red',content:i}); 
 				}
 			});
 		})
 		$('#frontbtn').click(_=>{
-			window.sftools.run({type:'uploadImage',data:{type:0}},e=>{front=e;$('#frontimg').attr('src','https://sf-file.suxber.live/files/'+user+'/'+e)},e=>{});
+			window.sftools.run({type:'uploadImage',data:{type:0}},e=>{front=e;$('#frontimg').attr('src',e)},e=>{});
 		})
 		$('#backbtn').click(_=>{
-			window.sftools.run({type:'uploadImage',data:{type:0}},e=>{back=e;$('#backimg').attr('src','https://sf-file.suxber.live/files/'+user+'/'+e)},e=>{});
+			window.sftools.run({type:'uploadImage',data:{type:0}},e=>{back=e;$('#backimg').attr('src',e)},e=>{});
 		})
 		$('#step2-1 #next').click(_=>{
 			if(!front){
@@ -242,31 +212,21 @@
 				return;
 			}
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-			$.ajax({
-				type:"POST",
-				timeout:30000,
-				url:"https://sf-api.suxber.live/Account/RealnameByIdcard",
-				data:JSON.stringify({"data":{"image":{"front":front,"back":back}},"account":{"user":user,"token":token}}),
-				contentType:"application/json;charset=UTF-8",
+			window.sftools.request({
+				url:"Account/RealnameByIdcard",
+				data:{"image":{"front":front,"back":back}},
 				success:function (data) {
 					loading.close();
-				    if(data.code==200){
-						if(data.msg=='请求已完成'){
-							location.reload();
-						}
-						$('#finish #title').text('实名审核中');
-						$('#finish #subtitle').text(data.msg);
-						$('#step2-2').hide();
-						$('#finish').show();
-					}else if(data.code==300){
-						window.location.href=decodeURIComponent(data.data);
-					}else{
-						$.alert({title:'错误',type:'red',content:data.msg}); 
+				    if(data.msg=='请求已完成'){
+						location.reload();
 					}
-				},
-				error:function (msg) {
-				    loading.close();
-					$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+					$('#finish #title').text('实名审核中');
+					$('#finish #subtitle').text(data.msg);
+					$('#step2-2').hide();
+					$('#finish').show();
+				},fail:i=>{
+					loading.close();
+					$.alert({title:'错误',type:'red',content:i}); 
 				}
 			});
 		});
