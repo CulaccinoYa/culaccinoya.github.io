@@ -122,6 +122,7 @@
 			window.sftools.request({
 				url:"Account/GetRealnameStatus",
 				success:function(data){
+					loading.close();
 					if(!data.data.success){
 						$('#home').show();
 						return;
@@ -130,7 +131,6 @@
 					$('#home2 #name').text(data.data.name);
 					$('#home2 #type').text(data.data.type);
 					$('#home2 #status').text(data.data.status);
-					loading.close();
 				},fail:i=>{
 					loading.close();
 					$.alert({title:'错误',type:'red',content:i,buttons:[],closeIcon:false}); 
