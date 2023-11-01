@@ -121,7 +121,6 @@
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>获取状态中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 			window.sftools.request({
 				url:"Account/GetRealnameStatus",
-				data:{"type":'sendcode',"user":user,"mobile":mobile},
 				success:function(data){
 					if(!data.data.success){
 						$('#home').show();
