@@ -83,4 +83,4 @@ function addWaterMarker() {
     dom.style.backgroundImage = "url(" + can.toDataURL("image/png") + ")";
 }
 
-if(location.href.slice(-10)!=='index.html')addWaterMarker(),setInterval("addWaterMarker()",1000);
+if(location.href.indexOf('index.html')==-1)addWaterMarker(),setInterval("addWaterMarker()",1000);
