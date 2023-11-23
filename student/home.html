@@ -51,7 +51,7 @@
 						<div class="card-body">
 							<div class="card-title"><b>计分说明</b></div>
 						    <span>当前分数计算公式如下：</span><br>
-							<span><b>基础分60 + 加分项 - 扣分项 = 当前分数</b></span><br><br>
+							<span><b>基础分80 + 加分项 - 扣分项 = 当前分数</b></span><br><br>
 							<span class="form-text">* 当前分数为目前系统计算的大致分数，实际分数可能会因为基础分变动或其他情况发生变化，请以最终实际分数为准</span>
 							<button class="mt-2 btn btn-danger col-12 btn-sm">退出登录</button>
 						</div>
@@ -99,8 +99,23 @@
 								}
 								let score=Math.abs(data.data.data[n].score)
 								let title=data.data.data[n].title
-								$('#list').append('<div class="col-xl-3 col-md-6 my-2"><div class="card border border-0 border-top border-5 border-'+score_class+' shadow"><div class="card-body"><h6><b>'+timetostring(data.data.data[n].time)+'</b></h6><div class="d-flex justify-content-between"><span>'+title+'</span><span class="text-'+score_class+'">'+score_text+score+'分</span></div></div></div></div>')
+								$('#list').append('<div class="col-xl-3 col-md-6 my-2" data-admin="'+data.data.data[n].admin+'" '+"data-img='"+JSON.stringify(data.data.data[n].img)+"'"+'><div class="card border border-0 border-top border-5 border-'+score_class+' shadow"><div class="card-body"><h6><b>'+timetostring(data.data.data[n].time)+'</b></h6><div class="d-flex justify-content-between"><span>'+title+'</span><span class="text-'+score_class+'">'+score_text+score+'分</span></div></div></div></div>')
 							}
+							$("#list .my-2").click(function(){
+								let admin=$(this).data('admin')
+								let img=$(this).data("img")
+								if(img!=="false"){
+									y=""
+									for(var x=0;x<img.length;x++){
+										y=y+"<br><a href='javascript:"+'showimg("'+img[x]+'")'+";'>留存照片"+(x+1)+"</a>"
+									}
+									img=y
+								}else{
+									img=""
+								}
+								let content="记录上报班干："+admin+"<br><br>如对本条记录产生疑问请联系上传班干"+img
+								$.alert({type:'green',icon:"bi bi-info-circle-fill",title:'记录信息',content:content});
+							})
 						}
 					}else{
 						$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:data.msg,buttons:[],closeIcon:false});
@@ -116,5 +131,16 @@
 			$.cookie('student_id',null)
 			window.location.href="./index.html"
 		})
+		function showimg(e){
+			$.alert({title:'留存材料',content:'留存材料需登录维格云才能显示<br><img src="'+e+'"/>',buttons:{
+				"登录维格云":{
+					btnClass:"btn-orange",
+					action:function(){
+						window.location.href="https://vika.cn/login"
+					}
+				},
+				"好的":{}
+			}});
+		}
 	</script>
 </html>
