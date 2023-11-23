@@ -7,7 +7,7 @@ jconfirm.defaults={
 		cancel:{text:"取消"}
 	}
 }
-var Host="http://sf-api.suxber.live:2052/"
+var Host="https://sf-api.suxber.live:2053/"
 function getvalue(variable) {
 	var query = window.location.search.substring(1);
 	var vars = query.split("&");
