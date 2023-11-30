@@ -76,11 +76,16 @@
 		}
 		$(function(){
 			let user=$.cookie('student_id')
-			let loading=$.alert({content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			if(!user||!user.length){
+				window.location.href='./index.html'
+				return;
+			}
+			let loading=$.alert({content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>下载数据中，大约需要20秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 			$.ajax({
 				type:"GET",
 				url:Host+"GetUserDetail",
 				data:{"user":user},
+				timeout:20000,
 				contentType:"application/json;charset=UTF-8",
 				success:function (data) {
 				    loading.close();
@@ -99,7 +104,11 @@
 								}
 								let score=Math.abs(data.data.data[n].score)
 								let title=data.data.data[n].title
-								$('#list').append('<div class="col-xl-3 col-md-6 my-2" data-admin="'+data.data.data[n].admin+'" '+"data-img='"+JSON.stringify(data.data.data[n].img)+"'"+'><div class="card border border-0 border-top border-5 border-'+score_class+' shadow"><div class="card-body"><h6><b>'+timetostring(data.data.data[n].time)+'</b></h6><div class="d-flex justify-content-between"><span>'+title+'</span><span class="text-'+score_class+'">'+score_text+score+'分</span></div></div></div></div>')
+								let bridge=''
+								for(var x=0;x<data.data.data[n].bridge.length;x++){
+									bridge=bridge+'<span class="badge mx-1 text-bg-'+data.data.data[n].bridge[x].color+'">'+data.data.data[n].bridge[x].text+'</span>'
+								}
+								$('#list').append('<div class="col-xl-3 col-md-6 my-2" data-admin="'+data.data.data[n].admin+'" '+"data-img='"+JSON.stringify(data.data.data[n].img)+"'"+'><div class="card border border-0 border-top border-5 border-'+score_class+' shadow"><div class="card-body"><h6><b>'+timetostring(data.data.data[n].time)+'</b></h6>'+bridge+'<div class="d-flex justify-content-between"><span>'+title+'</span><span class="text-'+score_class+'">'+score_text+score+'分</span></div></div></div></div>')
 							}
 							$("#list .my-2").click(function(){
 								let admin=$(this).data('admin')
@@ -107,7 +116,7 @@
 								if(img!=="false"){
 									y=""
 									for(var x=0;x<img.length;x++){
-										y=y+"<br><a href='javascript:"+'showimg("'+img[x]+'")'+";'>留存照片"+(x+1)+"</a>"
+										y=y+"<br><a href='javascript:;' onclick='showimg("+'"'+img[x]+'"'+");'>留存照片"+(x+1)+"</a>"
 									}
 									img=y
 								}else{
@@ -132,15 +141,7 @@
 			window.location.href="./index.html"
 		})
 		function showimg(e){
-			$.alert({title:'留存材料',content:'留存材料需登录维格云才能显示<br><img src="'+e+'"/>',buttons:{
-				"登录维格云":{
-					btnClass:"btn-orange",
-					action:function(){
-						window.location.href="https://vika.cn/login"
-					}
-				},
-				"好的":{}
-			}});
+			$.alert({title:'留存材料',content:'图片正在加载，请勿关闭此页面<br><img src="'+e+'"/>'});
 		}
 	</script>
 </html>

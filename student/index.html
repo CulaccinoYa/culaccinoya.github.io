@@ -18,7 +18,7 @@
 			</div>
 		</div>
 		<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
-			<div class="card border-0 shadow col-11">
+			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
 				<div class="card-body">
 					<h3 class="mt-2">查询 操行分操作记录</h3>
 					<p class="text-secondary">请使用 学号 查询</p>
@@ -29,7 +29,8 @@
 					<div class="mb-3">
 						<div class="input-group">
 							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-							<input type="text" class="form-control" placeholder="学号">
+							<span class="input-group-text" id="basic-addon1">20202020</span>
+							<input type="text" class="form-control" placeholder="学号后4位">
 						</div>
 						<div class="form-text">* 学号格式为20202020xxxx</div>
 					</div>
@@ -52,7 +53,7 @@
 		}
 		$('button').click(function(){
 			let user=$('input').val()
-			if(!user||user.length!==12){
+			if(!user||user.length!==4){
 				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:"学号格式错误，请确认学号是否输入正确"});
 				return;
 			}
@@ -70,7 +71,7 @@
 							$.ajax({
 								type:"GET",
 								url:Host+"Login",
-								data:{"user":user},
+								data:{"user":"20202020"+user},
 								contentType:"application/json;charset=UTF-8",
 								success:function (data) {
 								    loading.close();
