@@ -7,8 +7,6 @@
 		<title>操行分查询</title>
 		<link rel="stylesheet" type="text/css" href="./css/preload.css">
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
-		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.4/font/bootstrap-icons.min.css" rel="stylesheet">
-		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
 	</head>
 	<body class="bg-light">
 		<!-- 预加载 -->
@@ -19,31 +17,14 @@
 		</div>
 		<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
 			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
-				<div class="card-body">
-					<h3 class="mt-2">查询 操行分操作记录</h3>
-					<p class="text-secondary">请使用 学号 查询</p>
-					<!-- <div class="input-group mb-3">
-						<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
-						<input type="text" class="form-control" placeholder="姓名">
-					</div> -->
-					<div class="mb-3">
-						<div class="input-group">
-							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-							<span class="input-group-text" id="basic-addon1">20202020</span>
-							<input type="text" class="form-control" placeholder="学号后4位">
-						</div>
-						<div class="form-text">* 学号格式为20202020xxxx</div>
-					</div>
-					<button class="btn btn-primary btn-sm col-12" type="button">查询</button>
+				<div class="card-body text-center">
+					<img class="col-3" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQuMDAwMDAwMDAwMDAwMDA0IiBoZWlnaHQ9IjI0LjAwMDAwMDAwMDAwMDAwNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCiA8Zz4KICA8dGl0bGU+YmFja2dyb3VuZDwvdGl0bGU+CiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9IjQwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+CiA8L2c+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPHBhdGggZmlsbD0iI2ZhNTE1MSIgaWQ9InN2Z18xIiBkPSJtMTIsMjJjLTUuNTIzLDAgLTEwLC00LjQ3NyAtMTAsLTEwczQuNDc3LC0xMCAxMCwtMTBzMTAsNC40NzcgMTAsMTBzLTQuNDc3LDEwIC0xMCwxMHptLTAuNzYzLC0xNS44NjRsMC4xMSw3LjU5NmwxLjMwNSwwbDAuMTEsLTcuNTk2bC0xLjUyNSwwem0wLjc1OSwxMC45NjdjMC41MTIsMCAwLjkwMiwtMC4zODMgMC45MDIsLTAuODgyYzAsLTAuNSAtMC4zOSwtMC44ODIgLTAuOTAyLC0wLjg4MmEwLjg3OCwwLjg3OCAwIDAgMCAtMC44OTYsMC44ODJjMCwwLjQ5OSAwLjM5NiwwLjg4MiAwLjg5NiwwLjg4MnoiLz4KIDwvZz4KPC9zdmc+"/>
+					<h5 class="mt-4">查询系统已关闭</h5>
+					<p>如需查询操行记录，请联系班干</p>
 				</div>
 			</div>
 		</div>
 	</body>
-
-	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
-	<script src="./js/default.js"></script>
 	<script>
 		// 原生js操作预加载
 		document.onreadystatechange = function(){
@@ -51,47 +32,5 @@
 				document.getElementById("preloader").style.display="none";
 			}
 		}
-		$('button').click(function(){
-			let user=$('input').val()
-			if(!user||user.length!==4){
-				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:"学号格式错误，请确认学号是否输入正确"});
-				return;
-			}
-			$.alert({
-				type:'orange',
-				icon:"bi bi-exclamation-circle-fill",
-				title:'友情提示',
-				content:"&emsp;&emsp;操行分记录属于个人隐私信息，私自查询他人操行分记录可能会导致设备封禁，请勿未经许可查看他人记录",
-				buttons:{
-					"返回":{},
-					"继续查询":{
-						btnClass:"btn-orange",
-						action:function(){
-							let loading=$.alert({content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-							$.ajax({
-								type:"GET",
-								url:Host+"Login",
-								data:{"user":"20202020"+user},
-								contentType:"application/json;charset=UTF-8",
-								success:function (data) {
-								    loading.close();
-									if(data.code==200){
-										$.alert({type:'green',icon:"bi bi-check-circle-fill",title:'查询成功，正在加载数据',content:'',buttons:[]});
-										$.cookie('student_id',data.data.user)
-										window.location.href="./home.html"
-									}else{
-										$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:data.msg});
-									}
-								},
-								error:function (msg) {
-								    loading.close();
-									$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:'无法连接到查询服务器，可能是<br><br>1.查询人数过多<br>2.查询系统已关闭<br>3.网络信号较差<br><br>建议你等待5-10秒后再次查询，操作速度过快可能会被视为机器人而封禁'});
-								}
-							});
-						}
-					}
-				}
-			});
-		})
 	</script>
 </html>
