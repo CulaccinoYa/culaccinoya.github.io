@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>购买</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<h3 class="mt-4 mx-4"><b>购买公交套餐</b></h3>
+		<div class="px-4" id="area">
+			<p style="font-size: .8rem;">请选择您购买的地区</p>
+			<div class="mt-4 card border-0 border-top border-5 border-primary shadow rounded">
+				<div class="list-group">
+					<span class="my-2 mx-4 text-center">目前已开通以下地区</span>
+					<div id="list">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="px-4" id="packet">
+			<p style="font-size: .8rem;">请选择您购买的套餐</p>
+			<div class="mt-4 card border-0 border-top border-5 border-primary shadow rounded">
+				<div class="card-body">
+					<h5></h5>
+					<span>适用范围:<br></span>
+					<span style="font-size:.8rem;"id="locus"></span>
+					<button class="col-12 btn btn-sm btn-primary rounded-pill" onclick="back1()">返回</button>
+				</div>
+			</div>
+			<div id="list"></div>
+		</div>
+		<div class="px-4" id="detail">
+			<div class="mt-4 card border-0 border-top border-5 border-primary shadow rounded">
+				<div class="card-body">
+					<h5 id="name">怀化市区电子公交码</h5>
+					<span>适用范围:<br></span>
+					<span style="font-size:.8rem;"id="locus"></span>
+					<button class="col-12 btn btn-sm btn-primary rounded-pill" onclick="back2()">返回</button>
+				</div>
+			</div>
+			<button class="col-12 btn btn-primary rounded-pill mt-4"data-id="0"id="buy">购买</button>
+			<div class="mt-4 card border-0 border-top border-5 border-primary shadow rounded">
+				<div class="card-body">
+					<div class="card-title">套餐详情</div>
+					<div class="d-flex justify-content-between">
+						<span id="title">公交套餐卡片名称</span>
+						<span class="badge rounded-pill text-bg-primary"id="type">卡片类型</span>
+					</div>
+					<span>售价：￥</span>
+					<span id="amount">0.00</span>
+					<span><br>使用规则：<br></span>
+					<span style="font-size:.8rem;"id="rule">欢迎您使用我们的公共交通业务</span>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+			document.onreadystatechange = function(){
+				if(document.readyState == 'complete'){
+					document.getElementById("preloader").style.display="none";
+				}
+			}
+			let user;
+			let token; 
+		    window.sftools.init(()=>{
+                window.sftools.run({type:'getUserToken'},e=>{user=e.user;token=e.token;first();},e=>{plus.nativeUI.alert("获取账户信息失败，"+e,_=>{uni.navigateBack()})});
+	        });
+			$(function(){
+				$('#packet').hide()
+				$('#detail').hide()
+			})
+            function first(){
+    	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+        		window.sftools.request({
+        			url:"Bus/GetCardList",
+        			success:i=>{
+        				loading.close();
+						let data=i.data
+						$('#area #list').html('')
+						for(var n=0;n<data.length;n++){
+							$('#area #list').append('<button type="button"class="list-group-item list-group-item-action"data-area="'+data[n].area+'">'+data[n].title+'</button>')
+						}
+        			},fail:i=>{
+        				loading.close();
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i}); 
+						}else if(i=="已完成行为验证"){
+							first()
+						}
+        			}
+        		});
+            };
+			function back1(){
+				$('#packet').hide()
+				$('#area').show()
+				first()
+			}
+			function back2(){
+				$('#detail').hide()
+				$('#packet').show()
+			}
+			$('#area #list').on('click','button',function(){
+				let area=$(this).data('area')
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				window.sftools.request({
+					url:"Bus/GetCardPacket",
+					data:{"area":area},
+					success:i=>{
+						loading.close();
+						let data=i.data
+						$('#area').hide()
+						$('#packet').show()
+						$('#packet h5:first').text(i.data.name)
+						let locus='';
+						for(var n=0;n<data.locus.length;n++){
+							locus=locus+data.locus[n]+"、"
+						}
+						$('#packet #locus').text(locus.substr(0,locus.length-1))
+						$('#packet #list').html('')
+						for(var n=0;n<data.list.length;n++){
+							type='按规则计费'
+							if(data.list[n].type==0){
+								type='次卡'
+							}else if(data.list[n].type==1){
+								type='小时卡'
+							}else if(data.list[n].type==2){
+								type='日卡'
+							}else if(data.list[n].type==3){
+								type='周卡'
+							}else if(data.list[n].type==4){
+								type='月卡'
+							}else if(data.list[n].type==5){
+								type='季卡'
+							}else if(data.list[n].type==6){
+								type='半年卡'
+							}else if(data.list[n].type==7){
+								type='年卡'
+							}
+							$('#packet #list').append('<div class="mt-4 card border-0 border-top border-5 border-primary shadow rounded"data-id="'+data.list[n].id+'"><div class="card-body d-flex justify-content-between"><div><h5>'+data.list[n].title+'</h5><span class="badge rounded-pill text-bg-primary">'+type+'</span></div><h5>￥'+data.list[n].amount+'</h5></div></div>')
+						}
+					},fail:i=>{
+						loading.close();
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i}); 
+						}else if(i=="已完成行为验证"){
+							first()
+						}
+					}
+				});
+			})
+			$('#packet #list').on('click','.card',function(){
+				let id=$(this).data('id')
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				window.sftools.request({
+					url:"Bus/GetCardPacketDetail",
+					data:{"id":id},
+					success:i=>{
+						loading.close();
+						let data=i.data
+						$('#packet').hide()
+						$('#detail').show()
+						$('#detail #name').text(data.area)
+						let locus='';
+						for(var n=0;n<data.locus.length;n++){
+							locus=locus+data.locus[n]+"、"
+						}
+						$('#detail #locus').text(locus.substr(0,locus.length-1))
+						type='按规则计费'
+						if(data.type==0){
+							type='次卡'
+						}else if(data.type==1){
+							type='小时卡'
+						}else if(data.type==2){
+							type='日卡'
+						}else if(data.type==3){
+							type='周卡'
+						}else if(data.type==4){
+							type='月卡'
+						}else if(data.type==5){
+							type='季卡'
+						}else if(data.type==6){
+							type='半年卡'
+						}else if(data.type==7){
+							type='年卡'
+						}
+						$('#detail #type').text(type)
+						$('#detail #amount').text(data.amount)
+						$('#detail #rule').text(data.detail)
+						$('#detail #buy').data('id',data.id)
+					},fail:i=>{
+						loading.close();
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i}); 
+						}else if(i=="已完成行为验证"){
+							first()
+						}
+					}
+				});
+			})
+			$('#detail').on('click','#buy',function(){
+				let id=$(this).data('id')
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				window.sftools.request({
+					url:"Bus/CreateOrder",
+					data:{"id":id},
+					success:i=>{
+						loading.close();
+						window.sftools.run({type:'payment',data:{'orderid':i.data}},e=>{
+							loading.close();check()
+						},e=>{
+							loading.close();$.alert({title:'支付失败',type:'red',content:e});
+						});
+					},fail:i=>{
+						loading.close();
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i}); 
+						}else if(i=="已完成行为验证"){
+							first()
+						}
+					}
+				});
+			})
+			function check(){
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>激活卡片中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				window.sftools.request({
+					url:"Bus/CheckOrder",
+					success:i=>{
+						loading.close();
+						$.alert({title:'恭喜',type:'green',content:'您已成功购买该公交套餐，目前已激活成功！'}); 
+					},fail:i=>{
+						loading.close();
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i}); 
+						}else if(i=="已完成行为验证"){
+							first()
+						}
+					}
+				});
+			}
+	    </script>
+	</body>
+</html>
