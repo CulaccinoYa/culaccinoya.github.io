@@ -200,7 +200,7 @@
 						}
 						$('#detail #type').text(type)
 						$('#detail #amount').text(data.amount)
-						$('#detail #rule').text(data.detail)
+						$('#detail #rule').html(data.detail)
 						$('#detail #buy').data('id',data.id)
 					},fail:i=>{
 						loading.close();
