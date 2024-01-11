@@ -27,7 +27,7 @@
 		            <p class="text-danger text-center" style="font-weight:bold;" id="reason"></p>
 		            <p id="times">当前账户将在<span class="text-primary">2023年1月1日 00:00</span>后自动恢复正常，在此之前，无论是自助解限还是人工客服都无法解除您的账户状态</p>
 		            <p id="time">您可以通过下方的<span class="text-primary">解除限制</span>按钮解除账户限制，解除限制后，下一次违反可能会加强惩罚，在你未进行此操作前，系统不会恢复你的账户</p>
-		            <p>若您对本次结果产生疑问，可<a href="//sf.suxber.live/app/system/group.html">联系人工客服</a></p>
+		            <p>若您对本次结果产生疑问，可<a href="//sftools.link/app/system/group.html">联系人工客服</a></p>
 				</div>
 		    </div>
 			<button class="mt-4 col-12 btn btn-primary rounded-pill">解除限制</button>
@@ -42,7 +42,8 @@
 
         <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
-        <script>
+        
+		<script>
 			document.onreadystatechange = function(){
 				if(document.readyState == 'complete'){
 					document.getElementById("preloader").style.display="none";
@@ -75,7 +76,7 @@
 				let user=getvalue('user');
 				let code=getvalue('code');
                 let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-                $.ajax({
+				$.ajax({
                 	type:"POST",
                 	timeout:10000,
                 	url:"https://sf-api.suxber.live/Account/Recovery",
@@ -87,7 +88,7 @@
                 			$('#index').hide();
                             $('#finish').show();
                 		}else if(data.code==300){
-                			window.location.href=decodeURIComponent(data.data);
+                			window.location.href=data.data;
                 		}else{
                 			$.alert({title:'错误',type:'red',content:data.msg}); 
                 		}

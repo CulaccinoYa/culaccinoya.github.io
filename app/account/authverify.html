@@ -42,10 +42,10 @@
 			<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded" style="display:none;" id="qrcode">
 			    <div class="card-body d-flex align-items-center">
 					<div><svg width="2.4rem" height="2.4rem" viewBox="0 0 48 48" fill="none"><path d="M20 6H6V20H20V6Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M20 28H6V42H20V28Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M42 6H28V20H42V6Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M29 28V42" stroke="#000" stroke-width="3" stroke-linecap="round"/><path d="M41 28V42" stroke="#000" stroke-width="3" stroke-linecap="round"/></svg></div>
-					<div class="ms-2"><p class="m-0">旧设备扫码验证</p><span class="text-secondary" style="font-size: .8rem;">人脸识别与绑定的身份信息验证</span></div>
+					<div class="ms-2"><p class="m-0">旧设备扫码验证</p><span class="text-secondary" style="font-size: .8rem;">使用已经登录该账号的设备进行验证</span></div>
 			    </div>
 			</div>
-			<div class="mt-4 text-center">以上方式都无法使用？请联系<a href="//sf.suxber.live/app/system/group.html">人工客服</a></div>
+			<div class="mt-4 text-center">以上方式都无法使用？请联系<a href="//sftools.link/app/system/group.html">人工客服</a></div>
 		</div>
 
 		<div class="p-4" id="mobile_page" style="display: none;">
@@ -135,42 +135,32 @@
 
 	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
 	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
-		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+		<script type="text/javascript" src="../../uni.webview.js"></script>
 	    <script>
 			document.onreadystatechange = function(){
 				if(document.readyState == 'complete'){
 					document.getElementById("preloader").style.display="none";
 				}
 			}
-			$(_=>{
+			window.sftools.init(()=>{
 				let user=getvalue('user');
-			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:10000,
-					url:"https://sf-api.suxber.live/Account/AuthVerify",
-					data:JSON.stringify({"data":{"type":'getways',"user":user}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-					    if(data.code==200){
-							for(var n=0;n<data.data.length;n++){
-								$('#'+data.data[n]).show()
-							}
-						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:data.data},e=>{location.reload()},e=>{$.alert({title:'错误',type:'red',content:e,buttons:[],closeIcon:false}); });
-						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg,buttons:[],closeIcon:false}); 
+				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				window.sftools.request({
+					url:"Account/AuthVerify",
+					data:{"type":'getways',"user":user},
+					success:function(data){
+					    for(var n=0;n<data.data.length;n++){
+							$('#'+data.data[n]).show()
 						}
 						loading.close();
-					},
-					error:function (msg) {
+					},fail:i=>{
 					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试',buttons:[],closeIcon:false}); 
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i,buttons:[],closeIcon:false}); 
+						}
 					}
 				});
-			});
+			})
 			$('#getcode').click(_=>{
 				let user=getvalue('user');
 			    let mobile=$('#mobile_input').val();
@@ -179,28 +169,20 @@
 					return;
 				}
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:10000,
-					url:"https://sf-api.suxber.live/Account/AuthVerify",
-					data:JSON.stringify({"data":{"type":'sendcode',"user":user,"mobile":mobile}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-					    if(data.code==200){
-							$.alert({content:'验证码已发送'}); 
-						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg}); 
-						}
+				window.sftools.request({
+					url:"Account/AuthVerify",
+					data:{"type":'sendcode',"user":user,"mobile":mobile},
+					success:function(data){
+					    $.alert({title:'',content:'验证码已发送'}); 
 						loading.close();
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-					}
+					},fail:i=>{
+        			    loading.close();
+						if(i && i!=="已完成行为验证" && i!==""){
+							$.alert({title:'错误',type:'red',content:i}); 
+						}else if(i=="已完成行为验证"){
+							$('#getcode').click()
+						}
+        			}
 				});
 			});
 			$('#mobile_page .btn-primary').click(_=>{
@@ -221,29 +203,21 @@
 				}
 				let env=decodeURIComponent(getenv())
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:10000,
-					url:"https://sf-api.suxber.live/Account/AuthVerify",
-					data:JSON.stringify({"data":{"type":'usecode',"user":user,"mobile":mobile,"code":code,"env":env}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-					    if(data.code==200){
-							$('#mobile_page').hide();
-							$('#finish').show();
-						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg}); 
-						}
+				window.sftools.request({
+					url:"Account/AuthVerify",
+					data:{"type":'usecode',"user":user,"mobile":mobile,"code":code,"env":env},
+					success:function(data){
+					    $('#mobile_page').hide();
+						$('#finish').show();
 						loading.close();
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-					}
+					},fail:i=>{
+        			    loading.close();
+        				if(i && i!=="已完成行为验证" && i!==""){
+        					$.alert({title:'错误',type:'red',content:i}); 
+        				}else if(i=="已完成行为验证"){
+							$('#mobile_page .btn-primary').click()
+						}
+        			}
 				});
 			});
 			$('#mobile_page .btn-outline-primary').click(_=>{
@@ -265,57 +239,41 @@
 			$('#realname_page .btn-primary').click(_=>{
 				let user=getvalue('user');
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					timeout:10000,
-					url:"https://sf-api.suxber.live/Account/AuthVerify",
-					data:JSON.stringify({"data":{"type":'face_reg',"user":user}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-					    if(data.code==200){
-							let env=decodeURIComponent(getenv())
-							window.sftools.run({type:'face_auth',data:{id:data.data}},e=>{
-								let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-								$.ajax({
-									type:"POST",
-									timeout:10000,
-									url:"https://sf-api.suxber.live/Account/AuthVerify",
-									data:JSON.stringify({"data":{"type":'face_use',"user":user,"faceid":e,"env":env}}),
-									contentType:"application/json;charset=UTF-8",
-									success:function (data) {
-									    if(data.code==200){
-											$('#realname_page').hide();
-											$('#finish').show();
-										}else if(data.code==202){
-											window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-										}else if(data.code==300){
-											window.location.href=decodeURIComponent(data.data);
-										}else{
-											$.alert({title:'错误',type:'red',content:data.msg}); 
-										}
-										loading.close();
-									},
-									error:function (msg) {
-									    loading.close();
-										$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-									}
-								});
-							},e=>{
-								$.alert({title:'错误',type:'red',content:e}); 
-							});
-						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-						}else if(data.code==300){
-							window.location.href=decodeURIComponent(data.data);
-						}else{
-							$.alert({title:'错误',type:'red',content:data.msg}); 
-						}
+				window.sftools.request({
+					url:"Account/AuthVerify",
+					data:{"type":'face_reg',"user":user},
+					success:function(data){
 						loading.close();
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-					}
+						let env=decodeURIComponent(getenv())
+						window.sftools.run({type:'face_auth',data:{id:data.data}},e=>{
+							let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+							window.sftools.request({
+								url:"Account/AuthVerify",
+								data:{"type":'face_use',"user":user,"faceid":e,"env":env},
+								success:function (data) {
+									$('#realname_page').hide();
+									$('#finish').show();
+									loading.close();
+								},fail:i=>{
+									loading.close();
+									if(i && i!=="已完成行为验证" && i!==""){
+										$.alert({title:'错误',type:'red',content:i}); 
+									}else if(i=="已完成行为验证"){
+										$('#realname_page .btn-primary').click()
+									}
+								}
+							});
+						},e=>{
+							$.alert({title:'错误',type:'red',content:e}); 
+						});
+					},fail:i=>{
+        			    loading.close();
+        				if(i && i!=="已完成行为验证" && i!==""){
+        					$.alert({title:'错误',type:'red',content:i}); 
+        				}else if(i=="已完成行为验证"){
+							$('#realname_page .btn-primary').click()
+						}
+        			}
 				});
 			});
 			$('#qq_page .btn-outline-primary').click(_=>{
@@ -333,31 +291,23 @@
 			$('#qrcode').click(_=>{
 			    let user=getvalue('user');
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-			    $.ajax({
-			    	type:"POST",
-			    	timeout:10000,
-			    	url:"https://sf-api.suxber.live/Account/AuthVerify",
-			    	data:JSON.stringify({"data":{"type":'qrcode',"user":user}}),
-			    	contentType:"application/json;charset=UTF-8",
-			    	success:function (data) {
-			    	    if(data.code==200){
-			    			$('#qrcode_img').attr('src','https://api.pwmqr.com/qrcode/create/?url='+data.data)
-							$('#step1').hide();
-							$('#qrcode_page').show();
-						}else if(data.code==202){
-			    			window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-						}else if(data.code==300){
-			    			window.location.href=decodeURIComponent(data.data);
-			    		}else{
-			    			$.alert({title:'错误',type:'red',content:data.msg}); 
-			    		}
-			    		loading.close();
-			    	},
-			    	error:function (msg) {
-			    	    loading.close();
-			    		$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-			    	}
-			    });
+				window.sftools.request({
+					url:"Account/AuthVerify",
+					data:{"type":'qrcode',"user":user},
+					success:function(data){
+						loading.close();
+					    $('#qrcode_img').attr('src','https://api.pwmqr.com/qrcode/create/?url='+data.data)
+						$('#step1').hide();
+						$('#qrcode_page').show();
+					},fail:i=>{
+						loading.close();
+        				if(i && i!=="已完成行为验证" && i!==""){
+        					$.alert({title:'错误',type:'red',content:i}); 
+        				}else if(i=="已完成行为验证"){
+							$('#qrcode').click()
+						}
+        			}
+				});
 			});
 			function getvalue(variable) {
 				var query = window.location.search.substring(1);

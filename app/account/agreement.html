@@ -25,7 +25,7 @@
 			<div class="card border border-0 border-top border-5 border-primary shadow rounded">
 			    <div class="card-body" style="height:50vh;overflow:scroll">
 					<p style="font-size:.8rem"><b>修改日期：2023/6/17<br>生效日期：2023/7/1</b></p>
-			        <p>&emsp;&emsp;亲爱的小伙伴，为了更好的为您提供服务，我们重新修订了新版的《<a href="https://sf.suxber.live/terms.html">用户协议</a>》和《<a href="https://sf.suxber.live/privacy.html">隐私政策</a>》等一系列相关协议。</p>
+			        <p>&emsp;&emsp;亲爱的小伙伴，为了更好的为您提供服务，我们重新修订了新版的《<a href="https://sftools.link/terms.html">用户协议</a>》和《<a href="https://sftools.link/privacy.html">隐私政策</a>》等一系列相关协议。</p>
 					<p>&emsp;&emsp;为保护您的合法权益，以及避免日后不必要的纠纷，请您仔细阅读上方<span class="text-primary">使用蓝色字体标注</span>的相关协议，若您不同意协议内容，<span class="text-primary">请停止使用我们的软件和服务。</span></p>
 					<p>&emsp;&emsp;若您需要撤回您的个人信息授权以及删除您的个人账号，请您提供您账号的密保手机号、实名信息、常用登录设备，向人工客服或Culaccino686@gmail.com发送申请</p>
 				</div>
@@ -33,7 +33,7 @@
 		    <button class="col-12 mt-4 btn btn-primary rounded-pill">完成</button>
 		</div>
 
-		<script type="text/javascript" src="/uni.webview.js"></script>
+		<script type="text/javascript" src="../../uni.webview.js"></script>
 	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
 	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
 	    <script>
@@ -49,29 +49,14 @@
 	        });
             $('button').click(_=>{
     	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-        		$.ajax({
-        			type:"POST",
-					timeout:10000,
-        			url:"https://sf-api.suxber.live/Account/Agreement",
-        			data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
-					contentType:"application/json;charset=UTF-8",
-        			success:function (data) {
+        		window.sftools.request({
+        			url:"Account/Agreement",
+        			success:i=>{
         				loading.close();
-        			    if(data.code==200){
-        					uni.reLaunch({url:'/pages/home'});
-        				}else if(data.code==300){
-        					window.location.href=decodeURIComponent(data.data);
-        				}else if(data.code==1000){
-							$.alert({title:'错误',type:'red',content:data.msg,buttons:{confirm: () => {
-								uni.reLaunch({url:'/pages/login'});
-							}}}); 
-        				}else{
-        					$.alert({title:'错误',type:'red',content:data.msg}); 
-        				}
-        			},
-        			error:function (msg) {
+        			    uni.reLaunch({url:'/pages/home/home'});
+        			},fail:i=>{
         			    loading.close();
-        				$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+        				$.alert({title:'错误',type:'red',content:i}); 
         			}
         		});
             });
