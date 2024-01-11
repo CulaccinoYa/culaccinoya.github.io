@@ -50,7 +50,7 @@
 			<button class="col-12 mt-4 btn btn-primary rounded-pill">开通</button>
 		</div>
 
-		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+		<script type="text/javascript" src="https://sftools.link/uni.webview.js"></script>
 	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
 	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
 	    <script>
@@ -68,50 +68,15 @@
 						role:["basic","mobile","realname"]
 					}},e=>{
 						let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在开通，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-						$.ajax({
-							type:"POST",
-							timeout:30000,
-							url:"https://sf-api.suxber.live/Bike/Signin",
-							data:JSON.stringify({"data":{"code":e}}),
-							contentType:"application/json;charset=UTF-8",
-							success:function (data) {
+						window.sftools.request({
+							url:"Bike/Signin",
+							data:{"code":e},
+							success:i=>{
 								loading.close();
-							    if(data.code==200){
-									let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>验证实名中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-									$.ajax({
-										type:"POST",
-										timeout:30000,
-										url:"https://sf-api.suxber.live/Bike/SetRealname",
-										data:JSON.stringify({"data":{"code":e}}),
-										contentType:"application/json;charset=UTF-8",
-										success:function (data) {
-										    if(data.code==200){
-												uni.navigateBack();
-											}else if(data.code==202){
-												window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-											}else if(data.code==300){
-												window.location.href=decodeURIComponent(data.data);
-											}else{
-												$.alert({title:'错误',type:'red',content:data.msg}); 
-											}
-											loading.close();
-										},
-										error:function (msg) {
-										    loading.close();
-											$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-										}
-									});
-								}else if(data.code==202){
-									window.sftools.run({type:'captcha',data:data.data},e=>{},e=>{});
-								}else if(data.code==300){
-									window.location.href=decodeURIComponent(data.data);
-								}else{
-									$.alert({title:'错误',type:'red',content:data.msg}); 
-								}
-							},
-							error:function (msg) {
+							    uni.navigateBack();
+							},fail:i=>{
 							    loading.close();
-								$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
+								$.alert({title:'错误',type:'red',content:i}); 
 							}
 						});
 					},e=>{
