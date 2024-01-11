@@ -42,6 +42,10 @@
 					    <p class="text-secondary col-auto">交易单号</p>
 					    <p class="text-end" id="orderid"></p>
 					</div>
+					<div class="d-flex justify-content-between">
+					    <p class="text-secondary col-auto">订单获得积分</p>
+					    <p class="text-end" id="points"></p>
+					</div>
 					<p class="text-secondary">交易附带信息</p>
 					<p id="describe"></p>
 					<button class="col-12 mt-4 btn btn-primary rounded-pill" style="display: none;">支付</button>
@@ -54,7 +58,7 @@
 			    </div>
 			</div>
 		</div>
-		<script type="text/javascript" src="https://sf.suxber.live/uni.webview.js"></script>
+		<script type="text/javascript" src="https://sftools.link/uni.webview.js"></script>
 	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
 	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
 	    <script>
@@ -82,143 +86,133 @@
 	            return;
 	        }
 	    	let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-	    	$.ajax({
-	    		type:"POST",
-	    		timeout:10000,
-	    		url:"https://sf-api.suxber.live/Wallet/GetBillingList",
-	    		data:JSON.stringify({"data":{"page":page},"account":{"user":user,"token":token}}),
-	    		contentType:"application/json;charset=UTF-8",
-	    		success:function (data) {
-	    			if(data.code==200){
-	    				if(data.data.length==0&&page==1){
-	    				    page=0;
-	    				    $('#home .container').html('<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded"><div class="card-body"><div class="text-center my-5"> <h2><b>空空如也</b></h2> <p class="text-secondary">你还没有账单呢...</p></div></div></div>')
-	    				    return;
-	    				}
-	    				page++;
-	    				if(data.data.length<20){
-	    				    page=0;
-	    				    $('#home #text').html('已经没有了');
-	    				}
-	    				for(var n=0;n<data.data.length;n++){
-	    				    let id=data.data[n].id;
-	    					let name=data.data[n].name;
-	    					let money=data.data[n].amount;
-	    					let time=timetostring(parseInt(data.data[n].time));
-	    					let way='';
-	    					if(data.data[n].status=='1'){
-	    					    way='<span>已支付</span>'
-	    					}else if(data.data[n].status=='2'){
-	    					    way='<span class="text-warning">待支付</span>'
-	    					}else if(data.data[n].status=='3'){
-	    					    way='<span class="text-danger">交易取消</span>'
-	    					}else if(data.data[n].status=='4'){
-	    					    way='<span class="text-danger">已退款</span>'
-	    					}else if(data.data[n].status=='5'){
-	    					    way='<span class="text-danger">交易异常</span>'
-	    					}
-	    					if(data.data[n].type==1){
-	    						money='<span class="text-danger">+'+money+'</span>'
-	    					}else{
-	    						money='-'+money
-	    					}
-	    					if(month!==time[1]||year!==time[0]){
-	    					    $('#home .container').append('<div class="d-flex px-3 pt-4 mb-2 nav bg-body shadow-sm" style="margin:0 -1rem;align-items:center"><h1><b>'+time[1]+'</b></h1>&nbsp;月 / '+time[0]+'</div><div class="mb-2 card border border-0 border-top border-5 border-primary shadow rounded"><ul class="list-group list-group-flush" id="'+time[1]+'-'+time[0]+'"></ul></div>');
-	    					    month=time[1];
-	    					    year=time[0];
-	    					}
-	    					$('#home .container #'+month+'-'+year).append('<li onclick="check('+"'"+id+"'"+')" class="list-group-item list-group-item-action d-flex justify-content-between" style="padding:1rem"> <div><p class="fs-6">'+name+'</p><p style="font-size:.8rem;color:#909090">'+time[2]+'</p></div> <div class="text-end"><p class="fs-6"><b>'+money+'</b></p><p style="font-size:.8rem;color:#909090">'+way+'</p></div> </li>');
-	    				}
-	    			}else if(data.code==300){
-	    				window.location.href=decodeURIComponent(data.data);
-	    			}else{
-	    				$.alert({title:'',type:'red',content:data.msg});
+	    	window.sftools.request({
+	    		url:"Wallet/GetBillingList",
+	    		data:{"page":page},
+	    		success:data=>{
+	    			loading.close();
+	    			if(data.length==0&&page==1){
+	    			    page=0;
+	    			    $('#home .container').html('<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded"><div class="card-body"><div class="text-center my-5"> <h2><b>空空如也</b></h2> <p class="text-secondary">你还没有账单呢...</p></div></div></div>')
+	    			    return;
 	    			}
-					loading.close();
-	    		},
-	    		error:function (msg) {
-	    		    loading.close();
-	    			$.alert({title:'',type:'red',content:'网络异常，请稍后再试'});
+	    			page++;
+	    			if(data.length<20){
+	    			    page=0;
+	    			    $('#home #text').html('已经没有了');
+	    			}
+	    			for(var n=0;n<data.length;n++){
+	    			    let id=data[n].id;
+	    				let name=data[n].name;
+	    				let money=data[n].amount;
+	    				let time=timetostring(parseInt(data[n].time));
+	    				let way='';
+	    				if(data[n].status=='1'){
+	    				    way='<span>已支付</span>'
+	    				}else if(data[n].status=='2'){
+	    				    way='<span class="text-warning">待支付</span>'
+	    				}else if(data[n].status=='3'){
+	    				    way='<span class="text-danger">交易取消</span>'
+	    				}else if(data[n].status=='4'){
+	    				    way='<span class="text-danger">已退款</span>'
+	    				}else if(data[n].status=='5'){
+	    				    way='<span class="text-danger">交易异常</span>'
+	    				}
+	    				if(data[n].type==1){
+	    					money='<span class="text-danger">+'+money+'</span>'
+	    				}else{
+	    					money='-'+money
+	    				}
+	    				if(month!==time[1]||year!==time[0]){
+	    				    $('#home .container').append('<div class="d-flex px-3 pt-4 mb-2 nav bg-body shadow-sm" style="margin:0 -1rem;align-items:center"><h1><b>'+time[1]+'</b></h1>&nbsp;月 / '+time[0]+'</div><div class="mb-2 card border border-0 border-top border-5 border-primary shadow rounded"><ul class="list-group list-group-flush" id="'+time[1]+'-'+time[0]+'"></ul></div>');
+	    				    month=time[1];
+	    				    year=time[0];
+	    				}
+	    				$('#home .container #'+month+'-'+year).append('<li onclick="check('+"'"+id+"'"+')" class="list-group-item list-group-item-action d-flex justify-content-between" style="padding:1rem"> <div><p class="fs-6">'+name+'</p><p style="font-size:.8rem;color:#909090">'+time[2]+'</p></div> <div class="text-end"><p class="fs-6"><b>'+money+'</b></p><p style="font-size:.8rem;color:#909090">'+way+'</p></div> </li>');
+	    			}
+	    		},fail:i=>{
+	    			loading.close();
+	    			if(i && i!=="已完成行为验证" && i!==""){
+	    				$.alert({title:'错误',type:'red',content:i}); 
+	    			}else if(i=="已完成行为验证"){
+	    				getorder()
+	    			}
 	    		}
 	    	});
 	    };
+		
 		function check(id){
 			window.location.href="./billing.html?orderid="+id
 		}
 	    function getdetail(id){
 	        let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-	        $.ajax({
-	        	type:"POST",
-	        	timeout:10000,
-	        	url:"https://sf-api.suxber.live/Wallet/GetBillingDetail",
-	        	data:JSON.stringify({"data":{"orderid":id},"account":{"user":user,"token":token}}),
-	        	contentType:"application/json;charset=UTF-8",
-	        	success:function (data) {
-	        		if(data.code==200){
-	        		    let basic=data.data.basic;
-	        			$('#detail #counterparty').html(basic.counterparty);
-	        			if(basic.type==1){
-	        				$('#detail #amount').html('<b>+'+basic.amount+'</b>');
-	        			}else{
-	        				$('#detail #amount').html('<b>-'+basic.amount+'</b>');
-	        			}
-						$('#detail #order_time').html('');
-	        			if(basic.status=='1'){
-	        				$('#detail #status').html('交易成功');
-							let order_time=timetostring(basic.order_time)
-	        				$('#detail #order_time').html(order_time[0]+'年'+order_time[2]);
-	        			}else if(basic.status=='2'){
-	        				$('#detail #status').html('<span class="text-warning">待支付</span>');
-	        				if(basic.type==2){
-								$('#detail .btn-primary').unbind();
-								$('#detail .btn-primary').bind('click',function(){pay(id)});
-	        					$('#detail .btn-primary').show();
-	        				}
-	        			}else if(basic.status=='3'){
-	        				$('#detail #status').html('<span class="text-danger">交易取消</span>');
-	        			}else if(basic.status=='4'){
-	        				$('#detail #status').html('<span class="text-danger">交易已退款</span>');
-	        			}else{
-	        				$('#detail #status').html('<span class="text-danger">交易异常</span>');
-	        			}
-	        			$('#detail #name').html(basic.name);
-						$('#detail #discount').html('')
-	        			if(basic.discount!==null&&basic.discount.length>0){
-	        			    let discount=basic.discount;
-	        			    for(var n=0;n<discount.length;n++){
-	        			        if(discount[n].name=='原价'){
-	        			            $('#detail #discount').append('<span>'+discount[n].name+'&emsp;'+discount[n].amount+'</span><br>');
-	        			        }else{
-	        			            $('#detail #discount').append('<span class="text-danger">'+discount[n].name+'&emsp;'+discount[n].amount+'</span><br>');
-	        			        }
-	        			    }
-	        			}else{
-	        			    $('#detail #discount').html('无');
-	        			}
-	        			$('#detail #orderid').html(basic.id);
-	        			$('#detail #describe').html(basic.describe);
-						let create_time=timetostring(basic.create_time)
-	        			$('#detail #create_time').html(create_time[0]+'年'+create_time[2]);
-	        			let goods=data.data.goods;
-	        			if(goods.length>0){
-	        			    $('#detail #goods').show();
-	        			    for(var n=0;n<goods.length;n++){
-	        			        $('#detail #goodslist').append('<a class="d-flex text-decoration-none" href="'+goods[n].url+'"><div class="me-2"><img style="width:3rem;height:3rem;" src="'+goods[n].icon+'" /></div><div class="pt-1"><p class="mb-2">'+goods[n].title+'</p><p class="mb-0 text-secondary" style="font-size:.8rem">'+goods[n].subtitle+'</p></div></a>');
-	        			    }
-	        			}
-	        		}else if(data.code==300){
-	        			window.location.href=decodeURIComponent(data.data);
+	        window.sftools.request({
+	        	url:"Wallet/GetBillingDetail",
+	        	data:{"orderid":id},
+	        	success:data=>{
+	        		loading.close();
+	        		let basic=data.basic;
+	        		$('#detail #counterparty').html(basic.counterparty);
+	        		if(basic.type==1){
+	        			$('#detail #amount').html('<b>+'+basic.amount+'</b>');
 	        		}else{
-	        			$.alert({title:'',type:'red',content:data.msg,buttons:[],closeIcon:false});
+	        			$('#detail #amount').html('<b>-'+basic.amount+'</b>');
 	        		}
-					loading.close();
-	        	},
-	        	error:function (msg) {
-	        	    loading.close();
-	        		$.alert({title:'',type:'red',content:'网络异常，请稍后再试'});
+	        		$('#detail #points').html('<b>+'+basic.points+'</b>');
+	        		$('#detail #order_time').html('');
+	        		if(basic.status=='1'){
+	        			$('#detail #status').html('交易成功');
+	        			let order_time=timetostring(basic.order_time)
+	        			$('#detail #order_time').html(order_time[0]+'年'+order_time[2]);
+	        		}else if(basic.status=='2'){
+	        			$('#detail #status').html('<span class="text-warning">待支付</span>');
+	        			if(basic.type==2){
+	        				$('#detail .btn-primary').unbind();
+	        				$('#detail .btn-primary').bind('click',function(){pay(id)});
+	        				$('#detail .btn-primary').show();
+	        			}
+	        		}else if(basic.status=='3'){
+	        			$('#detail #status').html('<span class="text-danger">交易取消</span>');
+	        		}else if(basic.status=='4'){
+	        			$('#detail #status').html('<span class="text-danger">交易已退款</span>');
+	        		}else{
+	        			$('#detail #status').html('<span class="text-danger">交易异常</span>');
+	        		}
+	        		$('#detail #name').html(basic.name);
+	        		$('#detail #discount').html('')
+	        		if(basic.discount!==null&&basic.discount.length>0){
+	        		    let discount=basic.discount;
+	        		    for(var n=0;n<discount.length;n++){
+	        		        if(discount[n].name=='原价'){
+	        		            $('#detail #discount').append('<span>'+discount[n].name+'&emsp;'+discount[n].amount+'</span><br>');
+	        		        }else{
+	        		            $('#detail #discount').append('<span class="text-danger">'+discount[n].name+'&emsp;'+discount[n].amount+'</span><br>');
+	        		        }
+	        		    }
+	        		}else{
+	        		    $('#detail #discount').html('无');
+	        		}
+	        		$('#detail #orderid').html(basic.id);
+	        		$('#detail #describe').html(basic.describe);
+	        		let create_time=timetostring(basic.create_time)
+	        		$('#detail #create_time').html(create_time[0]+'年'+create_time[2]);
+	        		let goods=data.goods;
+	        		if(goods.length>0){
+	        		    $('#detail #goods').show();
+	        		    for(var n=0;n<goods.length;n++){
+	        		        $('#detail #goodslist').append('<a class="d-flex text-decoration-none" href="'+goods[n].url+'"><div class="me-2"><img style="width:3rem;height:3rem;" src="'+goods[n].icon+'" /></div><div class="pt-1"><p class="mb-2">'+goods[n].title+'</p><p class="mb-0 text-secondary" style="font-size:.8rem">'+goods[n].subtitle+'</p></div></a>');
+	        		    }
+	        		}
+	        	},fail:i=>{
+	        		loading.close();
+	        		if(i && i!=="已完成行为验证" && i!==""){
+	        			$.alert({title:'错误',type:'red',content:i}); 
+	        		}else if(i=="已完成行为验证"){
+	        			getdetail(id)
+	        		}
 	        	}
 	        });
-	    }
+		}
 		function pay(id){
 			let loading=$.alert({title:'',content:'已唤起支付，支付完成后直接退出即可<br><br>若未弹出支付页面，请退出重试或更新到最新版本'});
 			window.sftools.run({type:'payment',data:{'orderid':id}},e=>{loading.close();location.reload();},e=>{loading.close();$.alert({title:'支付失败',type:'red',content:e});});

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,maximum-scale=0.5,user-scalable=no" />
+    <title>上传头像</title>
+    <style>
+        body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            background-color: black;
+        }
+        .cover-top {
+            font-size: 50px;
+            color: white;
+            text-align: center;
+            width: 100%;
+            padding:5px;
+            border: solid 0px;
+            background-color: black;
+            position: absolute;
+            opacity: 0.5;
+            top: 0px;
+            z-index: 1;
+        }
+        .cover-top input {
+            font-size: 50px;opacity: 0;position: absolute;right: 0;top: 0;
+        }
+        .cover-middle {
+            width: 100%;
+            padding:5px;
+            border: solid 0px;
+            position: absolute;
+            transform: translateY(-50%);
+            top: 50%;
+            z-index: 1;
+        }
+        .cover-down {
+            font-size: 28px;
+            color: white;
+            text-align: center;
+            width: 100%;
+            padding:5px;
+            border: solid 0px;
+            background-color: black;
+            position: absolute;
+            opacity: 0.5;
+            bottom: 0px;
+            z-index: 1;
+        }
+        button {
+            padding: 20px;position: absolute;left: 0px;
+        }
+        .image {
+            display:block;width: 100%;overflow: scroll;transform: translate(0px,50%);position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <form id="cutImage" enctype="multipart/form-data" method="post">
+        <div id="cover-top" class="cover-top">
+            <input id="x", name="x" style="display: none">
+            <input id="y", name="y" style="display: none">
+            <input id="width" name="width" style="display: none">
+            <input id="height" name="height" style="display: none">
+        </div>
+        <div id="cover-middle" class="cover-middle"></div>
+        <div id="cover-down" class="cover-down"></div>
+        <img id="image" class="image" draggable="true" onload="init()">
+    </form>
+
+</body>
+<script>
+    //图片的尺寸（{宽，高， 真实的宽，真实的高}）
+    var imageParams={width:0, height:0, naturalWidth:0, naturalHeight:0};
+    //屏幕的宽高
+    var containSize={width:0, height:0};
+    //鼠标触摸时鼠标坐标
+    var mouseOnCrd={x1:0, y1:0, x2:0, y2:0}
+    //图片的坐标(其实就是偏移的位置)
+    var imageCrd = {x:0, y:0};
+
+    //页面加载时候需要初始化的参数
+    window.onload = function () {
+        containSize.width = document.body.offsetWidth;
+        containSize.height = document.body.offsetHeight;
+        //设置遮罩层的宽高
+        var coverMiddle = document.getElementById("cover-middle");
+        coverMiddle.style.width=containSize.width + "px";
+        coverMiddle.style.height=containSize.width + "px";
+        var coverTop = document.getElementById("cover-top");
+        coverTop.style.height=(containSize.height-containSize.width)/2 + "px";
+        var coverDown = document.getElementById("cover-down");
+        coverDown.style.height=(containSize.height-containSize.width)/2 + "px";
+        init()
+    }
+
+    //获得当前的参数（必须要通过绑定img 的onload事件，不然读取到的参数不准确）
+    function init() {
+        //设置初始参数
+        var image = document.getElementById("image")
+        imageParams.width = image.width;
+        imageParams.height = image.height;
+        imageParams.naturalWidth = image.naturalWidth;
+        imageParams.naturalHeight = image.naturalHeight;
+        //配置图片的位置
+        configImage();
+    }
+    /**
+     * 配置图片的位置
+     */
+    function configImage() {
+        var image = document.getElementById("image");
+        imageCrd.x = 0; // 初始位置横向从零开始
+        imageCrd.y = parseInt((containSize.height - imageParams.height)/2); // 设置纵向居中
+        image.style.transform = "translate(" + imageCrd.x + "px," + imageCrd.y + "px)"; // 完成偏移操作
+    }
+
+    //点击选择图片
+    function selectImage() {
+        document.getElementById("imageFile").click();
+
+    }
+
+    //选择图片之后加载图片
+    function loadImage() {
+        var files = document.getElementById("imageFile").files;
+        var reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.onload = function() {
+            document.getElementById("image").setAttribute('src', reader.result);
+        };
+    }
+
+    //触摸移动事件
+    document.addEventListener("touchmove", function (ev) {
+        if(ev.touches.length == 2) { //放大
+            zoom(ev.touches[0], ev.touches[1])
+        }
+        if(ev.touches.length == 1) { //移动
+            move(ev.touches[0]); //由于手机是多点触控，所以很可能有多个事件
+        }
+    })
+
+
+    //屏幕触摸事件
+    document.addEventListener("touchstart", function (ev) {
+        //双点触摸（即放大或者缩小图片）
+        if(ev.touches.length == 2) {
+            mouseOnCrd.x1 = ev.touches[0].pageX;
+            mouseOnCrd.y1 = ev.touches[0].pageY;
+            mouseOnCrd.x2 = ev.touches[1].pageX;
+            mouseOnCrd.y2 = ev.touches[1].pageY;
+        }
+        //单点触摸(即移动图片)
+        if(ev.touches.length == 1) {
+            var e = ev.touches[0];
+            mouseOnCrd.x1 = e.pageX;
+            mouseOnCrd.y1 = e.pageY;
+        }
+    });
+
+    //缩放图片
+    function zoom(touch1, touch2) {
+        var touchCrd1 = getMouseCrd(touch1);
+        var touchCrd2 = getMouseCrd(touch2);
+        //计算新旧两点的距离，判断是缩小还是放大(false：缩小；true：放大)
+        var zoomFlag = (Math.pow((mouseOnCrd.x1 - mouseOnCrd.x2), 2) + Math.pow((mouseOnCrd.y1 - mouseOnCrd.y2), 2)) -
+        (Math.pow((touchCrd1.x - touchCrd2.x), 2) + Math.pow((touchCrd1.y - touchCrd2.y), 2)) > 0 ? false : true;
+//        alert("运行到这里" + zoomFlag);
+        //设置图片的宽度，高度是自适应，所以不用获取
+        var image = document.getElementById("image");
+        image.style.width =  (zoomFlag ? (imageParams.width + 15) : (imageParams.width - 15) )+ "px";
+        //重新获得图片的dom元素，并获取宽高
+        imageParams.width = image.width;
+        imageParams.height = image.height;
+//        document.getElementById("cover-down").innerHTML= imageParams.width + "px" + ":" +imageParams.height + "px";
+    }
+
+    //移动图片
+    function move(touch) {
+        var touchCrd = getMouseCrd(touch);
+        //和初始坐标比较，在每个坐标上发生的位移
+        console.log("发生了位移:", touchCrd.x-mouseOnCrd.x1, touchCrd.y-mouseOnCrd.y1);
+        delPicCoordinate({x:touchCrd.x-mouseOnCrd.x1, y: touchCrd.y-mouseOnCrd.y1});
+        //获得位移量之后，重新赋值给初始坐标，以备下次比较
+        mouseOnCrd.x1 = touchCrd.x;
+        mouseOnCrd.y1 = touchCrd.y;
+    }
+
+
+
+    //根据位移计算图片的坐标
+    function delPicCoordinate(shifting) {
+        var image = document.getElementById("image");
+        //当前的图片的坐标
+        var x = imageCrd.x;
+        var y = imageCrd.y;
+        x = checkX(x, parseInt(shifting.x));
+        y = checkY(y, parseInt(shifting.y))
+        console.log("即将偏移的量:", shifting.x, shifting.y);
+        image.style.transform = "translate(" + x + "px," + y + "px)";
+//        document.getElementById("cover-down").innerHTML=x + "px:" + y + "px";
+        console.log("偏移之后的偏移:", x, y);
+        imageCrd.x = x;
+        imageCrd.y = y;
+    }
+
+    //判断是否可以在x轴上移动
+    function checkX(x, shiftingX) {
+        if(shiftingX < 0) { //向左
+            if((x + shiftingX) < (containSize.width- imageParams.width)) {
+                //如果转行前已经比他小，保持原样
+                if(x < (containSize.width- imageParams.width)){
+                    return x;
+                }
+                return (containSize.width- imageParams.width);
+            }
+        }else {
+            if((x + shiftingX) > 0) { //向右
+                //如果转行前已经比他大，保持原样
+                if(x > shiftingX) {
+                    return y;
+                }
+                return 0
+            }
+        }
+        return x+ shiftingX
+    }
+
+    //判断是否可以在x轴上移动
+    function checkY(y, shiftingY) {
+        if(shiftingY < 0) { //向上
+            if((y + shiftingY) < ((containSize.width+containSize.height)/2 - imageParams.height)) {
+                console.log("==============向上：", y+shiftingY, ((containSize.width+containSize.height)/2 - imageParams.height));
+                //如果已经是比这个小，保持原样
+                if(y < ((containSize.width+containSize.height)/2 - imageParams.height)) {
+                    return y;
+                }
+                return parseInt((containSize.width+containSize.height)/2 - imageParams.height);
+            }
+        }else { //向下
+            if((y + shiftingY) > (containSize.height-containSize.width)/2) {//这里只是长宽都比页面高
+                //如果已经是比这个大，保持原样
+                if(y > (containSize.height-containSize.width)/2) {
+                    return y;
+                }
+                return parseInt((containSize.height-containSize.width)/2);
+            }
+        }
+        return y+ shiftingY
+    }
+
+
+    //获得鼠标坐标
+    function getMouseCrd(touch) {
+        //鼠标移动的位置
+        if(touch.pageX || touch.pageY){
+            return {x:touch.pageX, y:touch.pageY};
+        }
+        return{
+            x:touch.clientX + document.body.scrollLeft - document.body.clientLeft,
+            y:touch.clientY + document.body.scrollTop - document.body.clientTop
+        };
+    }
+
+    //计算最后的切割其实坐标，宽度和高度
+    function cutParams() {
+        var x;
+        var y;
+        var width;
+        var height;
+        if(imageParams.width > containSize.width) {
+            x = 0 - imageCrd.x;
+            width = containSize.width;
+        }else {
+            x = 0;
+            width = containSize.width;
+        }
+        if(imageParams.height > containSize.width) {
+            y = (containSize.height - containSize.width)/2 - imageCrd.y;
+            height = containSize.width;
+        }else {
+            y = 0;
+            height = imageParams.height;
+        }
+        var canvas = document.createElement("canvas");	// 画布
+		canvas.width = width;
+		canvas.height = height;
+        var zoomRate = imageParams.width / imageParams.naturalWidth; // 缩放比例
+		// 获取图片的真实切割起始坐标和宽高
+        x = parseInt(x / zoomRate); 
+        y = parseInt(y / zoomRate);
+        width = parseInt(width / zoomRate);
+        height = parseInt(height / zoomRate);
+		var ctx = canvas.getContext('2d'); // 获取画布
+		ctx.drawImage(imageOrigin,x,y,width,height,0,0,canvas.width,canvas.height); // 裁剪并画入画布
+        saveimg(canvas);
+    }
+    // base64数据转换为位图
+    function b64ToUint8Array(b64Image) {
+       let img = atob(b64Image.split(',')[1]);
+       let img_buffer = [];
+       let i = 0;
+       while (i < img.length) {
+          img_buffer.push(img.charCodeAt(i));
+          i++;
+       }
+       return new Uint8Array(img_buffer);
+    }
+    // 保存图片到服务器
+	function saveimg(canvas){
+	    // canva转换为base64数据
+	    let b64Image = canvas.toDataURL('image/jpeg');
+	    // base64数据转换为位图
+	    let u8Image  = b64ToUint8Array(b64Image);
+	    // 组装form表单数据
+	    let formData = new FormData();
+	    formData.append("image", new Blob([ u8Image ], {type: "image/jpg"}));
+	    // ajax提交
+	    let xhr1 = new XMLHttpRequest();
+	    xhr1.open("POST", HREF_PREFIX+"/api/updateHeadImg.php", true);
+	    xhr1.onreadystatechange = function(){
+	        if(xhr1.readyState === XMLHttpRequest.DONE && xhr1.status === 200) {
+	            document.getElementsByClassName("updateHeadImg")[0].style.display = "none";
+	            document.getElementById("updateHeadImg").getElementsByTagName("img")[0].src = xhr1.responseText;
+	        }
+	        
+	    }
+	    xhr1.send(formData);     
+	}
+	
+</script>
+</html>
