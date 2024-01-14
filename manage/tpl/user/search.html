@@ -98,7 +98,7 @@
 					page=0
 				}
 				sftools.api({
-					url:"Admin/GetUserDetail",
+					url:"GetUserDetail",
 					data:{"type":false,"data":$("input[name='data']").val()},
 				},function(e){
 					$('tbody').html('')
@@ -119,13 +119,13 @@
 			$('table').on("click","a",function(){
 				let userid=$(this).parent().parent().siblings('td:first').html();
 				sftools.api({
-					url:"Admin/GetUserDetail",
+					url:"GetUserDetail",
 					data:{"type":true,"data":userid},
 				},function(e){
 					$('#detail').modal('show');
 					$('#detail .modal-body:first').html('')
 					$('#detail .modal-body:first').append('<div class="d-flex justify-content-between"><div><p>账户ID：'+e.id+'</p><p>账户登录名：'+e.username+'</p><p>账户昵称：'+e.nick+'</p><p>密保手机：'+e.mobile+'</p></div><img src="'+e.avatar+'" style="width:4rem;height:4rem;"/></div>')
-					$('#detail .modal-body:first').append('<p>绑定QQ：'+e.qq+'</p><p>用户等级：'+e.role+'</p><<p>账户余额：'+e.balance+'</p><p>账户积分：'+e.points+'</p><p>用户签订协议版本：'+e.agreement+'</p><p>注册时间：'+timetostring(e.create_time)+'</p><p>注册ip：'+e.create_ip+'</p><p>最近一次登录时间：'+timetostring(e.last_time)+'</p><p>最近一次登录ip：'+e.last_ip+'</p>')
+					$('#detail .modal-body:first').append('<p>绑定QQ：'+e.qq+'</p><p>用户等级：'+e.role+'</p><p>账户余额：'+e.balance+'</p><p>账户积分：'+e.points+'</p><p>用户签订协议版本：'+e.agreement+'</p><p>注册时间：'+timetostring(e.create_time)+'</p><p>注册ip：'+e.create_ip+'</p><p>最近一次登录时间：'+timetostring(e.last_time)+'</p><p>最近一次登录ip：'+e.last_ip+'</p>')
 					let device=JSON.parse(e.device)
 					$('#detail .modal-body:first').append('<p>账户绑定设备：</p>')
 					for(var n=0;n<device.length;n++){

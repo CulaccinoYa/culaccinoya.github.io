@@ -145,7 +145,7 @@
 				other={}
 				photo={}
 				sftools.api({
-					url:"Admin/GetUserRealname",
+					url:"GetUserRealname",
 					data:$("input[name='user']").val(),
 				},function(e){
 					$('.card[name="info"] .card-body').html('')
@@ -197,7 +197,7 @@
 									other[key]=$('#other #'+key).val()
 								}
 								sftools.api({
-									url:"Admin/DelUserRealname",
+									url:"DelUserRealname",
 									data:$('.d-flex:first p:first').html().substr(5),
 								},function(e){
 									$('button:first').click();
@@ -223,7 +223,7 @@
 									other[key]=$('#other #'+key).val()
 								}
 								sftools.api({
-									url:"Admin/ChangeUserRealname",
+									url:"ChangeUserRealname",
 									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
 										"name":$('.card[name="detail"] #name').val(),
 										"idno":$('.card[name="detail"] #idno').val(),

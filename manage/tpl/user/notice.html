@@ -35,6 +35,7 @@
 					        	</div>
 					        	<div class="col-md-4">
 					        		<button class="btn btn-primary me-1">搜索</button>
+									<button class="btn btn-success me-1">添加</button>
 					        	</div>
 					        </div>
 					        <div class="mt-2 table-responsive">
@@ -78,6 +79,110 @@
 					</div>
 				</div>
 			</div>
+			<div class="modal fade" id="add">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">添加通知</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					  <div class="modal-body">
+						  <div class="mb-3">
+						  	<label class="form-label">用户ID</label>
+						  	<input class="form-control"id="user"/>
+						  </div>
+						  <div class="mb-3">
+						  	<label class="form-label">通知类型</label>
+						  	<select class="form-select" id="type">
+						  		<option>弹窗</option>
+						  		<option>通知栏</option>
+								<option>直接跳转</option>
+						  	</select>
+						  </div>
+						  <div class="mb-3" id="push-type" style="display:none;">
+						  	<label class="form-label">通知栏点击反馈</label>
+						  	<select class="form-select">
+						  		<option>弹窗</option>
+						  		<option>Url</option>
+								<option>无</option>
+						  	</select>
+						  </div>
+						  <div class="mb-3" id="title">
+						  	<label class="form-label">标题</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="body">
+						  	<label class="form-label">内容</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="push-title" style="display:none;">
+						  	<label class="form-label">通知栏标题</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="push-detail" style="display:none;">
+						  	<label class="form-label">通知栏内容</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="push-body" style="display:none;">
+						  	<label class="form-label">跳转参数</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="push-body-type" style="display:none;">
+						  	<label class="form-label">跳转效果</label>
+						  	<select class="form-select">
+						  		<option>无</option>
+						  		<option>增页跳转</option>
+						  		<option>替换跳转</option>
+						  		<option>重载跳转</option>
+						  	</select>
+						  </div>
+						  <div class="mb-3" id="alert-type">
+						      <div class="form-check">
+						          <input type="checkbox" class="form-check-input"/>
+						          <label class="form-check-label not-user-select">双按钮</label>
+						      </div>
+						  </div>
+						  <div class="mb-3" id="confirm-title">
+						  	<label class="form-label">确认按钮文字</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="confirm-body">
+						  	<label class="form-label">确认按钮跳转参数</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="confirm-type">
+						  	<label class="form-label">确认按钮跳转效果</label>
+						  	<select class="form-select">
+								<option>无</option>
+						  		<option>增页跳转</option>
+						  		<option>替换跳转</option>
+								<option>重载跳转</option>
+						  	</select>
+						  </div>
+						  <div class="mb-3" id="cancel-title" style="display:none;">
+						  	<label class="form-label">取消按钮文字</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="cancel-body" style="display:none;">
+						  	<label class="form-label">取消按钮跳转参数</label>
+						  	<input class="form-control"/>
+						  </div>
+						  <div class="mb-3" id="cancel-type" style="display:none;">
+						  	<label class="form-label">取消按钮跳转效果</label>
+						  	<select class="form-select">
+								<option>无</option>
+						  		<option>增页跳转</option>
+						  		<option>替换跳转</option>
+						  		<option>重载跳转</option>
+						  	</select>
+						  </div>
+					  </div>
+						<div class="modal-footer">
+					        <button type="button" class="btn btn-primary">保存</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -96,6 +201,112 @@
 			$('button:first').click(function(){
 				search($("input[name='user']").val(),1)
 			})
+			$('.btn-success').click(function(){
+				$('#add').modal('show');
+				$('#user').val($("input[name='user']").val())
+			})
+			$('#type').change(function(){
+				if($('#type').val()=="弹窗"){
+					$('#push-type').hide()
+					$('#push-body').hide()
+					$('#push-title').hide()
+					$('#push-detail').hide()
+					$('#push-body-type').hide()
+					$('#title').show()
+					$('#body').show()
+					$('#alert-type').show()
+					$('#confirm-title').show()
+					$('#confirm-type').show()
+					$('#confirm-body').show()
+					$('#alert-type input').prop("checked",false)
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}else if($('#type').val()=="通知栏"){
+					$('#push-type').show()
+					$('#push-type select').val("弹窗")
+					$('#push-title').show()
+					$('#push-detail').show()
+					$('#push-body').hide()
+					$('#push-body-type').hide()
+					$('#title').show()
+					$('#body').show()
+					$('#alert-type').show()
+					$('#confirm-title').show()
+					$('#confirm-type').show()
+					$('#confirm-body').show()
+					$('#alert-type input').prop("checked",false)
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}else{
+					$('#push-type').hide()
+					$('#title').hide()
+					$('#body').hide()
+					$('#push-body').show()
+					$('#push-title').hide()
+					$('#push-detail').hide()
+					$('#push-body-type').show()
+					$('#alert-type').hide()
+					$('#confirm-title').hide()
+					$('#confirm-type').hide()
+					$('#confirm-body').hide()
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}
+			})
+			$('#alert-type input').change(function(){
+				if($('#alert-type input').prop("checked")){
+					$('#cancel-title').show()
+					$('#cancel-type').show()
+					$('#cancel-body').show()
+				}else{
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}
+			})
+			$('#push-type select').change(function(){
+				if($('#push-type select').val()=="弹窗"){
+					$('#push-body').hide()
+					$('#push-body-type').hide()
+					$('#push-title').show()
+					$('#push-detail').show()
+					$('#alert-type').show()
+					$('#confirm-title').show()
+					$('#confirm-type').show()
+					$('#confirm-body').show()
+					$('#alert-type input').prop("checked",false)
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}else if($('#push-type select').val()=="Url"){
+					$('#push-body').show()
+					$('#push-body-type').show()
+					$('#push-title').hide()
+					$('#push-detail').hide()
+					$('#alert-type').hide()
+					$('#confirm-title').hide()
+					$('#confirm-type').hide()
+					$('#confirm-body').hide()
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}else{
+					$('#push-body').hide()
+					$('#push-body-type').hide()
+					$('#push-title').hide()
+					$('#push-detail').hide()
+					$('#alert-type').hide()
+					$('#confirm-title').hide()
+					$('#confirm-type').hide()
+					$('#confirm-body').hide()
+					$('#cancel-title').hide()
+					$('#cancel-type').hide()
+					$('#cancel-body').hide()
+				}
+			})
 			$('li[name="上一页"] a').click(function(){
 				search(search_user,page-1)
 			})
@@ -110,7 +321,7 @@
 			function search(user,p){
 				console.log(page)
 				sftools.api({
-					url:"Admin/GetUserNoticeList",
+					url:"GetUserNoticeList",
 					data:{"user":user,"page":p},
 				},function(e){
 					$('tbody').html('')
@@ -154,7 +365,7 @@
 			$('table').on("click","a",function(){
 				let id=$(this).parent().parent().siblings('td:first').html();
 				sftools.api({
-					url:"Admin/GetUserNoticeDetail",
+					url:"GetUserNoticeDetail",
 					data:id
 				},function(e){
 					$('#detail').modal('show');
@@ -184,6 +395,125 @@
 				},
 				function(){});
 			});
+			$('#add .btn-primary').click(function(){
+				let data={"title":$('#title input').val(),"body":$('#body input').val()}
+				if($('#type').val()=="弹窗"){
+					data.type="alert"
+					data.data={
+						"confirm":$('#alert-type input').prop("checked"),
+						"confirm_text":$('#confirm-title input').val()
+					}
+					data.data.confirm_url={}
+					if($('#confirm-type select').val()!=="无"){
+						data.data.confirm_url.data=$('#confirm-body input').val()
+					}else{
+						data.data.confirm_url=null
+					}
+					if($('#confirm-type select').val()=="增页跳转"){
+						data.data.confirm_url.type=1
+					}else if($('#confirm-type select').val()=="替换跳转"){
+						data.data.confirm_url.type=2
+					}else if($('#confirm-type select').val()=="重载跳转"){
+						data.data.confirm_url.type=3
+					}
+					if($('#alert-type input').prop("checked")){
+						data.data.cancel_text=$('#cancel-title input').val()
+						data.data.cancel_url={}
+						if($('#cancel-type select').val()!=="无"){
+							data.data.cancel_url.data=$('#cancel-body input').val()
+						}else{
+							data.data.cancel_url=null
+						}
+						if($('#cancel-type select').val()=="增页跳转"){
+							data.data.cancel_url.type=1
+						}else if($('#cancel-type select').val()=="替换跳转"){
+							data.data.cancel_url.type=2
+						}else if($('#cancel-type select').val()=="重载跳转"){
+							data.data.cancel_url.type=3
+						}
+					}
+				}else if($('#type').val()=="通知栏"){
+					data.type="push"
+					data.data={}
+					if($('#push-type select').val()=="弹窗"){
+						data.data.type="alert"
+						data.title=$('#push-title input').val()
+						data.body=$('#push-detail input').val()
+						data.data.title=$('#title input').val()
+						data.data.detail=$('#body input').val()
+						data.data.data={
+							"confirm":$('#alert-type input').prop("checked"),
+							"confirm_text":$('#confirm-title input').val()
+						}
+						data.data.data.confirm_url={}
+						if($('#confirm-type select').val()!=="无"){
+							data.data.data.confirm_url.data=$('#confirm-body input').val()
+						}else{
+							data.data.data.confirm_url=null
+						}
+						if($('#confirm-type select').val()=="增页跳转"){
+							data.data.data.confirm_url.type=1
+						}else if($('#confirm-type select').val()=="替换跳转"){
+							data.data.data.confirm_url.type=2
+						}else if($('#confirm-type select').val()=="重载跳转"){
+							data.data.data.confirm_url.type=3
+						}
+						if($('#alert-type input').prop("checked")){
+							data.data.data.cancel_text=$('#cancel-title input').val()
+							data.data.data.cancel_url={}
+							if($('#cancel-type select').val()!=="无"){
+								data.data.data.cancel_url.data=$('#cancel-body input').val()
+							}else{
+								data.data.data.cancel_url=null
+							}
+							if($('#cancel-type select').val()=="增页跳转"){
+								data.data.data.cancel_url.type=1
+							}else if($('#cancel-type select').val()=="替换跳转"){
+								data.data.data.cancel_url.type=2
+							}else if($('#cancel-type select').val()=="重载跳转"){
+								data.data.data.cancel_url.type=3
+							}
+						}
+					}else if($('#push-type select').val()=="Url"){
+						data.data.type="url"
+						data.data.data=$('#push-body input').val()
+						if($('#push-body-type select').val()=="增页跳转"){
+							data.data.way=1
+						}else if($('#push-body-type select').val()=="替换跳转"){
+							data.data.way=2
+						}else if($('#push-body-type select').val()=="重载跳转"){
+							data.data.way=3
+						}
+					}else{
+						data.data.type=null
+					}
+				}else{
+					data={
+						"title":"",
+						"body":"",
+						"type":"url",
+						"data":{
+							"data":$('#push-body input').val()
+						}
+					}
+					if($('#push-body-type select').val()=="增页跳转"){
+						data.data.type=1
+					}else if($('#push-body-type select').val()=="替换跳转"){
+						data.data.type=2
+					}else if($('#push-body-type select').val()=="重载跳转"){
+						data.data.type=3
+					}
+				}
+				console.log(data)
+				data.user=$('#user').val()
+				sftools.api({
+					url:"AddUserNotice",
+					data:data
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'操作成功',content:''});
+					search($("input[name='user']").val(),1)
+				},function(){});
+			})
 		</script>
 	</body>
 </html>

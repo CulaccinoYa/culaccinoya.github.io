@@ -107,7 +107,7 @@
 			function search(id,p){
 				console.log(page)
 				sftools.api({
-					url:"Admin/GetDeviceList",
+					url:"GetDeviceList",
 					data:{"data":id,"page":p},
 				},function(e){
 					$('tbody').html('')
@@ -141,7 +141,7 @@
 			$('table').on("click","a",function(){
 				let id=$(this).parent().parent().siblings('td:first').html();
 				sftools.api({
-					url:"Admin/GetDeviceDetail",
+					url:"GetDeviceDetail",
 					data:id
 				},function(e){
 					$('#detail').modal('show');

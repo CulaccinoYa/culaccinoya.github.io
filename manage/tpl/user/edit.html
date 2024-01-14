@@ -109,7 +109,7 @@
 			});
 			$('button:first').click(function(){
 				sftools.api({
-					url:"Admin/GetUserDetail",
+					url:"GetUserDetail",
 					data:{"type":true,"data":$("input[name='user']").val()},
 				},function(e){
 					$('.card[name="detail"] .card-body').html('')
@@ -153,7 +153,7 @@
 					        btnClass: 'btn-warning',
 					        action: function() {
 								sftools.api({
-									url:"Admin/ChangeUserSafeTools",
+									url:"ChangeUserSafeTools",
 									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
 										"mobile":$('input[name="mobile"]').val(),
 										"qq":$('input[name="qq"]').val(),
@@ -180,7 +180,7 @@
 					        btnClass: 'btn-warning',
 					        action: function() {
 								sftools.api({
-									url:"Admin/ChangeUserProfile",
+									url:"ChangeUserProfile",
 									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
 										"username":$('input[name="username"]').val(),
 										"nick":$('input[name="nick"]').val(),
@@ -208,7 +208,7 @@
 					        btnClass: 'btn-warning',
 					        action: function() {
 								sftools.api({
-									url:"Admin/ChangeUserStatus",
+									url:"ChangeUserStatus",
 									data:{"user":$('.d-flex:first p:first').html().substr(5),"data":{
 										"type":$('select[name="freeze-new"]').val(),
 										"reason":$('#freeze_reason').val(),
