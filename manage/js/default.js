@@ -8,8 +8,9 @@ jconfirm.defaults={
 		cancel:{text:"取消"}
 	}
 }
-var sftools={
-	api:function(data,suc=function(){},fail=function(){}){
+const Host="https://api.sftools.link/Admin/"
+const sftools={
+	api:function(data,suc=function(i){},fail=function(i){}){
 		if(!data.loading){
 			data.loading='操作正在处理'
 		}
@@ -22,7 +23,7 @@ var sftools={
 		let token=$.cookie('sf_token');
 		$.ajax({
 			type:"POST",
-			url:"https://sf-api.suxber.live/"+data.url,
+			url:Host+data.url,
 			data:JSON.stringify({"data":data.data,"account":token}),
 			timeout:data.timeout,
 			contentType:"application/json;charset=UTF-8",
