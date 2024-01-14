@@ -55,7 +55,7 @@
 				            <p class="text-secondary col-auto">使用时间</p>
 				            <p class="text-end" id="used_time"></p>
 				        </div>
-						<p class="text-secondary <p class="text-secondary">适用范围</p>">适用范围</p>
+						<p class="text-secondary col-auto">适用范围</p>
 				        <p id="locus"></p>
 				    </div>
 				</div>
@@ -106,13 +106,10 @@
 				type=true;
 			}
 			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-			$.ajax({
-				type:"POST",
-				timeout:10000,
-				url:"https://sf-api.suxber.live/Wallet/GetTicketList",
-				data:JSON.stringify({"data":{"type":type,"page":page},"account":{"user":user,"token":token}}),
-				contentType:"application/json;charset=UTF-8",
-				success:function (data) {
+			window.sftools.request({
+				url:"Wallet/GetTicketList",
+				data:{"type":type,"page":page},
+				success:data=>{
 					if(data.code==200){
 						console.log(data.data.length)
 						if(!data.data.length&&page==1){
@@ -162,11 +159,14 @@
 						$.alert({title:'',type:'red',content:data.msg});
 					}
 					loading.close();
-				},
-				error:function (msg) {
-				    loading.close();
-					$.alert({title:'',type:'red',content:'网络异常，请稍后再试'});
-				}
+				},fail:i=>{
+	        		loading.close();
+	        		if(i && i!=="已完成行为验证" && i!==""){
+	        			$.alert({title:'错误',type:'red',content:i}); 
+	        		}else if(i=="已完成行为验证"){
+	        			getdetail(id)
+	        		}
+	        	}
 			});
 		};
 		function Tickets(id){
@@ -174,79 +174,70 @@
 		}
 		function getdetail(id){
 		    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-		    $.ajax({
-		    	type:"POST",
-		    	timeout:10000,
-		    	url:"https://sf-api.suxber.live/Wallet/GetTicketDetail",
-		    	data:JSON.stringify({"data":{"ticketid":id},"account":{"user":user,"token":token}}),
-		    	contentType:"application/json;charset=UTF-8",
-		    	success:function (data) {
-		    		if(data.code==200){
-		    		    data=data.data;
-		    		    $('#icon').attr('src',data.icon);
-		    		    $('#name').html(data.name);
-		    		    $('#times').html(data.times);
-		    		    $('#remarks').html(decodeURIComponent(data.remarks));
-		    		    $('#amount').html("<b>"+data.amount+"</b>");
-		    		    $('#create_time').html(timetostring(data.create_time));
-						$('#given_time').html(timetostring(data.given_time));
-						$('#used_time').html('');
-						let locus='';
-						let x=JSON.parse(data.locus)
-						if(x.length>0){
-							for(let i=0;i<x.length;i++){
-								locus=locus+"、"
-							}
-						}else{
-							locus='全业务通用、'
+		    window.sftools.request({
+		    	url:"Wallet/GetTicketDetail",
+		    	data:{"ticketid":id},
+		    	success:data=>{
+		    		data=data.data;
+		    		$('#icon').attr('src',data.icon);
+		    		$('#name').html(data.name);
+		    		$('#times').html(data.times);
+		    		$('#remarks').html(decodeURIComponent(data.remarks));
+		    		$('#amount').html("<b>"+data.amount+"</b>");
+		    		$('#create_time').html(timetostring(data.create_time));
+		    		$('#given_time').html(timetostring(data.given_time));
+					let locus='';
+					if(data.locus.length>0){
+						for(let i=0;i<data.locus.length;i++){
+							locus=data.locus[i]+"、"
 						}
-						$('#locus').html(locus.substr(0,locus.length-1));
-						let used=[];
-						if(data.used_time!==''){
-							used=JSON.parse(data.used_time)
-							for(let i=0;i<used.length;i++){
-								$('#used_time').append(timetostring(used[i].time)+' (第'+(i+1)+'次)');
-								if(used.length>1){
-									$('#used_time').append('<br>');
-								}
-							}
-						}
-		    		    if(data.status=='0'){
-							if(used.length>0){
-								$('#status').html('已使用部分');
-							}else{
-								$('#status').html('未使用');
-							}
-		    		    }else if(data.status=='1'){
-		    		        $('#status').html('已使用');
-		    		    }else if(data.status=='2'){
-		    		        $('#status').html('过期');
-		    		    }else if(data.status=='3'){
-		    		        $('#status').html('冻结');
-		    		    }else{
-		    		        $('#status').html('异常');
-		    		    }
-		    		    if(data.type=='0'){
-		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">无门槛券</span>');
-		    		    }else if(data.type=='1'){
-		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>');
-		    		    }else if(data.type=='2'){
-		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">满'+data.pay_amount+'可用</span>');
-		    		    }else if(data.type=='3'){
-		    		    	$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">满'+data.pay_amount+'可用</span><span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>');
-		    		    }
-		    		    $('#timeout').html(timetostring(data.timeout));
-		    		}else if(data.code==300){
-		    			window.location.href=decodeURIComponent(data.data);
-		    		}else{
-		    			$.alert({title:'',type:'red',content:data.msg,buttons:[],closeIcon:false});
+					}else{
+						locus='全业务通用、'
+					}
+					$('#locus').html(locus.substr(0,locus.length-1));
+		    		$('#used_time').html('');
+		    		if(data.used_time.length>0){
+		    			for(let i=0;i<data.used_time.length;i++){
+		    				$('#used_time').append(timetostring(data.used_time[i].time)+' (第'+(i+1)+'次)');
+		    				if(data.used_time.length>1){
+		    					$('#used_time').append('<br>');
+		    				}
+		    			}
 		    		}
+		    		if(data.status=='0'){
+		    			if(data.used_time.length>0){
+		    				$('#status').html('已使用部分');
+		    			}else{
+		    				$('#status').html('未使用');
+		    			}
+		    		}else if(data.status=='1'){
+		    		    $('#status').html('已使用');
+		    		}else if(data.status=='2'){
+		    		    $('#status').html('过期');
+		    		}else if(data.status=='3'){
+		    		    $('#status').html('冻结');
+		    		}else{
+		    		    $('#status').html('异常');
+		    		}
+		    		if(data.type=='0'){
+		    			$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">无门槛券</span>');
+		    		}else if(data.type=='1'){
+		    			$('#ys').html('<span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>');
+		    		}else if(data.type=='2'){
+		    			$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">满'+data.pay_amount+'可用</span>');
+		    		}else if(data.type=='3'){
+		    			$('#ys').html('<span class="badge rounded-pill text-bg-primary me-1">满'+data.pay_amount+'可用</span><span class="badge rounded-pill text-bg-danger me-1">不与商家活动同享</span>');
+		    		}
+		    		$('#timeout').html(timetostring(data.timeout));
 					loading.close();
-		    	},
-		    	error:function (msg) {
-		    	    loading.close();
-		    		$.alert({title:'',type:'red',content:'网络异常，请稍后再试'});
-		    	}
+		    	},fail:i=>{
+	        		loading.close();
+	        		if(i && i!=="已完成行为验证" && i!==""){
+	        			$.alert({title:'错误',type:'red',content:i}); 
+	        		}else if(i=="已完成行为验证"){
+	        			getdetail(id)
+	        		}
+	        	}
 		    });
 		}
 		function timetostring(times){
