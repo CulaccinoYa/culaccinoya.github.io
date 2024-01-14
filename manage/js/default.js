@@ -8,7 +8,7 @@ jconfirm.defaults={
 		cancel:{text:"取消"}
 	}
 }
-const Host="https://api.sftools.link/Admin/"
+const Host="http://127.0.0.1/Admin/"
 const sftools={
 	api:function(data,suc=function(i){},fail=function(i){}){
 		if(!data.loading){
@@ -34,7 +34,7 @@ const sftools={
 				if(e.code==200){
 					suc(e.data);
 				}else if(e.code==1000){
-					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'账户信息发生变动，您被迫下线',buttons:[],closeIcon:false});
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'账户信息发生变动，您被迫下线',buttons:{ok:function(){window.location.href='./login.html'}},closeIcon:false});
 				}else if(e.code==300){
 					if(!data.hidefail){
 						$.alert({title:'请继续完成操作',content:'<iframe style="height:70vh;width:100%" scrolling="0" frameborder="0" src="'+e.data+'"></iframe>',boxWidth:'100%'})
@@ -107,7 +107,7 @@ function addWaterMarker() {
     cans.fillStyle = "rgba(0, 0, 0, 0.125)";
     cans.textAlign = 'center';
     cans.textBaseline = 'Middle';
-    cans.fillText($.cookie('sf_id')+' - SF工具箱管理系统', can.width / 3, can.height / 2);
+    cans.fillText('SF工具箱管理系统 '+$.cookie('sf_id'), can.width / 3, can.height / 2);
 	let t=new Date(Date.now())
 	var y = t.getFullYear();
 	var m = t.getMonth()+1;
@@ -118,9 +118,7 @@ function addWaterMarker() {
 	if(h<10) h='0'+h;
 	var mm = t.getMinutes();
 	if(mm<10) mm='0'+mm;
-	var s = t.getSeconds();
-	if(s<10) s='0'+s;
-	let time=y+'/'+m+'/'+d+' '+h+":"+mm+":"+s
+	let time=y+'/'+m+'/'+d+' '+h+":"+mm
     cans.fillText(time, can.width / 2.7, can.height / 1.6);
 	if(!document.getElementById("watermark_div")){
 		var dom = document.createElement('div');
@@ -140,4 +138,4 @@ function addWaterMarker() {
     dom.style.backgroundImage = "url(" + can.toDataURL("image/png") + ")";
 }
 
-if(location.href.slice(-10)!=='login.html')addWaterMarker(),setInterval("addWaterMarker()",1000);
+if(location.href.indexOf('tpl')!==-1)addWaterMarker(),setInterval("addWaterMarker()",10000);
