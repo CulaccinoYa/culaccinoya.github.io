@@ -185,13 +185,22 @@
 		    		    data=data.data;
 		    		    $('#icon').attr('src',data.icon);
 		    		    $('#name').html(data.name);
-		    		    $('#locus').html(data.locus);
 		    		    $('#times').html(data.times);
 		    		    $('#remarks').html(decodeURIComponent(data.remarks));
 		    		    $('#amount').html("<b>"+data.amount+"</b>");
 		    		    $('#create_time').html(timetostring(data.create_time));
 						$('#given_time').html(timetostring(data.given_time));
 						$('#used_time').html('');
+						let locus='';
+						let x=JSON.parse(data.locus)
+						if(x.length>0){
+							for(let i=0;i<x.length;i++){
+								locus=locus+"、"
+							}
+						}else{
+							locus='全业务通用、'
+						}
+						$('#locus').html(locus.substr(0,locus.length-1));
 						let used=[];
 						if(data.used_time!==''){
 							used=JSON.parse(data.used_time)
