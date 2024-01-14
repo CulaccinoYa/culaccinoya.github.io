@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-		<title>券票列表 - SF工具箱</title>
+		<title>券票模板 - SF工具箱</title>
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -25,11 +25,11 @@
 					        	<div class="col-md-4">
 					        		<div class="row">
 					        			<label class="col-sm-4 col-form-label">
-					        				<span class="text-danger">*</span>用户ID
+					        				<span class="text-danger">*</span>券票模板ID
 					        			</label>
 					        			<div class="col-sm-8">
 					        				<input type="text" class="form-control pull-left" name="user" value=""
-					        				placeholder="用户ID">
+					        				placeholder="券票模板ID">
 					        			</div>
 					        		</div>
 					        	</div>
@@ -43,11 +43,9 @@
 									<thead>
 										<tr>
 											<th>ID</th>
-											<th>用户</th>
 											<th>名称</th>
 											<th>金额</th>
 											<th>类型</th>
-											<th>状态</th>
 											<th>操作</th>
 										</tr>
 									</thead>
@@ -70,15 +68,10 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h6 class="modal-title" id="exampleModalLiveLabel">账单详情</h6>
+							<h6 class="modal-title" id="exampleModalLiveLabel">模板详情</h6>
 							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 						</div>
 						<div class="modal-body">
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-danger">作废</button>
-							<button type="button" class="btn btn-primary" style="display:none;">冻结</button>
-							<button type="button" class="btn btn-primary" style="display:none;">解冻</button>
 						</div>
 					</div>
 				</div>
@@ -87,22 +80,10 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h6 class="modal-title" id="exampleModalLiveLabel">新增券票</h6>
+							<h6 class="modal-title" id="exampleModalLiveLabel">新增模板</h6>
 							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 						</div>
 						<div class="modal-body">
-							<div class="mb-3">
-								<label>券票模板ID：</label>
-								<div class="d-flex">
-									<div class="col-9"><input id="ticketid" class="form-control" type="number"/></div>
-									<button class="btn btn-success col-3">获取</button>
-								</div>
-							</div>
-							<div class="mb-3">
-								<label>下发用户：</label>
-								<input id="user" class="form-control" value='' />
-								<small class="help-block"><code>英文逗号,</code>表示单个用户，<code>英文减号-</code>表示用户区间</small>
-							</div>
 							<div class="mb-3">
 								<label>名称：</label>
 								<input id="name" class="form-control" value='' />
@@ -119,9 +100,9 @@
 								<label>类型：</label>
 								<select class="form-control" id="type">
 									<option value="0">无门槛券</option>
-									<option value="1">非活动券</option>
+									<option value="1">定向券</option>
 									<option value="2">满减券</option>
-									<option value="3">非活动满减券</option>
+									<option value="3">定向满减券</option>
 								</select>
 							</div>
 							<div class="mb-3">
@@ -137,20 +118,12 @@
 								<input id="used" class="form-control" value='' />
 							</div>
 							<div class="mb-3">
-								<label>生效时间：</label>
-								<input class="form-control" type="text" id="given_time" value="" readonly>
-							</div>
-							<div class="mb-3">
-								<label>失效时间：</label>
-								<input class="form-control" type="text" id="timeout" value="" readonly>
-							</div>
-							<div class="mb-3">
 								<label>使用说明：</label>
 								<textarea class="form-control" id="remarks" rows="3"></textarea>
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-primary">下发</button>
+							<button type="button" class="btn btn-primary">新增</button>
 						</div>
 					</div>
 				</div>
@@ -160,7 +133,6 @@
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
-		<script src="../../js/laydate.js"></script>
 		<script src="../../js/default.js"></script>
 		<script>
 			var page=1;
@@ -171,14 +143,6 @@
 					$('button:first').click();
 				}
 			})
-			laydate.render({
-			    elem: '#given_time',
-			    type: 'datetime'
-			});
-			laydate.render({
-			    elem: '#timeout',
-			    type: 'datetime'
-			});
 			$('button:first').click(function(){
 				search($("input[name='user']").val(),1)
 			})
@@ -200,7 +164,7 @@
 			function search(id,p){
 				console.log(page)
 				sftools.api({
-					url:"GetWalletTicketList",
+					url:"GetWalletTicketTemplateList",
 					data:{"data":id,"page":p},
 				},function(e){
 					$('tbody').html('')
@@ -221,7 +185,6 @@
 					let html=''
 					for(var n=0;n<e.data.length;n++){
 						html=html+'<tr><td>'+e.data[n].id+'</td>'
-						html=html+'<td>'+e.data[n].user+'</td>'
 						html=html+'<td>'+e.data[n].name+'</td>'
 						html=html+'<td>'+e.data[n].amount+'</td>'
 						let type='';
@@ -229,14 +192,7 @@
 						else if(e.data[n].type==1)type='非活动券';
 						else if(e.data[n].type==2)type='满减券';
 						else if(e.data[n].type==3)type='非活动满减券';
-						html=html+'<td>'+type+'</td>'
-						let status='';
-						if(e.data[n].status==0)status='<span class="badge bg-primary">未使用</span>';
-						else if(e.data[n].status==1)status='<span class="badge bg-success">已使用</span>';
-						else if(e.data[n].status==2)status='<span class="badge bg-warning">已过期</span>';
-						else if(e.data[n].status==3)status='<span class="badge bg-purple">冻结</span>';
-						else if(e.data[n].status==4)status='<span class="badge bg-danger">作废</span>';
-						html=html+'<td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+						html=html+'<td>'+type+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
 					}
 					$('tbody').html(html)
 				},
@@ -245,156 +201,45 @@
 			$('table').on("click","a",function(){
 				let id=$(this).parent().parent().siblings('td:first').html();
 				sftools.api({
-					url:"GetWalletTicketDetail",
+					url:"GetWalletTicketTemplateDetail",
 					data:id
 				},function(e){
 					$('#detail').modal('show');
 					$('#detail .modal-body').html('')
-					html='<div class="d-flex justify-content-between"><div><p>券票ID：'+e.id+'</p><p>所属用户：'+e.user+'</p><p>券票名称：'+e.name+'</p><p>券票金额：'+e.amount+'</p></div><img src="'+e.icon+'" style="width:4rem;height:4rem;"></div>'
+					html='<div class="d-flex justify-content-between"><div><p>模板ID：'+e.id+'</p><p>模板名称：'+e.name+'</p><p>模板金额：'+e.amount+'</p></div><img src="'+e.icon+'" style="width:4rem;height:4rem;"></div>'
 					if(e.type==0){
-						html=html+'<p>券票类型：无门槛券</p>'
+						html=html+'<p>模板类型：无门槛券</p>'
 					}else if(e.type==1){
-						html=html+'<p>券票类型：非活动券</p>'
+						html=html+'<p>模板类型：非活动券</p>'
 					}else if(e.type==2){
-						html=html+'<p>券票类型：满减券</p><p>满减金额：'+e.pay_amount+'</p>'
+						html=html+'<p>模板类型：满减券</p><p>满减金额：'+e.pay_amount+'</p>'
 					}else if(e.type==3){
-						html=html+'<p>券票类型：非活动满减券</p><p>满减金额：'+e.pay_amount+'</p>'
+						html=html+'<p>模板类型：非活动满减券</p><p>满减金额：'+e.pay_amount+'</p>'
 					}
 					html=html+'<p>剩余次数：'+e.times+'次</p>'
 					html=html+'<p>可用商户：</p>'
-					let locus=e.locus;
+					let locus=e.used;
 					if(locus.length==0){html=html+'<span class="badge bg-primary">全商户通用</span>'}else{
 						for(var n=0;n<locus.length;n++){
 							html=html+'<span class="badge bg-primary me-1">'+locus[n]+'</span>'
 						}
 					}
 					html=html+'<p>创建时间：'+timetostring(e.create_time)+'</p>'
-					html=html+'<p>生效时间：'+timetostring(e.given_time)+'</p>'
-					html=html+'<p>过期时间：'+timetostring(e.timeout)+'</p>'
-					html=html+'<p>使用时间：</p>'
-					let used=JSON.parse(e.used_time)
-					if(locus.length<1){
-						html=html+'<span class="badge bg-primary">未使用</span>'
-					}else{
-						for(var n=0;n<used.length;n++){
-							html=html+'<span class="badge bg-primary me-1">'+used[n].id+'</span><span class="badge bg-primary me-1">'+timetostring(used[n].time)+'</span><br>'
-						}
-					}
 					html=html+'<p>备注：<div style="height:5rem;overflow-y:scroll">'+decodeURIComponent(e.remarks)+'</div></p>'
 					let status='';
-					$('#detail button:contains("冻结")').hide()
-					$('#detail button:contains("解冻")').hide()
-					$('#detail button:contains("作废")').show();
-					if(e.status==0){$('#detail button:contains("冻结")').show();status='<span class="badge bg-primary">未使用</span>';}
-					else if(e.status==1)status='<span class="badge bg-success">已使用</span>';
-					else if(e.status==2)status='<span class="badge bg-warning">已过期</span>';
-					else if(e.status==3){$('#detail button:contains("解冻")').show();status='<span class="badge bg-purple">冻结</span>';}
-					else if(e.status==4){$('#detail button:contains("作废")').hide();status='<span class="badge bg-danger">作废</span>';}
+					if(e.status==0)status='<span class="badge bg-primary">正常</span>';
+					else status='<span class="badge bg-danger">异常</span>';
 					html=html+'<p>状态：'+status+'</p>'
 					$('#detail .modal-body').html(html)
 				},
 				function(){});
-			});
-			$('#detail').on("click","button:contains('作废')",function(){
-				let id=$('.modal-body:first p:first').html().substr(5);
-				$.confirm({
-				    title: '二次确认',
-					icon:'mdi mdi-alert',
-				    content: '作废券票后，该券票在用户端将不再显示，且无法恢复，如需临时性或限制券票使用，请选择冻结，确定继续操作吗',
-					autoClose: '取消|10000',
-					buttons: {
-					    "确认": {
-					        btnClass: 'btn-warning',
-					        action: function() {
-								sftools.api({
-									url:"DelTicket",
-									data:id,
-								},function(e){
-									$('button:first').click();
-									$('#detail').modal('hide');
-									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'作废成功',content:''});
-								});
-					        }
-					    },
-					    "取消":function(){}
-					}
-				});
-			});
-			$('#detail').on("click","button:contains('冻结')",function(){
-				let id=$('.modal-body:first p:first').html().substr(5);
-				$.confirm({
-				    title: '二次确认',
-					icon:'mdi mdi-alert',
-				    content: '冻结券票后，该券票在用户端将显示为冻结状态，如需删除该券票，请选择作废，确定继续操作吗',
-					autoClose: '取消|10000',
-					buttons: {
-					    "确认": {
-					        btnClass: 'btn-warning',
-					        action: function() {
-								sftools.api({
-									url:"FreezeTicket",
-									data:id,
-								},function(e){
-									$('button:first').click();
-									$('#detail').modal('hide');
-									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'冻结成功',content:''});
-								});
-					        }
-					    },
-					    "取消":function(){}
-					}
-				});
-			});
-			$('#detail').on("click","button:contains('解冻')",function(){
-				let id=$('.modal-body:first p:first').html().substr(5);
-				$.confirm({
-				    title: '二次确认',
-					icon:'mdi mdi-alert',
-				    content: '解冻该券票后，若该券票仍在有效期内且剩余次数有余，将可正常使用，确定继续操作吗',
-					autoClose: '取消|10000',
-					buttons: {
-					    "确认": {
-					        btnClass: 'btn-warning',
-					        action: function() {
-								sftools.api({
-									url:"UnFreezeTicket",
-									data:id,
-								},function(e){
-									$('button:first').click();
-									$('#detail').modal('hide');
-									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'解冻成功',content:''});
-								});
-					        }
-					    },
-					    "取消":function(){}
-					}
-				});
-			});
-			$('#addticket .btn-success').click(function(){
-				let id=$('#ticketid').val();
-				sftools.api({
-					url:"GetWalletTicketTemplateDetail",
-					data:id
-				},function(e){
-					console.log(e)
-					$('#name').val(e.name)
-					$('#icon').val(e.icon)
-					$('#amount').val(e.amount)
-					$('#type').val(e.type)
-					$('#pay_amount').val(e.pay_amount)
-					$('#times').val(e.times)
-					$('#used').val(e.used)
-					$('#remarks').val(e.remarks)
-				},function(){});
 			});
 			$('#addticket .modal-footer button').click(function(){
 				if(
 					!$('#name').val()||
 					!$('#amount').val()||
 					!$('#pay_amount').val()||
-					!$('#times').val()||
-					!$('#given_time').val()||
-					!$('#timeout').val()
+					!$('#times').val()
 				){
 					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'请核对必填字段是否填写完整'});
 					return
@@ -402,16 +247,15 @@
 				$.confirm({
 				    title: '二次确认',
 					icon:'mdi mdi-alert',
-				    content: '请核对券票信息，下发后只能通过"作废"和"冻结"方式撤回该券',
+				    content: '请核对模板信息，提交后将无法修改',
 					autoClose: '取消|10000',
 					buttons: {
 					    "确认": {
 					        btnClass: 'btn-warning',
 					        action: function() {
 								sftools.api({
-									url:"AddTicket",
+									url:"AddTicketTemplate",
 									data:{
-										"user":$('#user').val(),
 										"name":$('#name').val(),
 										"icon":$('#icon').val(),
 										"amount":$('#amount').val(),
@@ -419,14 +263,12 @@
 										"pay_amount":$('#pay_amount').val(),
 										"times":$('#times').val(),
 										"used":$('#used').val(),
-										"remarks":$('#remarks').val(),
-										"given_time":(new Date($('#given_time').val()).getTime()/1000),
-										"timeout":(new Date($('#timeout').val()).getTime()/1000)
+										"remarks":$('#remarks').val()
 									},
 								},function(e){
 									$('button:first').click();
 									$('#addticket').modal('hide');
-									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'下发成功',content:''});
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'添加成功',content:''});
 								});
 					        }
 					    },
