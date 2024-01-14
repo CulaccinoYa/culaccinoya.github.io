@@ -107,8 +107,8 @@
 		<script>
 			$(function(){
 				sftools.api({
-					url:"Admin/Overview",
-					data:JSON.stringify({}),
+					url:"Overview",
+					data:{},
 				},function(e){
 					$('span:contains("{{user_num}}")').text(e.times.user);
 					$('span:contains("{{bike_num}}")').text(e.times.bike);

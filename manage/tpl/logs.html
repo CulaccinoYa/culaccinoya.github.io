@@ -96,7 +96,7 @@
 			function search(id,p){
 				console.log(page)
 				sftools.api({
-					url:"Admin/GetLogList",
+					url:"GetLogList",
 					data:{"id":id,"page":p},
 				},function(e){
 					$('tbody').html('')
@@ -121,7 +121,7 @@
 						html=html+'<td><span class="d-block text-truncate" style="width:10rem">'+e.data[n].type+'</span></td>'
 						html=html+'<td><span class="d-block text-truncate" style="width:24rem">'+e.data[n].detail+'</span></td>'
 						html=html+'<td>'+timetostring(e.data[n].create_time)+'</td>'
-						html=html+'<td>'+e.data[n].create_ip+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+						html=html+'<td>'+e.data[n].create_ip+'</td></tr>'
 					}
 					$('tbody').html(html)
 				},
