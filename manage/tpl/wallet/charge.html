@@ -144,7 +144,7 @@
 			})
 			$('button:first').click(function(){
 				sftools.api({
-					url:"Admin/GetUserDetail",
+					url:"GetUserDetail",
 					data:{"type":true,"data":$("input[name='user']").val()},
 				},function(e){
 					$('#detail').show()
@@ -189,7 +189,7 @@
 									data.name=$('#name input').val();
 								}
 								sftools.api({
-									url:"Admin/AddBill",
+									url:"AddBill",
 									data:data,
 								},function(e){
 									$('button:first').click();

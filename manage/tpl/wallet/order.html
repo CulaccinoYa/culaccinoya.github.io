@@ -114,7 +114,7 @@
 			function search(id,p){
 				console.log(page)
 				sftools.api({
-					url:"Admin/GetWalletBillList",
+					url:"GetWalletBillList",
 					data:{"data":id,"page":p},
 				},function(e){
 					$('tbody').html('')
@@ -160,7 +160,7 @@
 			$('table').on("click","a",function(){
 				let id=$(this).parent().parent().siblings('td:first').html();
 				sftools.api({
-					url:"Admin/GetWalletBillDetail",
+					url:"GetWalletBillDetail",
 					data:id
 				},function(e){
 					$('#detail').modal('show');
@@ -228,7 +228,7 @@
 				                    return false;
 				                } else {
 									sftools.api({
-										url:"Admin/refundBill",
+										url:"refundBill",
 										data:{"id":id,"amount":amount.val(),"reason":reason.val()}
 									},function(e){
 										$('button:first').click();
@@ -254,7 +254,7 @@
 					        btnClass: 'btn-warning',
 					        action: function() {
 								sftools.api({
-									url:"Admin/CancelBill",
+									url:"CancelBill",
 									data:id,
 								},function(e){
 									$('button:first').click();
