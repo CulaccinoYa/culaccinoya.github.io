@@ -345,10 +345,8 @@
 						html=html+'<td>'+e.data[n].user+'</td>'
 						html=html+'<td>'+e.data[n].appid+'</td>'
 						let type='通知栏消息'
-						if(e.data[n].type==1)type='消息弹窗';
-						else if(e.data[n].type==2)type='消息弹窗 - 跳转网页';
-						else if(e.data[n].type==3)type='确认弹窗 - 跳转网页';
-						else if(e.data[n].type==4)type='跳转网页';
+						if(e.data[n].type=='alert')type='消息弹窗';
+						else if(e.data[n].type=='url')type='直接跳转';
 						html=html+'<td>'+type+'</td>'
 						html=html+'<td>'+e.data[n].title+'</td>'
 						html=html+'<td>'+e.data[n].detail+'</td>'
@@ -374,10 +372,8 @@
 					html=html+'<p>用户ID：'+e.user+'</p>'
 					html=html+'<p>操作应用：'+e.appid+'</p>'
 					let type='通知栏消息'
-					if(e.type==1)type='消息弹窗';
-					else if(e.type==2)type='消息弹窗 - 跳转网页';
-					else if(e.type==3)type='确认弹窗 - 跳转网页';
-					else if(e.type==4)type='跳转网页';
+					if(e.type=="alert")type='消息弹窗';
+					else if(e.type=="url")type='直接跳转'
 					html=html+'<p>弹窗类型：'+type+'</p>'
 					html=html+'<p>弹窗标题：'+e.title+'</p>'
 					html=html+'<p>弹窗内容：'+e.detail+'</p>'
