@@ -37,7 +37,7 @@
 					<div class="mb-3">
 					    <div class="form-check">
 					        <input type="checkbox" class="form-check-input" id="rememberme">
-					        <label class="form-check-label not-user-select" for="rememberme">记住此设备，下次无需验证</label>
+					        <label class="form-check-label not-user-select" for="rememberme">该设备为临时设备</label>
 					    </div>
 					</div>
 					<div class="mb-3 d-grid">
@@ -54,45 +54,51 @@
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://static.geetest.com/v4/gt4.js"></script>
 		<script src="./js/default.js"></script>
 		<script type="text/javascript">
-			$('button').click(()=>{
-				let user=$('#username').val();
-				if(!user.length){
-					$.alert({type:'red',content:'用户名不符合规范'});
-					return;
-				}
-				let pwd=$('#password').val();
-				if(pwd.length<5||pwd.length>16){
-					$.alert({type:'red',content:'密码不符合规范'});
-					return;
-				}
-				let auto=$('#rememberme').prop("checked");
-				let loading=$.alert({content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-					type:"POST",
-					url:"https://sf-api.suxber.live/Admin/Login",
-					data:JSON.stringify({"data":{"user":user,"pwd":pwd,"auto":auto}}),
-					contentType:"application/json;charset=UTF-8",
-					success:function (data) {
-					    loading.close();
-						if(data.code==200){
-							$.alert({type:'green',icon:"mdi mdi-check-bold",title:'登录成功，正在跳转',content:'',buttons:[]});
-							$.cookie('sf_id',data.data.user,{expires:7})
-							$.cookie('sf_token',data.data.key,{expires:7})
-							window.location.href="./index.html"
-						}else if(data.code==300){
-						    $.alert({title:'请继续完成操作',content:'<iframe style="height:70vh;width:100%" scrolling="0" frameborder="0" src="'+data.data+'"></iframe>',boxWidth:'100%'})
-						}else{
-							$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'登录失败',content:data.msg});
-						}
-					},
-					error:function (msg) {
-					    loading.close();
-						$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'登录失败',content:'请检查网络连接'});
+			initGeetest4({
+			    captchaId:'105969cff8897b7211c64420a6f9029e',
+				product: 'bind'
+			},function (captcha) {
+				$('.btn-primary').click(()=>{
+					let user=$('#username').val();
+					if(!user.length){
+						$.alert({type:'red',content:'用户名不符合规范'});
+						return;
 					}
-				});
-			})
+					let pwd=$('#password').val();
+					if(pwd.length<5||pwd.length>16){
+						$.alert({type:'red',content:'密码不符合规范'});
+						return;
+					}
+					captcha.showCaptcha()
+				})
+				captcha.onSuccess(function(){
+					var code = captcha.getValidate();
+					let user=$('#username').val();
+					if(!user.length){
+						$.alert({type:'red',content:'用户名不符合规范'});
+						return;
+					}
+					let pwd=$('#password').val();
+					if(pwd.length<5||pwd.length>16){
+						$.alert({type:'red',content:'密码不符合规范'});
+						return;
+					}
+					let auto=$('#rememberme').prop("checked");
+					sftools.api({
+						url:"Login",
+						data:{"user":user,"pwd":pwd,"auto":auto,"captcha":code},
+					},suc=>{
+						$.alert({type:'green',icon:"mdi mdi-check-bold",title:'登录成功，正在跳转',content:'',buttons:[]});
+						$.cookie('sf_id',suc.user,{expires:7})
+						$.cookie('sf_token',suc.key,{expires:7})
+						window.location.href="./index.html"
+						captcha.reset();
+					},fail=>{captcha.reset();})
+				})
+			});
 		</script>
 	</body>
 
