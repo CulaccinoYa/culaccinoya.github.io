@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>洗衣设置 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row align-items-start">
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">区域选择</div></div>
+						<div class="card-body">
+							<div class="mb-3">
+								<label class="form-label">洗衣区域列表</label>
+								<select class="form-select" size="5">
+								</select>
+							</div>
+						</div>
+						<div class="card-footer">
+							<button class="btn btn-success me-1">新增区域</button>
+							<button class="btn btn-danger me-1">删除选中区域</button>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header"><div class="card-title">价位设定</div></div>
+						<div class="card-body" id="price"></div>
+						<div class="card-footer">
+							<button class="btn btn-success me-1">新增价位参数</button>
+							<button class="btn btn-primary me-1">保存价位参数</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">蓝牙参数</div></div>
+						<div class="card-body">
+							<div class="mb-3">
+								<label class="form-label">蓝牙通讯ID</label>
+								<input id="cid" class="form-control"/>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">蓝牙服务ID</label>
+								<input id="sid" class="form-control"/>
+							</div>
+							<div class="mb-3">
+								<label class="form-label me-2">蓝牙通讯参数</label><a class="text-decoration-none" href="javascript:;">新增蓝牙参数</a>
+								<div id="bd">
+									<div class="input-group"><input class="form-control"/><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer">
+							<button class="btn btn-primary me-1">保存蓝牙参数</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var checkarea;
+			$(function(){
+				first();
+			})
+			function first(){
+				sftools.api({
+					url:"GetSetting",
+					data:"wash_area",
+				},function(e){
+					let data=JSON.parse(e)
+					$('select').html('')
+					for(var n=0;n<data.length;n++){
+						$('select').append('<option value="'+data[n].id+'">'+data[n].title+'</option>')
+					}
+				},function(){});
+			}
+			$('select').change(function(){
+				let area=$('select').val()
+				sftools.api({
+					url:"GetSetting",
+					data:"wash_data",
+				},function(e){
+					let data=JSON.parse(e)
+					if(!data[area]){
+						data[area]={}
+						data[area].cid=""
+						data[area].sid=""
+						data[area].data=[]
+					}
+					$('#cid').val(data[area].cid)
+					$('#sid').val(data[area].sid)
+					$('#bd').html('')
+					for(var n=0;n<data[area].data.length;n++){
+						$('#bd').append('<div class="input-group my-1"><input class="form-control" value="'+data[area].data[n]+'"/><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div>')
+					}
+					checkarea=$('select').val()
+				},function(){});
+				sftools.api({
+					url:"GetSetting",
+					data:"wash_price",
+				},function(e){
+					let data=JSON.parse(e)
+					if(!data[area]){
+						data[area]=[]
+					}
+					$('#price').html('')
+					for(var n=0;n<data[area].length;n++){
+						$('#price').append('<div class="mb-3"><div class="input-group"><span class="input-group-text">ID</span><input type="text"class="form-control"name="id"value="'+data[area][n].id+'"><span class="input-group-text">标题</span><input type="text"class="form-control"name="title"value="'+data[area][n].title+'"><span class="input-group-text">小标题</span><input type="text"class="form-control"name="subtitle"value="'+data[area][n].subtitle+'"><span class="input-group-text">价位</span><input type="number"class="form-control"name="amount"value="'+data[area][n].amount+'"><span class="input-group-text">时间</span><input type="number"class="form-control"name="time"value="'+data[area][n].time+'"></div><div class="input-group"><span class="input-group-text">图标地址</span><input type="text"class="form-control"name="icon"value="'+data[area][n].icon+'"><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div></div>')
+					}
+					checkarea=$('select').val()
+				},function(){});
+			})
+			$('button:contains("新增区域")').click(function(){
+				$.confirm({
+				    title: '新增区域',
+				    content: '<div class="form-group p-1 mb-0">'+
+				             '  <input type="text" placeholder="区域ID" class="form-control" />'+
+				             '  <input type="text" placeholder="区域名称" name="title" class="form-control" />'+
+				             '</div>',
+				    buttons: {
+				        "确认": {
+				            btnClass:'btn-warning',
+				            action:function() {
+				                var id = this.$content.find('input:first').val();
+				                var title = this.$content.find('input[name="title"]').val();
+				                if (!id||!title) {
+				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'不能为空'});
+				                    return false;
+				                } else {
+									$('select').append('<option value="'+id+'">'+title+'</option>')
+									let data=[]
+									$('select option').each(function(){
+										data.push({"id":$(this).val(),"title":$(this).html()})
+									})
+									sftools.api({
+										url:"SetSetting",
+										data:{"name":"wash_area","data":JSON.stringify(data)}
+									},function(e){
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'设置成功',content:''});
+										first()
+									},()=>{first()});
+				                }
+				            }
+				        },
+						'取消':{}
+				    }
+				});
+			});
+			$('button:contains("删除选中区域")').click(function(){
+				if(!checkarea){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'未选择区域'});
+					return false;
+				}
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '删除选中区域前，请先删除选中区域的参数',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								let data=[]
+								$('select option').each(function(){
+									if($(this).val()!==area){
+										data.push({"id":$(this).val(),"title":$(this).html()})
+									}
+								})
+								sftools.api({
+									url:"SetSetting",
+									data:{"name":"wash_area","data":JSON.stringify(data)}
+								},function(e){
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'删除成功',content:''});
+									first()
+								},()=>{first()});
+					        }
+					    },
+					    "取消":{}
+					}
+				});
+			})
+			$('a:contains("新增蓝牙参数")').click(function(){
+				$('#bd').append('<div class="input-group my-1"><input class="form-control" value=""/><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div>')
+			})
+			$('#bd').on('click','button',function(){
+				$(this).parent().remove()
+			})
+			$('button:contains("保存蓝牙参数")').click(function(){
+				if(!checkarea){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'未选择区域'});
+					return false;
+				}
+				let bd=[]
+				$('#bd input').each(function(){
+					bd.push($(this).val())
+				})
+				let cid=$('#cid').val()
+				let sid=$('#sid').val()
+				if(!cid.length&&!sid.length&&bd.length<1){console.log('全部删除')}else if(!cid.length||!sid.length||bd.length<1){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'蓝牙参数未填写完整'});
+					return false;
+				}
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '保存参数后，原有的参数将会被覆盖且无法恢复，确认保存吗？',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"GetSetting",
+									data:"wash_data",
+								},function(e){
+									let data=JSON.parse(e)
+									if(!data[checkarea])data[checkarea]={};
+									if(!cid.length&&!sid.length&&bd.length<1){
+										delete data[checkarea]
+									}else{
+										data[checkarea].cid=cid
+										data[checkarea].sid=sid
+										data[checkarea].data=bd
+									}
+									sftools.api({
+										url:"SetSetting",
+										data:{"name":"wash_data","data":JSON.stringify(data)}
+									},function(e){
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'设置成功',content:''});
+										first()
+									},()=>{first()});
+								},function(){});
+					        }
+					    },
+					    "取消":{}
+					}
+				});
+			})
+			$('button:contains("新增价位参数")').click(function(){
+				$('#price').append('<div class="mb-3"><div class="input-group"><span class="input-group-text">ID</span><input type="text"class="form-control"name="id"value=""><span class="input-group-text">标题</span><input type="text"class="form-control"name="title"value=""><span class="input-group-text">小标题</span><input type="text"class="form-control"name="subtitle"value=""><span class="input-group-text">价位</span><input type="number"class="form-control"name="amount"value=""><span class="input-group-text">时间</span><input type="number"class="form-control"name="time"value=""></div><div class="input-group"><span class="input-group-text">图标地址</span><input type="text"class="form-control"name="icon"value=""><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div></div>')
+			})
+			$('#price').on('click','button',function(){
+				$(this).parent().parent().remove()
+			})
+			$('button:contains("保存价位参数")').click(function(){
+				if(!checkarea){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'未选择区域'});
+					return false;
+				}
+				let price=[]
+				$('#price .mb-3').each(function(){
+					price.push({
+						"id":parseInt($(this).find("input[name='id']").val()),
+						"title":$(this).find("input[name='title']").val(),
+						"subtitle":$(this).find("input[name='subtitle']").val(),
+						"amount":$(this).find("input[name='id']").val(),
+						"time":parseInt($(this).find("input[name='time']").val()),
+						"icon":$(this).find("input[name='icon']").val(),
+					})
+				})
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '保存参数后，原有的参数将会被覆盖且无法恢复，确认保存吗？',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"GetSetting",
+									data:"wash_price",
+								},function(e){
+									let data=JSON.parse(e)
+									data[checkarea]=price
+									if(price.length<1){
+										delete data[checkarea]
+									}
+									sftools.api({
+										url:"SetSetting",
+										data:{"name":"wash_price","data":JSON.stringify(data)}
+									},function(e){
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'设置成功',content:''});
+										first()
+									},()=>{first()});
+								},function(){});
+					        }
+					    },
+					    "取消":{}
+					}
+				});
+			})
+		</script>
+	</body>
+</html>

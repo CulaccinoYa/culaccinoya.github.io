@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>洗衣记录 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="card-search mb-2-5">
+					            <div class="row">
+					            	<div class="col-md-4">
+					            		<div class="row">
+					            			<label class="col-sm-4 col-form-label">
+					            				<span class="text-danger">*</span>搜索内容
+											</label>
+					            			<div class="col-sm-8">
+					            				<input type="text" class="form-control pull-left" name="data" value=""
+					            				placeholder="用户ID/机器名称/订单号">
+					            			</div>
+					            		</div>
+					            	</div>
+					            	<div class="col-md-4">
+					            		<button class="btn btn-primary me-1">搜索</button>
+					            	</div>
+					            </div>
+					        </div>
+					        <div class="table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>用户</th>
+											<th>设备编码</th>
+											<th>设备名称</th>
+											<th>开始时间</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">0条记录 共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">记录信息</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+						<div class="modal-body">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var search_id='';
+			$('.card-search button').click(function(){
+				search($("input[name='data']").val(),1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(search_id,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(search_id,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(search_id,$("input[name='page']").val())
+				}
+			});
+			function search(id,p){
+				sftools.api({
+					url:"GetWashList",
+					data:{"data":id,"page":p},
+				},function(e){
+					$('tbody').html('')
+					search_id=id;
+					page=e.page
+					$('li[name="page"]').html(e.count+'条记录 共 '+e.pages+' 页')
+					$('input[name="page"]').val(e.page)
+					if(e.page>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.page>=e.pages){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					for(var n=0;n<e.data.length;n++){
+						let status='<span class="badge bg-success">已完成</span>'
+						if(e.data[n].status==1)status='<span class="badge bg-warning">待支付</span>';
+						else if(e.data[n].status==3)status='<span class="badge bg-primary">已取消</span>';
+						$('tbody').append('<tr><td>'+e.data[n].id+'</td><td>'+e.data[n].user+'</td><td>'+e.data[n].device+'</td><td>'+e.data[n].device_name+'</td><td>'+timetostring(e.data[n].create_time)+'</td><td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>');
+					}
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let id=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"GetWashDetail",
+					data:id,
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body:first').html('')
+					$('#detail .modal-body:first').append('<p>记录ID：'+e.id+'</p><p>所属用户：'+e.user+'</p><p>设备编码：'+e.device+'</p><p>设备名称：'+e.device_name+'</p><p>上传时间：'+timetostring(e.create_time)+'</p><p>上传IP：'+e.create_ip+'</p><p>到期时间：'+timetostring(e.end_time)+'</p><p>支付订单号：'+e.ispay+'</p>')
+					let status='<span class="badge bg-success">已完成</span>'
+					if(e.status==1)status='<span class="badge bg-warning">待支付</span>';
+					else if(e.status==3)status='<span class="badge bg-primary">已取消</span>'
+					$('#detail .modal-body:first').append('<p>状态：'+status+'</p>')
+				},
+				function(){});
+			});
+		</script>
+	</body>
+</html>
