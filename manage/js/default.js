@@ -8,7 +8,7 @@ jconfirm.defaults={
 		cancel:{text:"取消"}
 	}
 }
-const Host="http://127.0.0.1/Admin/"
+const Host="https://api.sftools.link/Admin/"
 const sftools={
 	api:function(data,suc=function(i){},fail=function(i){}){
 		if(!data.loading){
