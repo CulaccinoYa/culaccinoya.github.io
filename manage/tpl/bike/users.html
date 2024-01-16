@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>骑行账户 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="row">
+					        	<div class="col-md-4">
+					        		<div class="row">
+					        			<label class="col-sm-4 col-form-label">
+					        				<span class="text-danger">*</span>搜索字段
+					        			</label>
+					        			<div class="col-sm-8">
+					        				<input type="text" class="form-control pull-left" name="search" value=""
+					        				placeholder="ID/用户/编号">
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="col-md-4">
+					        		<button class="btn btn-primary me-1">搜索</button>
+					        	</div>
+					        </div>
+					        <div class="mt-2 table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>用户</th>
+											<th>编号</th>
+											<th>余额</th>
+											<th>押金</th>
+											<th>实名</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">0条记录 共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">账户详情</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					<div class="modal-body">
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-refresh"></i> 更新信息</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-card-account-details"></i> 实名登记</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cash"></i> 重置余额</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cash-refund"></i> 退还押金</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-file-document-multiple"></i> 使用记录</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-account-remove"></i> 删除账户</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-account-cog"></i> 状态切换</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-account-convert"></i> 变更用户</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-login-variant"></i> 重新登录</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var search_id='';
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='search']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			$('button:first').click(function(){
+				search($("input[name='search']").val(),1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(search_id,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(search_id,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(search_id,$("input[name='page']").val())
+				}
+			});
+			function search(id,p){
+				sftools.api({
+					url:"GetBikeAccountList",
+					data:{"data":id,"page":p},
+				},function(e){
+					$('tbody').html('')
+					search_id=id;
+					page=e.page
+					$('li[name="page"]').html(e.count+'条记录 共 '+e.pages+' 页')
+					$('input[name="page"]').val(e.page)
+					if(e.page>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.page>=e.pages){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					let html=''
+					for(var n=0;n<e.data.length;n++){
+						html=html+'<tr><td>'+e.data[n].id+'</td>'
+						html=html+'<td>'+e.data[n].bind_user+'</td>'
+						html=html+'<td>'+e.data[n].account_id+'</td>'
+						let balance='';
+						if(e.data[n].balance>0)balance='<span class="badge bg-success">正常</span>';
+						else if(e.data[n].balance==0)balance='<span class="badge bg-warning">未激活</span>';
+						else balance='<span class="badge bg-primary">待刷新</span>';
+						html=html+'<td>'+balance+'</td>'
+						let deposit='';
+						if(e.data[n].deposit==0)deposit='<span class="badge bg-warning">未缴纳</span>';
+						else deposit='<span class="badge bg-success">已缴纳</span>';
+						html=html+'<td>'+deposit+'</td>'
+						let realname='';
+						if(e.data[n].rn_name=="")realname='<span class="badge bg-warning">未认证</span>';
+						else realname='<span class="badge bg-success">已认证</span>';
+						html=html+'<td>'+realname+'</td>'
+						let status='';
+						if(e.data[n].status==0)status='<span class="badge bg-success">正常</span>';
+						else if(e.data[n].status==-1)status='<span class="badge bg-danger">已删除</span>';
+						else status='<span class="badge bg-warning">异常</span>';
+						html=html+'<td>'+status+'</td>'
+						html=html+'<td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+					}
+					$('tbody').html(html)
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let id=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"GetBikeAccountDetail",
+					data:id
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body:first').html('')
+					html='<p>账户ID：'+e.id+'</p><p>编号：'+e.account_id+'</p><p>绑定用户：'+e.bind_user+'</p>'
+					let balance='';
+					if(e.balance>0)balance='<span class="badge bg-success">正常</span>';
+					else if(e.balance==0)balance='<span class="badge bg-warning">未激活</span>';
+					else balance='<span class="badge bg-primary">待刷新</span>';
+					html=html+'<p>余额状态：'+balance+'</p>'
+					let deposit='';
+					if(e.deposit==0)deposit='<span class="badge bg-warning">未缴纳</span>';
+					else deposit='<span class="badge bg-success">已缴纳</span>';
+					html=html+'<p>押金状态：'+deposit+'</p>'
+					if(e.rn_name==""){
+						html=html+='<p>实名状态：<span class="badge bg-warning">未认证</span></p>';
+					}else{
+						html=html+='<p>实名状态：<span class="badge bg-success">已认证</span></p><p>登记信息：'+e.rn_name+' '+e.rn_id+'</p>'
+					}
+					html=html+'<p>注册时间：'+timetostring(e.create_time)+'</p><p>创建IP：'+e.create_ip+'</p><p>最后使用时间：'+timetostring(e.last_time)+'</p><p>最后使用IP：'+e.last_ip+'</p>'
+					let status='';
+					if(e.status==0)status='<span class="badge bg-success">正常</span>';
+					else if(e.status==-1)status='<span class="badge bg-danger">已删除</span>';
+					else status='<span class="badge bg-warning">异常</span>';
+					html=html+'<p>状态：'+status+'</p>'
+					$('#detail .modal-body:first').html(html)
+				},
+				function(){});
+			});
+			$('a:contains("更新信息")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$('#detail').modal('hide');
+				sftools.api({
+					url:"GetBikeAccountData",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'刷新成功',content:''});
+					search(search_id,page)
+				},()=>{$('#detail').modal('show');});
+			});
+			$('a:contains("实名登记")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$('#detail').modal('hide');
+				$.confirm({
+				    title: '实名登记',
+				    content:'<div class="input-group"><span class="input-group-text">姓名</span><input type="text" class="form-control"/></div>'+
+				            '<div class="input-group"><span class="input-group-text">证件号</span><input type="text" name="rid" class="form-control"/></div>',
+					buttons: {
+						"清除登记": {
+							btnClass: 'btn-danger',
+							action: function() {
+							    sftools.api({
+							    	url:"DelBikeAccountRealname",
+							    	data:id
+							    },function(e){
+							    	search(search_id,page)
+							    	$.alert({type:'green',icon:"mdi mdi-check-bold",title:'清除登记成功',content:'请手动更新账户数据',button:{}});
+							    });
+							}
+						},
+				        "登记": {
+				            btnClass: 'btn-warning',
+				            action: function() {
+				                var name = this.$content.find('input:first').val();
+				                var rid = this.$content.find('input[name="rid"]').val();
+				                if (!name.length||!id.length) {
+				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'不能为空'});
+				                    return false;
+				                } else {
+									sftools.api({
+										url:"SetBikeAccountRealname",
+										data:{"id":id,"name":name,"rid":rid}
+									},function(e){
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'登记成功',content:'请手动更新账户数据',button:{}});
+									});
+				                }
+				            }
+				        },
+						'取消':()=>{$('#detail').modal('show');}
+				    }
+				});
+			});
+			$('a:contains("重置余额")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				sftools.api({
+					url:"RebillBikeAccount",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'重置成功',content:'请手动更新账户数据'});
+				});
+			});
+			$('a:contains("退还押金")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				sftools.api({
+					url:"RefundBikeAccountDeposit",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'退还押金成功',content:'请手动更新账户数据'});
+				});
+			});
+			$('a:contains("删除账户")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '删除骑行账户后将无法恢复，你确定吗？',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"DelBikeAccount",
+									data:id
+								},function(e){
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'删除成功',content:''});
+									search(search_id,page)
+									$('#detail').modal('hide');
+								});
+					        }
+					    },
+					    "取消":{}
+					}
+				});
+			});
+			$('a:contains("状态切换")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '切换状态后，正常的账户将会变成异常，你确定吗？',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"SetBikeAccountStatus",
+									data:id
+								},function(e){
+									$.alert({type:'green',icon:"mdi mdi-check-bold",title:'切换成功',content:''});
+									search(search_id,page)
+									$('#detail').modal('hide');
+								});
+					        }
+					    },
+					    "取消":{}
+					}
+				});
+			});
+			$('a:contains("变更用户")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$('#detail').modal('hide');
+				$.confirm({
+				    title: '变更账户',
+				    content:'<div class="input-group"><span class="input-group-text">用户ID</span><input type="text" class="form-control"/></div>',
+					buttons: {
+				        "登记": {
+				            btnClass: 'btn-warning',
+				            action: function() {
+				                var user = this.$content.find('input:first').val();
+				                if (!user.length) {
+				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'用户ID不能为空'});
+				                    return false;
+				                } else {
+									sftools.api({
+										url:"SetBikeAccountUser",
+										data:{"id":id,"user":user}
+									},function(e){
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'变更成功',content:'',button:{}});
+										search(search_id,page)
+									});
+				                }
+				            }
+				        },
+						'取消':()=>{$('#detail').modal('show');}
+				    }
+				});
+			});
+			$('a:contains("重新登录")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				sftools.api({
+					url:"ReloginBikeAccount",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'重新登录成功',content:''});
+				});
+			});
+			$('a:contains("使用记录")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				window.open('./logs.html?id='+id, 'newwin', 'toolbar=no,scrollbars=no,menubar=no,location=no,height=420,width=860');
+			});
+		</script>
+	</body>
+</html>

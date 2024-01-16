@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>骑行账户使用记录 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>记录</th>
+											<th>时间</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">0条记录 共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var account=getvalue('id')
+			search(account,1)
+			$('button:first').click(function(){
+				search(account,1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(account,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(account,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(account,$("input[name='page']").val())
+				}
+			});
+			function search(id,p){
+				sftools.api({
+					url:"GetBikeAccountLog",
+					data:{"data":id,"page":p},
+				},function(e){
+					$('tbody').html('')
+					page=e.pageNum
+					$('li[name="page"]').html(e.totalNum+'条记录 共 '+e.tatalPage+' 页')
+					$('input[name="page"]').val(e.pageNum)
+					if(e.pageNum>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.pageNum>=e.tatalPage){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					let html=''
+					for(var n=0;n<e.dataList.length;n++){
+						html=html+'<tr><td>'+e.dataList[n].record+'</td>'
+						html=html+'<td>'+e.dataList[n].date+'</td></tr>'
+					}
+					$('tbody').html(html)
+				},
+				function(){});
+			}
+		</script>
+	</body>
+</html>
