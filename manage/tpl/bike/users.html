@@ -100,8 +100,8 @@
 			$(function(){
 				if(getvalue('id')){
 					$("input[name='search']").val(getvalue('id'))
-					$('button:first').click();
 				}
+				$('button:first').click();
 			})
 			$('button:first').click(function(){
 				search($("input[name='search']").val(),1)

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>骑行记录 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+					    <div class="card-body">
+					        <div class="row">
+					        	<div class="col-md-4">
+					        		<div class="row">
+					        			<label class="col-sm-4 col-form-label">
+					        				<span class="text-danger">*</span>搜索字段
+					        			</label>
+					        			<div class="col-sm-8">
+					        				<input type="text" class="form-control pull-left" name="search" value=""
+					        				placeholder="ID/用户/编号">
+					        			</div>
+					        		</div>
+					        	</div>
+					        	<div class="col-md-4">
+					        		<button class="btn btn-primary me-1">搜索</button>
+					        	</div>
+					        </div>
+					        <div class="mt-2 table-responsive">
+					            <table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>用户</th>
+											<th>编号</th>
+											<th>车辆编号</th>
+											<th>登记时间</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+					            </table>
+					        </div>
+							<ul class="pagination align-items-center">
+							    <li class="page-item disabled" name="上一页"><a class="page-link">上一页</a></li>
+								<div class="me-2 text-center" style="width:3rem;">
+									<input class="form-control text-center" name="page" type="number" />
+								</div>
+							    <li class="page-item disabled" name="下一页"><a class="page-link" href="#">下一页</a></li>
+								<li name="page">0条记录 共 0 页</li>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="detail">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="exampleModalLiveLabel">记录详情</h6>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+					<div class="modal-body">
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-refresh"></i> 更新状态</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-motorbike"></i> 车辆信息</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-map"></i> 记录轨迹</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cloud-refresh"></i> 刷新轨迹</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script>
+			var page=1;
+			var search_id='';
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='search']").val(getvalue('id'))
+				}
+				$('button:first').click();
+			})
+			$('button:first').click(function(){
+				search($("input[name='search']").val(),1)
+			})
+			$('li[name="上一页"] a').click(function(){
+				search(search_id,page-1)
+			})
+			$('li[name="下一页"] a').click(function(){
+				search(search_id,page+1)
+			})
+			$('input[name="page"]').keypress(function (event) {
+				if (event.keyCode === 13) {
+					search(search_id,$("input[name='page']").val())
+				}
+			});
+			function search(id,p){
+				sftools.api({
+					url:"GetBikeRideList",
+					data:{"data":id,"page":p},
+				},function(e){
+					$('tbody').html('')
+					search_id=id;
+					page=e.page
+					$('li[name="page"]').html(e.count+'条记录 共 '+e.pages+' 页')
+					$('input[name="page"]').val(e.page)
+					if(e.page>1){
+						$('li[name="上一页"]').removeClass('disabled')
+					}else{
+						$('li[name="上一页"]').addClass('disabled')
+					}
+					if(e.page>=e.pages){
+						$('li[name="下一页"]').addClass('disabled')
+					}else{
+						$('li[name="下一页"]').removeClass('disabled')
+					}
+					let html=''
+					for(var n=0;n<e.data.length;n++){
+						html=html+'<tr><td>'+e.data[n].id+'</td>'
+						html=html+'<td>'+e.data[n].bind_id+'</td>'
+						html=html+'<td>'+e.data[n].account+'</td>'
+						html=html+'<td>'+e.data[n].bike_id+'</td>'
+						html=html+'<td>'+timetostring(e.data[n].create_time)+'</td>'
+						let status='';
+						if(e.data[n].status==0)status='<span class="badge bg-success">已完成</span>';
+						else status='<span class="badge bg-primary">正在进行</span>';
+						html=html+'<td>'+status+'</td>'
+						html=html+'<td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>'
+					}
+					$('tbody').html(html)
+				},
+				function(){});
+			}
+			$('table').on("click","a",function(){
+				let id=$(this).parent().parent().siblings('td:first').html();
+				sftools.api({
+					url:"GetBikeRideDetail",
+					data:id
+				},function(e){
+					$('#detail').modal('show');
+					$('#detail .modal-body:first').html('')
+					html='<p>记录ID：'+e.id+'</p><p>编号：'+e.account+'</p><p>绑定用户：'+e.bind_id+'</p><p id="bike_no">单车编码：'+e.bike_id+'</p><p>单车序列号：'+e.bike_no+'</p><p>登记时间：'+timetostring(e.create_time)+'</p><p>登记IP：'+e.create_ip+'</p>'
+					let status='<span class="badge bg-success">已完成</span>'
+					if(e.status==0){
+						html=html+'<p>开始时间：'+e.start_time+'</p><p>结束时间：'+e.end_time+'</p><p>骑行记录ID：'+e.ride_id+'</p>'
+						if(e.focus=="None")html=html+'<p>违约费：无</p>';else html=html+'<p>违约费：'+e.focus+'元</p>';
+						html=html+'<p>订单号：'+e.order+'</p>'
+					}else status='<span class="badge bg-primary">正在骑行</span>';
+					html=html+'<p>状态：'+status+'</p>'
+					$('#detail .modal-body:first').html(html)
+				},
+				function(){});
+			});
+			$('a:contains("更新状态")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				$('#detail').modal('hide');
+				sftools.api({
+					url:"GetBikeRideData",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'更新成功',content:''});
+					search(search_id,page)
+				},()=>{$('#detail').modal('show');});
+			});
+			$('a:contains("车辆信息")').click(function (e) {
+				let id=$('.modal-body:first #bike_no').html().substr(5);
+				window.open('./operate.html?id='+id, 'newwin', 'toolbar=no,scrollbars=no,menubar=no,location=no,height=420,width=860');
+			});
+			$('a:contains("记录轨迹")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				window.open('./map.html?id='+id, 'newwin', 'toolbar=no,scrollbars=no,menubar=no,location=no,height=420,width=860');
+			});
+			$('a:contains("刷新轨迹")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				sftools.api({
+					url:"RufreshBikeRideRideid",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'刷新成功',content:''});
+				});
+			});
+		</script>
+	</body>
+</html>
