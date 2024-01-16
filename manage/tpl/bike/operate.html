@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>车辆操作 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="row">
+								<label class="col-sm-4 col-form-label">
+									<span class="text-danger">*</span>车辆编码
+								</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control pull-left" name="search" value="" placeholder="车辆编码/序列号">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-primary me-1">查询</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row align-items-start">
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">车辆信息</div></div>
+						<div class="card-body">
+							<p>车辆编码：<span id="deviceId"></span></p>
+							<p>序列号：<span id="imeiId"></span></p>
+							<p>IMSI：<span id="imsi"></span></p>
+							<p>心跳时间：<span id="pgTime"></span></p>
+							<p>电瓶电压：<span id="powerVoltage"></span></p>
+							<p>GPS电压：<span id="batteryVoltage"></span></p>
+							<p>还车点：<span id="stationName"></span></p>
+							<p>电源：<span id="doorLock"></span></p>
+							<p>速度：<span id="speed"></span>km/h</p>
+							<p>灵敏度：<span id="sensitivity"></span></p>
+							<p>是否移动：<span id="shaked"></span></p>
+							<p>自带头盔：<span id="isHelmet"></span></p>
+							<p>骑行用户：</p>
+							<p id="user"></p>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header"><div class="card-title">车辆操作</div></div>
+						<div class="card-body d-flex flex-wrap" id="menu">
+							<a class="btn btn-primary me-1 mb-1">还车</a>
+							<a class="btn btn-primary me-1 mb-1">开坐垫</a>
+							<a class="btn btn-primary me-1 mb-1">开头盔锁</a>
+							<a class="btn btn-primary me-1 mb-1">关头盔锁</a>
+							<a class="btn btn-primary me-1 mb-1">上电</a>
+							<a class="btn btn-primary me-1 mb-1">断电</a>
+							<a class="btn btn-primary me-1 mb-1">点火</a>
+							<a class="btn btn-primary me-1 mb-1">熄火</a>
+							<a class="btn btn-primary me-1 mb-1">打开GPS</a>
+							<a class="btn btn-primary me-1 mb-1">关闭GPS</a>
+							<a class="btn btn-primary me-1 mb-1">打开超区</a>
+							<a class="btn btn-primary me-1 mb-1">关闭超区</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-header"><div class="card-title">车辆位置</div></div>
+						<div class="card-body">
+							<div id="map" style="width: 100%;height: 40vh;"></div>
+							<p class="mt-4">车辆位置：<span id="address"></span></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script type="text/javascript">
+			window._AMapSecurityConfig={securityJsCode:'2032ee79348748bd9d8f0431fb34d6ae'}
+		</script>
+		<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=0238b1a4a0b6853025c6e4fb7a12274c"></script>
+		<script>
+			var map = new AMap.Map('map',{zoom:16});
+			$(function(){
+				if(getvalue('id')){
+					$("input[name='search']").val(getvalue('id'))
+					$('button:first').click();
+				}
+			})
+			$('button:first').click(function(){
+				search($("input[name='search']").val())
+			})
+			function search(data){
+				if(data.length==10){
+					$.ajax({
+						type:"GET",
+						url:"http://api.qdigo.net/v1.0/ebike/getEBikeInfo/"+data,
+						contentType:"application/json",
+						headers:{"mobileNo":"","accesstoken":"","mobiledeviceId":""},
+						success:function (e) {
+							$("input[name='search']").val(e.data.imei)
+							$('button:first').click();
+						},error:()=>{$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'请检查网络连接'});}
+					});
+					return;
+				}
+				sftools.api({
+					url:"GetBikeCarDetail",
+					data:data,
+				},function(e){
+					$('#deviceId').text(e.deviceId)
+					$('#imeiId').text(e.imeiId)
+					$('#imsi').text(e.imsi)
+					$('#pgTime').text(e.pgTime)
+					$('#powerVoltage').text(e.powerVoltage)
+					$('#batteryVoltage').text(e.batteryVoltage)
+					$('#stationName').text(e.stationName)
+					$('#address').text(e.address)
+					if(e.doorLock)$('#doorLock').text('开启');else $('#doorLock').text('关闭');
+					$('#speed').text(e.speed)
+					$('#sensitivity').text(e.sensitivity)
+					if(e.shaked)$('#shaked').text('正在移动');else $('#shaked').text('静止');
+					if(e.isHelmet)$('#isHelmet').text('是');else $('#isHelmet').text('否');
+					if(e.usingDetail){
+						$('#user').html("手机号："+e.usingDetail.mobileNo+"<br>骑行时间："+timetostring(parseInt(e.usingDetail.startTime)*1000)+"<br>骑行分钟："+e.usingDetail.minutes);
+					}else{
+						$('#user').text("无")
+					}
+					AMap.convertFrom([e.longitude,e.latitude], 'gps', function (status, result) {
+						let location=result.locations[0];
+						let map1=new AMap.Map('map', {center:[location.R,location.Q],zoom:16});
+						var marker = new AMap.Marker({position: [location.R,location.Q]});
+						map1.add(marker)
+					});
+				});
+			}
+			$('#menu a').click(function (e) {
+				if(!$('#imeiId').text()){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'编号不能为空'});
+					return
+				}
+				if($(this).html()=="还车"){
+					sftools.api({
+						url:"ReturnBike",
+						data:$('#imeiId').text()
+					},function(e){
+						$.alert({type:'green',icon:"mdi mdi-check-bold",title:'操作成功',content:''});
+					});
+					return;
+				}else if($(this).html()=="打开超区"){
+					sftools.api({
+						url:"FlagBike",
+						data:{"id":$('#imeiId').text(),"status":true}
+					},function(e){
+						$.alert({type:'green',icon:"mdi mdi-check-bold",title:'操作成功',content:''});
+					});
+					return;
+				}else if($(this).html()=="关闭超区"){
+					sftools.api({
+						url:"FlagBike",
+						data:{"id":$('#imeiId').text(),"status":false}
+					},function(e){
+						$.alert({type:'green',icon:"mdi mdi-check-bold",title:'操作成功',content:''});
+					});
+					return;
+				}
+				sftools.api({
+					url:"SendBikeCommand",
+					data:{"id":$('#imeiId').text(),"data":encodeURIComponent($(this).html())}
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'操作成功',content:''});
+				});
+			});
+		</script>
+	</body>
+</html>

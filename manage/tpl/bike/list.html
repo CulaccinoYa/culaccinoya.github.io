@@ -75,7 +75,6 @@
 					<div class="modal-body">
 					</div>
 					<div class="modal-footer">
-						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-refresh"></i> 更新状态</a>
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-motorbike"></i> 车辆信息</a>
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-map"></i> 记录轨迹</a>
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cloud-refresh"></i> 刷新轨迹</a>
@@ -167,17 +166,6 @@
 					$('#detail .modal-body:first').html(html)
 				},
 				function(){});
-			});
-			$('a:contains("更新状态")').click(function (e) {
-				let id=$('.modal-body:first p:first').html().substr(5);
-				$('#detail').modal('hide');
-				sftools.api({
-					url:"GetBikeRideData",
-					data:id
-				},function(e){
-					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'更新成功',content:''});
-					search(search_id,page)
-				},()=>{$('#detail').modal('show');});
 			});
 			$('a:contains("车辆信息")').click(function (e) {
 				let id=$('.modal-body:first #bike_no').html().substr(5);
