@@ -65,6 +65,14 @@
 							<button class="btn btn-primary me-1">保存蓝牙参数</button>
 						</div>
 					</div>
+					<div class="card">
+						<div class="card-header"><div class="card-title">页面菜单</div></div>
+						<div class="card-body" id="menu"></div>
+						<div class="card-footer">
+							<button class="btn btn-success me-1">新增菜单参数</button>
+							<button class="btn btn-primary me-1">保存菜单参数</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -84,14 +92,14 @@
 					data:"wash_area",
 				},function(e){
 					let data=JSON.parse(e)
-					$('select').html('')
+					$('select:first').html('')
 					for(var n=0;n<data.length;n++){
-						$('select').append('<option value="'+data[n].id+'">'+data[n].title+'</option>')
+						$('select:first').append('<option value="'+data[n].id+'">'+data[n].title+'</option>')
 					}
 				},function(){});
 			}
-			$('select').change(function(){
-				let area=$('select').val()
+			$('select:first').change(function(){
+				let area=$('select:first').val()
 				sftools.api({
 					url:"GetSetting",
 					data:"wash_data",
@@ -109,21 +117,33 @@
 					for(var n=0;n<data[area].data.length;n++){
 						$('#bd').append('<div class="input-group my-1"><input class="form-control" value="'+data[area].data[n]+'"/><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div>')
 					}
-					checkarea=$('select').val()
-				},function(){});
-				sftools.api({
-					url:"GetSetting",
-					data:"wash_price",
-				},function(e){
-					let data=JSON.parse(e)
-					if(!data[area]){
-						data[area]=[]
-					}
-					$('#price').html('')
-					for(var n=0;n<data[area].length;n++){
-						$('#price').append('<div class="mb-3"><div class="input-group"><span class="input-group-text">ID</span><input type="text"class="form-control"name="id"value="'+data[area][n].id+'"><span class="input-group-text">标题</span><input type="text"class="form-control"name="title"value="'+data[area][n].title+'"><span class="input-group-text">小标题</span><input type="text"class="form-control"name="subtitle"value="'+data[area][n].subtitle+'"><span class="input-group-text">价位</span><input type="number"class="form-control"name="amount"value="'+data[area][n].amount+'"><span class="input-group-text">时间</span><input type="number"class="form-control"name="time"value="'+data[area][n].time+'"></div><div class="input-group"><span class="input-group-text">图标地址</span><input type="text"class="form-control"name="icon"value="'+data[area][n].icon+'"><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div></div>')
-					}
-					checkarea=$('select').val()
+					checkarea=$('select:first').val()
+					sftools.api({
+						url:"GetSetting",
+						data:"wash_price",
+					},function(e){
+						let data=JSON.parse(e)
+						if(!data[area]){
+							data[area]=[]
+						}
+						$('#price').html('')
+						for(var n=0;n<data[area].length;n++){
+							$('#price').append('<div class="mb-3"><div class="input-group"><span class="input-group-text">ID</span><input type="text"class="form-control"name="id"value="'+data[area][n].id+'"><span class="input-group-text">标题</span><input type="text"class="form-control"name="title"value="'+data[area][n].title+'"><span class="input-group-text">小标题</span><input type="text"class="form-control"name="subtitle"value="'+data[area][n].subtitle+'"><span class="input-group-text">价位</span><input type="number"class="form-control"name="amount"value="'+data[area][n].amount+'"><span class="input-group-text">时间</span><input type="number"class="form-control"name="time"value="'+data[area][n].time+'"></div><div class="input-group"><span class="input-group-text">图标地址</span><input type="text"class="form-control"name="icon"value="'+data[area][n].icon+'"><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div></div>')
+						}
+						sftools.api({
+							url:"GetSetting",
+							data:"wash_menu",
+						},function(e){
+							let data=JSON.parse(e)
+							if(!data[area]){
+								data[area]=[]
+							}
+							$('#menu').html('')
+							for(var n=0;n<data[area].length;n++){
+								$('#menu').append('<div class="input-group mb-3"><span class="input-group-text">名称</span><input type="text"class="form-control"name="title"value="'+data[area][n].title+'"><span class="input-group-text">图标</span><input type="text"class="form-control"name="img"value="'+data[area][n].img+'"><span class="input-group-text">地址</span><input type="text"class="form-control"name="url"value="'+data[area][n].url+'"><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div>')
+							}
+						},function(){});
+					},function(){});
 				},function(){});
 			})
 			$('button:contains("新增区域")').click(function(){
@@ -143,9 +163,9 @@
 				                    $.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'不能为空'});
 				                    return false;
 				                } else {
-									$('select').append('<option value="'+id+'">'+title+'</option>')
+									$('select:first').append('<option value="'+id+'">'+title+'</option>')
 									let data=[]
-									$('select option').each(function(){
+									$('select:first option').each(function(){
 										data.push({"id":$(this).val(),"title":$(this).html()})
 									})
 									sftools.api({
@@ -177,8 +197,8 @@
 					        btnClass: 'btn-warning',
 					        action: function() {
 								let data=[]
-								$('select option').each(function(){
-									if($(this).val()!==area){
+								$('select:first option').each(function(){
+									if($(this).val()!==checkarea){
 										data.push({"id":$(this).val(),"title":$(this).html()})
 									}
 								})
@@ -295,6 +315,57 @@
 									sftools.api({
 										url:"SetSetting",
 										data:{"name":"wash_price","data":JSON.stringify(data)}
+									},function(e){
+										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'设置成功',content:''});
+										first()
+									},()=>{first()});
+								},function(){});
+					        }
+					    },
+					    "取消":{}
+					}
+				});
+			})
+			$('button:contains("新增菜单参数")').click(function(){
+				$('#menu').append('<div class="input-group mb-3"><span class="input-group-text">名称</span><input type="text"class="form-control"name="title"value=""><span class="input-group-text">图标</span><input type="text"class="form-control"name="img"value=""><span class="input-group-text">地址</span><input type="text"class="form-control"name="url"value=""><button class="btn btn-danger"><i class="mdi mdi-delete"></i></button></div>')
+			})
+			$('#menu').on('click','button',function(){
+				$(this).parent().remove()
+			})
+			$('button:contains("保存菜单参数")').click(function(){
+				if(!checkarea){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'未选择区域'});
+					return false;
+				}
+				let menu=[]
+				$('#menu .input-group').each(function(){
+					menu.push({
+						"title":$(this).find("input[name='title']").val(),
+						"img":$(this).find("input[name='img']").val(),
+						"url":$(this).find("input[name='url']").val()
+					})
+				})
+				$.confirm({
+				    title: '二次确认',
+					icon:'mdi mdi-alert',
+				    content: '保存参数后，原有的参数将会被覆盖且无法恢复，确认保存吗？',
+					autoClose: '取消|10000',
+					buttons: {
+					    "确认": {
+					        btnClass: 'btn-warning',
+					        action: function() {
+								sftools.api({
+									url:"GetSetting",
+									data:"wash_menu",
+								},function(e){
+									let data=JSON.parse(e)
+									data[checkarea]=menu
+									if(menu.length<1){
+										delete data[checkarea]
+									}
+									sftools.api({
+										url:"SetSetting",
+										data:{"name":"wash_menu","data":JSON.stringify(data)}
 									},function(e){
 										$.alert({type:'green',icon:"mdi mdi-check-bold",title:'设置成功',content:''});
 										first()

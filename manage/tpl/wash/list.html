@@ -45,6 +45,7 @@
 										<tr>
 											<th>ID</th>
 											<th>用户</th>
+											<th>区域</th>
 											<th>设备编码</th>
 											<th>设备名称</th>
 											<th>开始时间</th>
@@ -126,7 +127,7 @@
 						let status='<span class="badge bg-success">已完成</span>'
 						if(e.data[n].status==1)status='<span class="badge bg-warning">待支付</span>';
 						else if(e.data[n].status==3)status='<span class="badge bg-primary">已取消</span>';
-						$('tbody').append('<tr><td>'+e.data[n].id+'</td><td>'+e.data[n].user+'</td><td>'+e.data[n].device+'</td><td>'+e.data[n].device_name+'</td><td>'+timetostring(e.data[n].create_time)+'</td><td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>');
+						$('tbody').append('<tr><td>'+e.data[n].id+'</td><td>'+e.data[n].user+'</td><td>'+e.data[n].area+'</td><td>'+e.data[n].device+'</td><td>'+e.data[n].device_name+'</td><td>'+timetostring(e.data[n].create_time)+'</td><td>'+status+'</td><td><div class="btn-group btn-group-sm"><a class="btn btn-primary" href="#!"><i class="mdi mdi-pencil"></i><span class="d-none d-sm-inline"> 操作</span></a></div></td></tr>');
 					}
 				},
 				function(){});
@@ -139,7 +140,7 @@
 				},function(e){
 					$('#detail').modal('show');
 					$('#detail .modal-body:first').html('')
-					$('#detail .modal-body:first').append('<p>记录ID：'+e.id+'</p><p>所属用户：'+e.user+'</p><p>设备编码：'+e.device+'</p><p>设备名称：'+e.device_name+'</p><p>上传时间：'+timetostring(e.create_time)+'</p><p>上传IP：'+e.create_ip+'</p><p>到期时间：'+timetostring(e.end_time)+'</p><p>支付订单号：'+e.ispay+'</p>')
+					$('#detail .modal-body:first').append('<p>记录ID：'+e.id+'</p><p>所属用户：'+e.user+'</p><p>所属地区：'+e.area+'</p><p>设备编码：'+e.device+'</p><p>设备名称：'+e.device_name+'</p><p>上传时间：'+timetostring(e.create_time)+'</p><p>上传IP：'+e.create_ip+'</p><p>到期时间：'+timetostring(e.end_time)+'</p><p>支付订单号：'+e.ispay+'</p>')
 					let status='<span class="badge bg-success">已完成</span>'
 					if(e.status==1)status='<span class="badge bg-warning">待支付</span>';
 					else if(e.status==3)status='<span class="badge bg-primary">已取消</span>'
