@@ -77,6 +77,7 @@
 					</div>
 					<div class="modal-footer">
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-refresh"></i> 更新信息</a>
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-account-sync"></i> 刷新状态</a>
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-card-account-details"></i> 实名登记</a>
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cash"></i> 重置余额</a>
 						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cash-refund"></i> 退还押金</a>
@@ -209,6 +210,15 @@
 					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'刷新成功',content:''});
 					search(search_id,page)
 				},()=>{$('#detail').modal('show');});
+			});
+			$('a:contains("刷新状态")').click(function (e) {
+				let id=$('.modal-body:first p:first').html().substr(5);
+				sftools.api({
+					url:"RefreshBikeAccount",
+					data:id
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'刷新成功',content:'请手动更新账户数据'});
+				});
 			});
 			$('a:contains("实名登记")').click(function (e) {
 				let id=$('.modal-body:first p:first').html().substr(5);
