@@ -138,13 +138,13 @@
 					if(e.shaked)$('#shaked').text('正在移动');else $('#shaked').text('静止');
 					if(e.isHelmet)$('#isHelmet').text('是');else $('#isHelmet').text('否');
 					if(e.usingDetail){
-						$('#user').html("手机号："+e.usingDetail.mobileNo+"<br>骑行时间："+timetostring(parseInt(e.usingDetail.startTime)*1000)+"<br>骑行分钟："+e.usingDetail.minutes);
+						$('#user').html("手机号："+e.usingDetail.mobileNo+"<br>骑行时间："+e.usingDetail.startTime+"<br>骑行分钟："+e.usingDetail.minutes);
 					}else{
 						$('#user').text("无")
 					}
 					AMap.convertFrom([e.longitude,e.latitude], 'gps', function (status, result) {
 						let location=result.locations[0];
-						let map1=new AMap.Map('map', {center:[location.R,location.Q],zoom:16});
+						let map=new AMap.Map('map', {center:[location.R,location.Q],zoom:16});
 						var marker = new AMap.Marker({position: [location.R,location.Q]});
 						map1.add(marker)
 					});
