@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+		<title>记录轨迹 - SF工具箱</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/materialdesignicons.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/style.min.css">
+		<style>p{margin:0;}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;}</style>
+	</head>
+  
+	<body>
+		<div class="container-fluid p-t-15">
+			<div class="card">
+				<div class="card-header"><div class="card-title">车辆轨迹</div></div>
+				<div class="card-body">
+					<div id="map" style="width: 100%;height: 70vh;"></div>
+					<div class="my-4">
+						<a class="btn btn-primary me-1 mb-1"><i class="mdi mdi-cloud-refresh"></i> 刷新轨迹</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.min.js"></script>
+		<script src="../../js/default.js"></script>
+		<script type="text/javascript">
+			window._AMapSecurityConfig={securityJsCode:'2032ee79348748bd9d8f0431fb34d6ae'}
+		</script>
+		<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=0238b1a4a0b6853025c6e4fb7a12274c"></script>
+		<script>
+			var map=new AMap.Map('map',{zoom:16});
+			$(function(){
+				first(getvalue('id'))
+			})
+			function first(data){
+				if(!data){
+					$.alert({type:'red',icon:"mdi mdi-alert-circle",title:'错误',content:'传参出错，请重新打开页面'});
+					return;
+				}
+				sftools.api({
+					url:"GetBikeTrack",
+					data:data,
+				},function(e){
+					let list=[];
+					for(var n=0;n<e.length;n++){
+						console.log(e[n])
+						list.push(transformFromWGSToGCJ(e[n].pgLongitude,e[n].pgLatitude));
+					}
+					map=new AMap.Map('map',{zoom:16,center: list[0]})
+					const start = new AMap.Icon({size: new AMap.Size(25, 34),image: "//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png",imageOffset: new AMap.Pixel(-9, -3),imageSize: new AMap.Size(135, 40)});
+					new AMap.Marker({map: map,position:list[0],icon:start});
+					const end = new AMap.Icon({size: new AMap.Size(25, 34),image: "//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png",imageOffset: new AMap.Pixel(-95, -3),imageSize: new AMap.Size(135, 40)});
+					new AMap.Marker({map: map,position:list[list.length-1],icon:end});
+					new AMap.Polyline({map: map,strokeColor: 'red',strokeOpacity: 1,strokeWeight: 6,path:list});
+				});
+			}
+			$('a:contains("刷新轨迹")').click(function (e) {
+				sftools.api({
+					url:"RufreshBikeRideRideid",
+					data:getvalue('id')
+				},function(e){
+					$.alert({type:'green',icon:"mdi mdi-check-bold",title:'刷新成功',content:''});
+					first(getvalue('id'))
+				});
+			});
+			function transformLatWithXY(x, y) {
+				var pi = 3.1415926535897932384626;
+				var ret = 700.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x))
+				ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0
+				ret += (20.0 * Math.sin(x * pi) + 40.0 * Math.sin(x / 3.0 * pi)) * 2.0 / 3.0
+				ret += (150.0 * Math.sin(x / 12.0 * pi) + 300.0 * Math.sin(x / 30.0 * pi)) * 2.0 / 3.0
+				return ret
+			}
+			
+			function transformLonWithXY(x, y) {
+				var pi = 3.1415926535897932384626;
+				var ret = 320.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x))
+				ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0
+				ret += (20.0 * Math.sin(x * pi) + 40.0 * Math.sin(x / 3.0 * pi)) * 2.0 / 3.0
+				ret += (150.0 * Math.sin(x / 12.0 * pi) + 300.0 * Math.sin(x / 30.0 * pi)) * 2.0 / 3.0
+				return ret
+			}
+			function transformFromWGSToGCJ(latitude, longitude) {
+				var lat = "";
+				var lon = "";
+				var ee = 0.00669342162296594323;
+				var a = 6378245.0;
+				var pi = 3.1415926535897932384626;
+				var adjustLat = transformLatWithXY(longitude - 105.0, latitude - 35.0);
+				var adjustLon = transformLonWithXY(longitude - 105.0, latitude - 35.0);
+				var radLat = latitude / 180.0 * pi;
+				var magic = Math.sin(radLat);
+				magic = 1 - ee * magic * magic;
+				var sqrtMagic = Math.sqrt(magic);
+				adjustLat = (adjustLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * pi);
+				adjustLon = (adjustLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * pi);
+				latitude = latitude + adjustLat;
+				longitude = longitude + adjustLon;
+				return [latitude,longitude];
+			
+			}
+		</script>
+	</body>
+</html>
