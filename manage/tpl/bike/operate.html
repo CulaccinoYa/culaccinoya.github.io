@@ -144,9 +144,9 @@
 					}
 					AMap.convertFrom([e.longitude,e.latitude], 'gps', function (status, result) {
 						let location=result.locations[0];
-						let map=new AMap.Map('map', {center:[location.R,location.Q],zoom:16});
+						map=new AMap.Map('map', {center:[location.R,location.Q],zoom:16});
 						var marker = new AMap.Marker({position: [location.R,location.Q]});
-						map1.add(marker)
+						map.add(marker)
 					});
 				});
 			}
