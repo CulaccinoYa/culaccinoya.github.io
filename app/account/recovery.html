@@ -25,12 +25,30 @@
 		            <h5><svg width="24" height="24" viewBox="0 0 48 48"><path d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24 37C25.3807 37 26.5 35.8807 26.5 34.5C26.5 33.1193 25.3807 32 24 32C22.6193 32 21.5 33.1193 21.5 34.5C21.5 35.8807 22.6193 37 24 37Z" fill="#333"/><path d="M24 12V28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp;温馨提示</h5>
 		            <p>您的账户已被<span class="text-danger" id="type"></span>，原因为：</p>
 		            <p class="text-danger text-center" style="font-weight:bold;" id="reason"></p>
-		            <p id="times">当前账户将在<span class="text-primary">2023年1月1日 00:00</span>后自动恢复正常，在此之前，无论是自助解限还是人工客服都无法解除您的账户状态</p>
-		            <p id="time">您可以通过下方的<span class="text-primary">解除限制</span>按钮解除账户限制，解除限制后，下一次违反可能会加强惩罚，在你未进行此操作前，系统不会恢复你的账户</p>
+		            <p id="times">当前账户将在<span class="text-primary"></span>后自动恢复正常，在此之前，无论是自助解限还是人工客服都无法解除您的账户状态</p>
+		            <p id="time">您可以通过下方的<span class="text-primary">解除限制</span>按钮解除账户限制，在你未进行此操作前，系统不会恢复你的账户</p>
 		            <p>若您对本次结果产生疑问，可<a href="//sftools.link/app/system/group.html">联系人工客服</a></p>
 				</div>
 		    </div>
 			<button class="mt-4 col-12 btn btn-primary rounded-pill">解除限制</button>
+		</div>
+		
+		<div class="p-4" id="code" style="display: none;">
+		    <h3 class="mt-4"><b>自助解限</b></h3>
+		    <p style="font-size: .8rem;">请根据指引进行操作</p>
+		    <div class="card border border-0 border-top border-5 border-primary shadow rounded">
+		        <div class="card-body">
+		            <h5><svg width="24" height="24" viewBox="0 0 48 48"><path d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24 37C25.3807 37 26.5 35.8807 26.5 34.5C26.5 33.1193 25.3807 32 24 32C22.6193 32 21.5 33.1193 21.5 34.5C21.5 35.8807 22.6193 37 24 37Z" fill="#333"/><path d="M24 12V28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp;温馨提示</h5>
+					<p>您即将进行自助解限流程，自助解限仅支持账号本人进行操作，因此我们需要核验您的身份。</p>
+					<p>请点击下方"获取验证码"按钮，我们将会发送一封验证码至您的密保账户，请将该验证码输入到下方输入框后，点击"下一步"按钮。</p>
+					<p>验证码</p>
+					<div class="d-flex border-bottom border-1 py-1 px-2 mb-4">
+						<input class="border-0" style="width:calc(100% - 5rem);" type="number" placeholder="请输入收到的验证码"/>
+						<a>获取验证码</a>
+					</div>
+				</div>
+		    </div>
+		    <button class="mt-4 col-12 btn btn-primary rounded-pill">下一步</button>
 		</div>
 		
 		<div class="p-4" id="finish" style="display: none;">
@@ -56,7 +74,7 @@
 					$('#type').text('限制登录');
 				}else if(getvalue('type')=='2'){
 					$('#type').text('限制登录');
-					$('button').hide();
+					$('#index button').hide();
 					$('#times').show();
 					$('#time').hide();
 					$('#times span').text(timetostring(getvalue('times')));
@@ -65,39 +83,53 @@
 				}else if(getvalue('type')=='4'){
 					$('#type').text('冻结');
 					$('#time').text('您只能通过人工客服的方式恢复您的账户');
-					$('button').hide();
+					$('#index button').hide();
 				}else{
 					$('#type').text('永久封禁');
 					$('#time').hide();
-					$('button').hide();
+					$('#index button').hide();
 				}
             })
-			$('button').click(function(){
+			$('#index button').click(function(){
+				$('#index').hide()
+				$('#code').show()
+			});
+			$('#code a').click(function(){
 				let user=getvalue('user');
 				let code=getvalue('code');
+			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+				window.sftools.request({
+					url:"Account/Recovery",
+					data:{"user":user,"code":code,"type":"send"},
+					success:i=>{
+						loading.close();
+						$.alert({title:'验证码已发送',type:'green',content:''}); 
+					},fail:i=>{
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:i}); 
+					}
+				});
+			});
+			$('#code .btn-primary').click(function(){
+				let user=getvalue('user');
+				let code=getvalue('code');
+				let data=$('input').val()
+				if(!data.length||data.length<4){
+					$.alert({title:'错误',type:'red',content:'验证码格式有误'}); 
+				}
                 let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
-				$.ajax({
-                	type:"POST",
-                	timeout:10000,
-                	url:"https://sf-api.suxber.live/Account/Recovery",
-                	data:JSON.stringify({"data":{},"account":{"user":user,"code":code}}),
-                	contentType:"application/json;charset=UTF-8",
-                	success:function (data) {
-                		loading.close();
-                	    if(data.code==200){
-                			$('#index').hide();
-                            $('#finish').show();
-                		}else if(data.code==300){
-                			window.location.href=data.data;
-                		}else{
-                			$.alert({title:'错误',type:'red',content:data.msg}); 
-                		}
-                	},
-                	error:function (msg) {
-                	    loading.close();
-                		$.alert({title:'错误',type:'red',content:'网络异常，请稍后再试'}); 
-                	}
-                });
+				window.sftools.request({
+					url:"Account/Recovery",
+					data:{"user":user,"code":code,"type":"verify","data":data},
+					success:i=>{
+						loading.close();
+					    $('#code').hide();
+					    $('#finish').show();
+					},fail:i=>{
+					    loading.close();
+						$.alert({title:'错误',type:'red',content:i}); 
+					}
+				});
             });
             function getvalue(variable) {
 				var query = window.location.search.substring(1);
