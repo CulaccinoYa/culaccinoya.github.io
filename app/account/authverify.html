@@ -117,6 +117,7 @@
 					document.getElementById("preloader").style.display="none";
 				}
 			}
+			const env=decodeURIComponent(getenv())
 			window.sftools.init(()=>{
 				let user=getvalue('user');
 				let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
@@ -176,7 +177,6 @@
 					$.alert({title:'错误',type:'red',content:'验证码不能留空'}); 
 					return;
 				}
-				let env=decodeURIComponent(getenv())
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 				window.sftools.request({
 					url:"Account/AuthVerify",
@@ -219,7 +219,6 @@
 					data:{"type":'face_reg',"user":user,"env":env},
 					success:function(data){
 						loading.close();
-						let env=decodeURIComponent(getenv())
 						window.sftools.run({type:'face_auth',data:{id:data.data}},e=>{
 							let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>联网比对中</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 							window.sftools.request({
