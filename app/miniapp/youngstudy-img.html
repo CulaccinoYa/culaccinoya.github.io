@@ -18,7 +18,7 @@
 				$.ajax({
 					type:"POST",
 					timeout:10000,
-					url:"https://sf-api.suxber.live/MiniApp/YoungStudy",
+					url:"https://api.sftools.link/MiniApp/YoungStudy",
 					data:JSON.stringify({"data":{"wechat":true,"param":getvalue("param"),"sign":getvalue("sign")},"account":{}}),
 					contentType:"application/json;charset=UTF-8",
 					success:function (data) {
