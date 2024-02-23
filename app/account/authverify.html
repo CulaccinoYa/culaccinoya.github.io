@@ -293,7 +293,7 @@
 			    let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
 				window.sftools.request({
 					url:"Account/AuthVerify",
-					data:{"type":'qrcode',"user":user},
+					data:{"type":'qrcode',"user":user,"env":env},
 					success:function(data){
 						loading.close();
 					    $('#qrcode_img').attr('src','https://api.pwmqr.com/qrcode/create/?url='+data.data)
