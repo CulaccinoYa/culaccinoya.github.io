@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>积分明细</title>
+		<style>p{margin: 0;}.nav{position: sticky;top: 0;z-index:1;}</style>
+	</head>
+	<body>
+	    <div>
+			<div class="container p-3 pt-0 mt-4">
+				<div class="mb-2 card border border-0 border-top border-5 border-primary shadow rounded">
+					<ul class="list-group list-group-flush">
+					</ul>
+				</div>
+			</div>
+			<div class="text-center m-4"><p id="text" class="text-primary" onclick="getrecord()">—— 点我加载下一页 ——</p></div>
+		</div>
+		<script type="text/javascript" src="https://sftools.link/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+	    let page=1;
+		let user;
+		let token;
+		window.sftools.init(()=>{
+		    getrecord()
+		});
+	    function getrecord(){
+	        if(page==0){
+	            return;
+	        }
+	    	let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+	    	window.sftools.request({
+	    		url:"User/GetPointChange",
+	    		data:{"page":page,"num":10},
+	    		success:data=>{
+	    			loading.close();
+	    			if(data.data.list.length==0){
+	    			    page=0;
+	    			    $('.container').html('<div class="mt-4 card border border-0 border-top border-5 border-primary shadow rounded"><div class="card-body"><div class="text-center my-5"> <h2><b>空空如也</b></h2> <p class="text-secondary">你还没有积分变动呢...</p></div></div></div>')
+	    			    return;
+	    			}
+	    			page++;
+	    			if(data.data.list.length<10){
+	    			    page=0;
+	    			    $('#text').html('已经没有了');
+	    			}
+					for(var n=0;n<data.data.list.length;n++){
+						$('.list-group').append('<li class="list-group-item list-group-item-action d-flex justify-content-between"style="padding:1rem"><div><p class="fs-6">'+data.data.list[n].title+'</p><p style="font-size:.8rem;color:#909090">'+data.data.list[n].time+'</p></div><p class="fs-5"><b>'+data.data.list[n].num+'</b></p></li>')
+					}
+	    		},fail:i=>{
+	    			loading.close();
+	    			if(i && i!=="已完成行为验证" && i!==""){
+	    				$.alert({title:'错误',type:'red',content:i}); 
+	    			}else if(i=="已完成行为验证"){
+	    				getrecord()
+	    			}
+	    		}
+	    	});
+	    };
+	    </script>
+	</body>
+</html>
