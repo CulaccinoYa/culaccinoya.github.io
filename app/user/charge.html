@@ -46,7 +46,7 @@
 			$.ajax({
 				type:"POST",
 				timeout:10000,
-				url:"https://sf-api.suxber.live/Wallet/Charge/GetPackId",
+				url:"https://api.sftools.link/Wallet/Charge/GetPackId",
 				data:JSON.stringify({"data":{},"account":{"user":user,"token":token}}),
 				contentType:"application/json;charset=UTF-8",
 				success:function (data) {
@@ -77,7 +77,7 @@
 			$.ajax({
 				type:"POST",
 				timeout:10000,
-				url:"https://sf-api.suxber.live/Wallet/Charge/CreateOrder",
+				url:"https://api.sftools.link/Wallet/Charge/CreateOrder",
 				data:JSON.stringify({"data":{"type":type,"packid":id},"account":{"user":user,"token":token}}),
 				contentType:"application/json;charset=UTF-8",
 				success:function (data) {

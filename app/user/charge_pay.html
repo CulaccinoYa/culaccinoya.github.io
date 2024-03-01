@@ -47,7 +47,7 @@
 			let id=data.id
 			check();
             function check() {
-                $.get("https://sf-api.suxber.live/Wallet/Charge/GetOrderInfo","id="+id,function (data) {
+                $.get("https://api.sftools.link/Wallet/Charge/GetOrderInfo","id="+id,function (data) {
                     if (data.code == 200){
                         if(data.data.status){
 							$.alert({title:'',type:'green',content:'支付成功，请退出本页面',buttons:[],closeIcon:false});
