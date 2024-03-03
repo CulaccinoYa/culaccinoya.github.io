@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<title>账户授权</title>
+		<style>input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}*:focus{outline: 0;}</style>
+	</head>
+	<body>
+		<div id="preloader" style="position:fixed;width:100%;height:100vh;background-color:#fbfbfb;z-index:99999;">
+			<div style="display:block;text-align:center;margin-top:40vh;">
+				<div class="spinner-border ml-auto" aria-hidden="true"></div>
+			</div>
+			<div style="font-size:.8rem;margin-top:40vh;text-align:center">
+				<p class="text-secondary">&copy;Copyright SF工具箱 All.right.<br>长时间无反应?返回后再试试</p>
+			</div>
+		</div>
+		<div class="p-4">
+		    <h3 class="mt-4"><b>账户授权</b></h3>
+			<p style="font-size: .8rem;">您正在开通SF共享骑行业务账户</p>
+			<div class="card border-0 shadow rounded" style="overflow:hidden;">
+			    <div class="card-body text-white" style="background-image: linear-gradient( 135deg, #3C8CE7 10%, #00EAFF 100%);">
+			    	<p class="m-0 mt-3">您正在开通</p>
+					<h4 class="mb-3"><b>SF共享骑行业务-电滴出行</b></h4>
+			    </div>
+				<div class="card-body border-5 border-top border-primary">
+					<div class="d-flex align-items-center">
+						<img style="width:1.4rem;height:1.4rem;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0yNCA0NEMyOS41MjI4IDQ0IDM0LjUyMjggNDEuNzYxNCAzOC4xNDIxIDM4LjE0MjFDNDEuNzYxNCAzNC41MjI4IDQ0IDI5LjUyMjggNDQgMjRDNDQgMTguNDc3MiA0MS43NjE0IDEzLjQ3NzIgMzguMTQyMSA5Ljg1Nzg2QzM0LjUyMjggNi4yMzg1OCAyOS41MjI4IDQgMjQgNEMxOC40NzcyIDQgMTMuNDc3MiA2LjIzODU4IDkuODU3ODYgOS44NTc4NkM2LjIzODU4IDEzLjQ3NzIgNCAxOC40NzcyIDQgMjRDNCAyOS41MjI4IDYuMjM4NTggMzQuNTIyOCA5Ljg1Nzg2IDM4LjE0MjFDMTMuNDc3MiA0MS43NjE0IDE4LjQ3NzIgNDQgMjQgNDRaIiBmaWxsPSIjMGQ2ZWZkIiBzdHJva2U9IiMwZDZlZmQiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjQgMzdDMjUuMzgwNyAzNyAyNi41IDM1Ljg4MDcgMjYuNSAzNC41QzI2LjUgMzMuMTE5MyAyNS4zODA3IDMyIDI0IDMyQzIyLjYxOTMgMzIgMjEuNSAzMy4xMTkzIDIxLjUgMzQuNUMyMS41IDM1Ljg4MDcgMjIuNjE5MyAzNyAyNCAzN1oiIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNMjQgMTJWMjgiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=">
+						<p class="m-0 ms-1" style="font-size:.8rem;">开通该服务，需要您的以下信息</p>
+					</div>
+					<ol class="list-group list-group-flush list-group-numbered mt-2" style="font-size:.9rem;">
+						<li class="list-group-item p-1">您的账户基本信息</li>
+						<li class="list-group-item p-1">您的账户手机号</li>
+						<li class="list-group-item p-1 text-danger">您的账户实名信息</li>
+					</ol>
+				</div>
+			</div>
+			<div class="mt-3 card border-0 border-5 border-top border-primary shadow rounded" style="overflow:hidden;">
+				<div class="d-flex align-items-center m-3 mb-0">
+					<img style="width:1.4rem;height:1.4rem;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0yNCA0NEMyOS41MjI4IDQ0IDM0LjUyMjggNDEuNzYxNCAzOC4xNDIxIDM4LjE0MjFDNDEuNzYxNCAzNC41MjI4IDQ0IDI5LjUyMjggNDQgMjRDNDQgMTguNDc3MiA0MS43NjE0IDEzLjQ3NzIgMzguMTQyMSA5Ljg1Nzg2QzM0LjUyMjggNi4yMzg1OCAyOS41MjI4IDQgMjQgNEMxOC40NzcyIDQgMTMuNDc3MiA2LjIzODU4IDkuODU3ODYgOS44NTc4NkM2LjIzODU4IDEzLjQ3NzIgNCAxOC40NzcyIDQgMjRDNCAyOS41MjI4IDYuMjM4NTggMzQuNTIyOCA5Ljg1Nzg2IDM4LjE0MjFDMTMuNDc3MiA0MS43NjE0IDE4LjQ3NzIgNDQgMjQgNDRaIiBmaWxsPSIjMGQ2ZWZkIiBzdHJva2U9IiMwZDZlZmQiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjQgMzdDMjUuMzgwNyAzNyAyNi41IDM1Ljg4MDcgMjYuNSAzNC41QzI2LjUgMzMuMTE5MyAyNS4zODA3IDMyIDI0IDMyQzIyLjYxOTMgMzIgMjEuNSAzMy4xMTkzIDIxLjUgMzQuNUMyMS41IDM1Ljg4MDcgMjIuNjE5MyAzNyAyNCAzN1oiIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNMjQgMTJWMjgiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=">
+					<p class="m-0 ms-1" style="font-size:.8rem;">您还需要同意以下协议才能继续使用</p>
+				</div>
+				<div style="height:12rem;">
+					<iframe src="../terms.html" style="width:100%;height:100%;"></iframe>
+				</div>
+			</div>
+			<button class="col-12 mt-4 btn btn-primary rounded-pill">开通</button>
+		</div>
+
+		<script type="text/javascript" src="https://sftools.link/uni.webview.js"></script>
+	    <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	    <script>
+			document.onreadystatechange = function(){
+				if(document.readyState == 'complete'){
+					document.getElementById("preloader").style.display="none";
+				}
+			}
+			$('button').click(function(){
+				window.sftools.run({
+					type:'auth',
+					data:{
+						id:'60001',
+						code:'32482154649446138432184183115209',
+						role:["basic","mobile","realname"]
+					}},e=>{
+						let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>正在开通，大约需要30秒</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+						window.sftools.request({
+							url:"Bike/qdigo/Signin",
+							data:{"code":e},
+							success:i=>{
+								loading.close();
+							    uni.navigateBack();
+							},fail:i=>{
+							    loading.close();
+								$.alert({title:'错误',type:'red',content:i}); 
+							}
+						});
+					},e=>{
+						$.alert({title:'授权失败',type:'red',content:e}); 
+				});
+			})
+	    </script>
+	</body>
+</html>
