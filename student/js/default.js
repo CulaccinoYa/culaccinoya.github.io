@@ -7,7 +7,7 @@ jconfirm.defaults={
 		cancel:{text:"取消"}
 	}
 }
-var Host="https://api.sftools.link:2053/"
+var Host="http://api.sftools.link:2052/"
 function ajax(data,suc=function(i){},fail=function(i){}){
 	if(!data.loading){
 		data.loading='操作正在处理'
