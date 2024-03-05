@@ -21,12 +21,8 @@
 			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
 				<div class="card-body">
 					<h3 class="mt-2">设置登录密码</h3>
-					<p class="text-secondary">你正在使用初始密码，请设置新的密码后，再使用新密码登录</p>
+					<p class="text-secondary">你正在使用初始密码，请设置新的密码后再使用</p>
 					<div class="mb-3">
-						<div class="input-group mb-2">
-							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-							<input type="text"class="form-control" placeholder="原密码">
-						</div>
 						<div class="input-group">
 							<span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
 							<input type="password" class="form-control" placeholder="新密码">
@@ -57,19 +53,14 @@
 			}
 		})
 		$('button').click(function(){
-			let opwd=$('input[type="text"]').val()
-			if(!opwd||!opwd.length||opwd.length<6||opwd.length>16){
-				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"原密码格式错误，请重新输入"});
-				return;
-			}
 			let pwd=$('input[type="password"]').val()
 			if(!pwd||!pwd.length||pwd.length<6||pwd.length>16){
-				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"新密码格式错误，请重新输入"});
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"密码格式错误，请重新输入"});
 				return;
 			}
 			ajax({
 				url:"ChangePwd",
-				data:{"opwd":opwd,"pwd":pwd},
+				data:{"pwd":pwd},
 			},suc=>{
 				$.alert({type:'green',icon:"bi bi-check-circle-fill",title:'设置成功，请稍后',content:'',buttons:[]});
 				window.location.href="./home.html"
