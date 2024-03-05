@@ -53,7 +53,7 @@
 						    <span>当前分数计算公式如下：</span><br>
 							<span><b>基础分80 + 加分项 - 扣分项 = 当前分数</b></span><br><br>
 							<span class="form-text">* 当前分数为目前系统计算的大致分数，实际分数可能会因为基础分变动或其他情况发生变化，请以最终实际分数为准</span>
-							<button class="mt-2 btn btn-primary col-12 btn-sm">修改密码</button>
+							<a href="changepwd.html" class="mt-2 btn btn-primary col-12 btn-sm">修改密码</a>
 							<button class="mt-2 btn btn-danger col-12 btn-sm">退出登录</button>
 						</div>
 					</div>
@@ -119,10 +119,7 @@
 				
 			})
 		})
-		$('.btn-primary').click(function(){
-			window.location.href="./changepwd.html"
-		})
-		$('.btn-danger').click(function(){
+		$('button').click(function(){
 			$.cookie('student_id',null)
 			$.cookie('student_token',null)
 			window.location.href="./login.html"
