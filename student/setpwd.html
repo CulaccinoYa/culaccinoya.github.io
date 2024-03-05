@@ -25,11 +25,11 @@
 					<div class="mb-3">
 						<div class="input-group mb-2">
 							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
-							<input type="text" id="name" class="form-control" placeholder="姓名">
+							<input type="text" id="sid" class="form-control" placeholder="学号">
 						</div>
 						<div class="input-group mb-2">
 							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
-							<input type="text" id="sid" class="form-control" placeholder="学号">
+							<input type="text" id="pwd" class="form-control" placeholder="原密码">
 						</div>
 						<div class="input-group">
 							<span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
@@ -61,24 +61,24 @@
 			}
 		})
 		$('button').click(function(){
-			let name=$('#name').val()
-			if(!name||!name.length){
-				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"姓名错误，请重新输入"});
-				return;
-			}
 			let sid=$('#sid').val()
 			if(!sid||!sid.length||sid.length<11){
 				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"学号格式错误，请重新输入"});
 				return;
 			}
+			let opwd=$('#pwd').val()
+			if(!opwd||!opwd.length||opwd.length<11){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"原密码格式错误，请重新输入"});
+				return;
+			}
 			let pwd=$('input[type="password"]').val()
-			if(!pwd||!pwd.length||user.length<6){
-				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"密码格式错误，请重新输入"});
+			if(!pwd||!pwd.length||pwd.length<6){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"新密码格式错误，请重新输入"});
 				return;
 			}
 			ajax({
 				url:"SetPwd",
-				data:{"name":name,"sid":sid,"pwd":pwd},
+				data:{"opwd":opwd,"sid":sid,"pwd":pwd},
 			},suc=>{
 				$.alert({type:'green',icon:"bi bi-check-circle-fill",title:'设置成功，请稍后',content:'',buttons:[]});
 				window.location.href="./login.html"
