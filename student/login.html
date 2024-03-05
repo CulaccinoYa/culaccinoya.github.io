@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<title>操行分查询</title>
+		<link rel="stylesheet" type="text/css" href="./css/preload.css">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.4/font/bootstrap-icons.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+	</head>
+	<body class="bg-light">
+		<!-- 预加载 -->
+		<div id="preloader" class="preloader">
+			<div class="spinner-border" role="status">
+				<span class="visually-hidden">加载中</span>
+			</div>
+		</div>
+		<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
+			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
+				<div class="card-body">
+					<h3 class="mt-2">查询 操行分操作记录</h3>
+					<p class="text-secondary">请登录后 查询</p>
+					<div class="mb-3">
+						<div class="input-group mb-2">
+							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+							<input type="text" class="form-control" placeholder="学号">
+						</div>
+						<div class="input-group">
+							<span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
+							<input type="password" class="form-control" placeholder="密码">
+						</div>
+						<div class="form-text">* 初始密码为123456</div>
+					</div>
+					<button class="btn btn-primary btn-sm col-12" type="button">查询</button>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	<script src="./js/default.js"></script>
+	<script>
+		// 原生js操作预加载
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+		$(function(){
+			let user=$.cookie('student_id')
+			if(user&&user.length){
+				$('input[type="text"]').val(user)
+			}
+		})
+		$('button').click(function(){
+			let user=$('input[type="text"]').val()
+			if(!user||!user.length||user.length<11){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:"学号格式错误，请重新输入"});
+				return;
+			}
+			let pwd=$('input[type="password"]').val()
+			if(!pwd||!pwd.length||user.length<6){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'查询失败',content:"密码格式错误，请重新输入"});
+				return;
+			}
+			ajax({
+				url:"Login",
+				data:{"user":user,"pwd":pwd},
+			},suc=>{
+				$.alert({type:'green',icon:"bi bi-check-circle-fill",title:'查询成功，正在加载数据',content:'',buttons:[]});
+				$.cookie('student_id',suc.user)
+				$.cookie('student_token',suc.token)
+				window.location.href="./home.html"
+			},fail=>{})
+		})
+	</script>
+</html>

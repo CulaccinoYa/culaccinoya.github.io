@@ -7,6 +7,9 @@
 		<title>操行分查询</title>
 		<link rel="stylesheet" type="text/css" href="./css/preload.css">
 		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.4/font/bootstrap-icons.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<style>*{--bs-danger-rgb:255, 71, 87;--bs-success-rgb:46, 213, 115}</style>
 	</head>
 	<body class="bg-light">
 		<!-- 预加载 -->
@@ -15,22 +18,113 @@
 				<span class="visually-hidden">Loading...</span>
 			</div>
 		</div>
-		<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
-			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
-				<div class="card-body text-center">
-					<img class="col-3" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQuMDAwMDAwMDAwMDAwMDA0IiBoZWlnaHQ9IjI0LjAwMDAwMDAwMDAwMDAwNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCiA8Zz4KICA8dGl0bGU+YmFja2dyb3VuZDwvdGl0bGU+CiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9IjQwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+CiA8L2c+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPHBhdGggZmlsbD0iI2ZhNTE1MSIgaWQ9InN2Z18xIiBkPSJtMTIsMjJjLTUuNTIzLDAgLTEwLC00LjQ3NyAtMTAsLTEwczQuNDc3LC0xMCAxMCwtMTBzMTAsNC40NzcgMTAsMTBzLTQuNDc3LDEwIC0xMCwxMHptLTAuNzYzLC0xNS44NjRsMC4xMSw3LjU5NmwxLjMwNSwwbDAuMTEsLTcuNTk2bC0xLjUyNSwwem0wLjc1OSwxMC45NjdjMC41MTIsMCAwLjkwMiwtMC4zODMgMC45MDIsLTAuODgyYzAsLTAuNSAtMC4zOSwtMC44ODIgLTAuOTAyLC0wLjg4MmEwLjg3OCwwLjg3OCAwIDAgMCAtMC44OTYsMC44ODJjMCwwLjQ5OSAwLjM5NiwwLjg4MiAwLjg5NiwwLjg4MnoiLz4KIDwvZz4KPC9zdmc+"/>
-					<h5 class="mt-4">查询系统已关闭</h5>
-					<p>如需查询操行记录，请联系班干</p>
+		<div class="container pt-2">
+			<div class="row">
+				<div class="col-6 col-xl-3 my-2">
+					<div class="card bg-primary text-white border-0 shadow">
+						<div class="card-body">
+						    <div class="d-flex justify-content-between">
+								<span class="rounded-circle bg-white bg-opacity-25 fs-2 px-2">
+						            <i class="bi bi-person-fill"></i>
+						        </span>
+						        <span class="fs-6">学生姓名</span>
+						    </div>
+						    <div class="text-end fs-4" id="name"></div>
+						</div>
+					</div>
 				</div>
+			    <div class="col-6 col-xl-3 my-2">
+					<div class="card bg-primary text-white border-0 shadow">
+						<div class="card-body">
+						    <div class="d-flex justify-content-between">
+								<span class="rounded-circle bg-white bg-opacity-25 fs-2 px-2">
+						            <i class="bi bi-piggy-bank-fill"></i>
+						        </span>
+						        <span class="fs-6">当前分数</span>
+						    </div>
+						    <div class="text-end fs-4" id="score"></div>
+						</div>
+					</div>
+			    </div>
+				<div class="col-xl-6 my-2">
+					<div class="card border border-0 border-top border-5 border-primary shadow">
+						<div class="card-body">
+							<div class="card-title"><b>计分说明</b></div>
+						    <span>当前分数计算公式如下：</span><br>
+							<span><b>基础分80 + 加分项 - 扣分项 = 当前分数</b></span><br><br>
+							<span class="form-text">* 当前分数为目前系统计算的大致分数，实际分数可能会因为基础分变动或其他情况发生变化，请以最终实际分数为准</span>
+							<button class="mt-2 btn btn-danger col-12 btn-sm">退出登录</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row mt-4" id="list">
 			</div>
 		</div>
 	</body>
+
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	<script src="./js/default.js"></script>
 	<script>
 		// 原生js操作预加载
 		document.onreadystatechange = function(){
 			if(document.readyState == 'complete'){
 				document.getElementById("preloader").style.display="none";
 			}
+		}
+		$(function(){
+			ajax({
+				url:"GetUserDetail"
+			},suc=>{
+				$("#name").text(suc.name)
+				$("#score").text(suc.score)
+				if(!suc.data.length){
+					$('#list').append('<div class="col-xl-3 col-md-6 my-2"><div class="card border border-0 border-top border-5 border-primary shadow"><div class="card-body">没有加减分记录</div></div></div>')
+				}else{
+					for(var n=0;n<suc.data.length;n++){
+						let score_class="success"
+						let score_text="加"
+						if(suc.data[n].score<0){
+							score_class="danger"
+							score_text="扣"
+						}
+						let score=Math.abs(suc.data[n].score)
+						let title=suc.data[n].title
+						let bridge=''
+						for(var x=0;x<suc.data[n].bridge.length;x++){
+							bridge=bridge+'<span class="badge mx-1 text-bg-'+suc.data[n].bridge[x].color+'">'+suc.data[n].bridge[x].text+'</span>'
+						}
+						$('#list').append('<div class="col-xl-3 col-md-6 my-2" data-admin="'+suc.data[n].admin+'" '+"data-img='"+JSON.stringify(suc.data[n].img)+"'"+'><div class="card border border-0 border-top border-5 border-'+score_class+' shadow"><div class="card-body"><h6><b>'+timetostring(suc.data[n].time)+'</b></h6>'+bridge+'<div class="d-flex justify-content-between"><span>'+title+'</span><span class="text-'+score_class+'">'+score_text+score+'分</span></div></div></div></div>')
+					}
+					$("#list .my-2").click(function(){
+						let admin=$(this).data('admin')
+						let img=$(this).data("img")
+						if(img!=="false"){
+							y=""
+							for(var x=0;x<img.length;x++){
+								y=y+"<br><a href='javascript:;' onclick='showimg("+'"'+img[x]+'"'+");'>留存照片"+(x+1)+"</a>"
+							}
+							img=y
+						}else{
+							img=""
+						}
+						let content="记录上报班干："+admin+"<br><br>如对本条记录产生疑问请联系上传班干"+img
+						$.alert({type:'green',icon:"bi bi-info-circle-fill",title:'记录信息',content:content});
+					})
+				}
+			},fail=>{
+				
+			})
+		})
+		$('button').click(function(){
+			$.cookie('student_id',null)
+			$.cookie('student_token',null)
+			window.location.href="./login.html"
+		})
+		function showimg(e){
+			$.alert({title:'留存材料',content:'图片正在加载，请勿关闭此页面<br><img src="'+e+'"/>'});
 		}
 	</script>
 </html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<title>操行分查询</title>
+		<link rel="stylesheet" type="text/css" href="./css/preload.css">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+	</head>
+	<body class="bg-light">
+		<!-- 预加载 -->
+		<div id="preloader" class="preloader">
+			<div class="spinner-border" role="status">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+		</div>
+		<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
+			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
+				<div class="card-body text-center">
+					<img class="col-3" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQuMDAwMDAwMDAwMDAwMDA0IiBoZWlnaHQ9IjI0LjAwMDAwMDAwMDAwMDAwNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCiA8Zz4KICA8dGl0bGU+YmFja2dyb3VuZDwvdGl0bGU+CiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9IjQwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+CiA8L2c+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPHBhdGggZmlsbD0iI2ZhNTE1MSIgaWQ9InN2Z18xIiBkPSJtMTIsMjJjLTUuNTIzLDAgLTEwLC00LjQ3NyAtMTAsLTEwczQuNDc3LC0xMCAxMCwtMTBzMTAsNC40NzcgMTAsMTBzLTQuNDc3LDEwIC0xMCwxMHptLTAuNzYzLC0xNS44NjRsMC4xMSw3LjU5NmwxLjMwNSwwbDAuMTEsLTcuNTk2bC0xLjUyNSwwem0wLjc1OSwxMC45NjdjMC41MTIsMCAwLjkwMiwtMC4zODMgMC45MDIsLTAuODgyYzAsLTAuNSAtMC4zOSwtMC44ODIgLTAuOTAyLC0wLjg4MmEwLjg3OCwwLjg3OCAwIDAgMCAtMC44OTYsMC44ODJjMCwwLjQ5OSAwLjM5NiwwLjg4MiAwLjg5NiwwLjg4MnoiLz4KIDwvZz4KPC9zdmc+"/>
+					<h5 class="mt-4">查询系统已关闭</h5>
+					<p>如需查询操行记录，请联系班干</p>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		// 原生js操作预加载
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+	</script>
+</html>

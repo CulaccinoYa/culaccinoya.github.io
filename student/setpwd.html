@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<title>操行分查询</title>
+		<link rel="stylesheet" type="text/css" href="./css/preload.css">
+		<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+		<link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.4/font/bootstrap-icons.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+	</head>
+	<body class="bg-light">
+		<!-- 预加载 -->
+		<div id="preloader" class="preloader">
+			<div class="spinner-border" role="status">
+				<span class="visually-hidden">加载中</span>
+			</div>
+		</div>
+		<div class="d-flex justify-content-center align-items-center" style="height:80vh;">
+			<div class="col-xl-4 col-md-6 card border-0 shadow col-11">
+				<div class="card-body">
+					<h3 class="mt-2">设置登录密码</h3>
+					<p class="text-secondary">你正在使用初始密码，请设置新的密码后，再使用新密码登录</p>
+					<div class="mb-3">
+						<div class="input-group mb-2">
+							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+							<input type="text" id="name" class="form-control" placeholder="姓名">
+						</div>
+						<div class="input-group mb-2">
+							<span class="input-group-text" id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></span>
+							<input type="text" id="sid" class="form-control" placeholder="学号">
+						</div>
+						<div class="input-group">
+							<span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
+							<input type="password" class="form-control" placeholder="新密码">
+						</div>
+						<div class="form-text">* 忘记该密码，仅能通过班干修改密码</div>
+					</div>
+					<button class="btn btn-primary btn-sm col-12" type="button">设置新密码</button>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	<script src="./js/default.js"></script>
+	<script>
+		// 原生js操作预加载
+		document.onreadystatechange = function(){
+			if(document.readyState == 'complete'){
+				document.getElementById("preloader").style.display="none";
+			}
+		}
+		$(function(){
+			let user=getvalue('sid')
+			if(user&&user.length){
+				$('#sid').val(user)
+			}
+		})
+		$('button').click(function(){
+			let name=$('#name').val()
+			if(!name||!name.length){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"姓名错误，请重新输入"});
+				return;
+			}
+			let sid=$('#sid').val()
+			if(!sid||!sid.length||sid.length<11){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"学号格式错误，请重新输入"});
+				return;
+			}
+			let pwd=$('input[type="password"]').val()
+			if(!pwd||!pwd.length||user.length<6){
+				$.alert({type:'red',icon:"bi bi-x-circle-fill",title:'设置失败',content:"密码格式错误，请重新输入"});
+				return;
+			}
+			ajax({
+				url:"SetPwd",
+				data:{"name":name,"sid":sid,"pwd":pwd},
+			},suc=>{
+				$.alert({type:'green',icon:"bi bi-check-circle-fill",title:'设置成功，请稍后',content:'',buttons:[]});
+				window.location.href="./login.html"
+			},fail=>{})
+		})
+	</script>
+</html>
