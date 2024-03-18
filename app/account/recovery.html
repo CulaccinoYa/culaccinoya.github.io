@@ -107,7 +107,11 @@
 						$.alert({title:'验证码已发送',type:'green',content:''}); 
 					},fail:i=>{
 					    loading.close();
-						$.alert({title:'错误',type:'red',content:i}); 
+					    if(i && i!=="已完成行为验证" && i!==""){
+					    	$.alert({title:'错误',type:'red',content:i}); 
+					    }else if(i=="已完成行为验证"){
+					    	$('#code a').click()
+					    }
 					}
 				});
 			});
@@ -128,7 +132,11 @@
 					    $('#finish').show();
 					},fail:i=>{
 					    loading.close();
-						$.alert({title:'错误',type:'red',content:i}); 
+					    if(i && i!=="已完成行为验证" && i!==""){
+					    	$.alert({title:'错误',type:'red',content:i}); 
+					    }else if(i=="已完成行为验证"){
+					    	$('#code .btn-primary').click()
+					    }
 					}
 				});
             });
